@@ -1,6 +1,7 @@
 package day1
 
 import helper.fileToStream
+import helper.report
 
 fun part1(fileName: String): Int {
     val validValues = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
@@ -40,7 +41,9 @@ fun part2(fileName: String): Int {
 }
 
 fun day1() {
-    println("Day 1")
-    println(part1("src/main/resources/day_1/part_1.txt"))
-    println(part2("src/main/resources/day_1/part_1.txt"))
+    report(
+        dayNumber = 1,
+        part1 = part1("src/main/resources/day_1/part_1.txt"),
+        part2 = part2("src/main/resources/day_1/part_1.txt")
+    )
 }
