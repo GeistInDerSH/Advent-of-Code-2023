@@ -4,36 +4,41 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class Day1KtTest {
+    private val numericOnly = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+    private val nameAndNumeric = listOf(
+        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+        "1", "2", "3", "4", "5", "6", "7", "8", "9"
+    )
 
     @Test
     fun part1() {
-        assertEquals(part1("src/main/resources/day_1/example.txt"), 142)
-        assertEquals(part1("src/main/resources/day_1/part_1.txt"), 56042)
+        assertEquals(solve("src/main/resources/day_1/example.txt", numericOnly), 142)
+        assertEquals(solve("src/main/resources/day_1/part_1.txt", numericOnly), 56042)
     }
 
     @Test
     fun wordStringToNumeric() {
         val mapping = mapOf(
-            "one" to "1",
-            "two" to "2",
-            "three" to "3",
-            "four" to "4",
-            "five" to "5",
-            "six" to "6",
-            "seven" to "7",
-            "eight" to "8",
-            "nine" to "9",
-            "9" to "9",
+            "one" to 1,
+            "two" to 2,
+            "three" to 3,
+            "four" to 4,
+            "five" to 5,
+            "six" to 6,
+            "seven" to 7,
+            "eight" to 8,
+            "nine" to 9,
+            "9" to 9,
         )
 
         mapping.forEach { (input, expected) ->
-            assertEquals(wordStringToNumeric(input), expected)
+            assertEquals(wordStringToInt(input), expected)
         }
     }
 
     @Test
     fun part2() {
-        assertEquals(part2("src/main/resources/day_1/example_2.txt"), 281)
-        assertEquals(part2("src/main/resources/day_1/part_1.txt"), 55358)
+        assertEquals(solve("src/main/resources/day_1/example_2.txt", nameAndNumeric), 281)
+        assertEquals(solve("src/main/resources/day_1/part_1.txt", nameAndNumeric), 55358)
     }
 }
