@@ -28,17 +28,9 @@ fun parseInput(fileName: String): List<Game> {
 }
 
 fun part1(games: List<Game>, cubeCounts: Pull): Int {
-    return games.sumOf { game ->
-        val isValid = game.pulls.all { pull ->
-            cubeCounts.red >= pull.red && cubeCounts.blue >= pull.blue && cubeCounts.green >= pull.green
-        }
-
-        if (isValid) {
-            game.id
-        } else {
-            0
-        }
-    }
+    return games.filter { game ->
+        game.pulls.all { cubeCounts.red >= it.red && cubeCounts.blue >= it.blue && cubeCounts.green >= it.green }
+    }.sumOf { it.id }
 }
 
 fun part2(games: List<Game>): Int {
