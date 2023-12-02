@@ -4,7 +4,7 @@ import helper.fileToStream
 import helper.report
 
 fun part1(fileName: String): Int {
-    val c = mapOf("red" to 12, "blue" to 14, "green" to 13)
+    val cubeCounts = mapOf("red" to 12, "blue" to 14, "green" to 13)
 
     return fileToStream(fileName).mapIndexed { index, s ->
         val i = index + 1
@@ -13,7 +13,7 @@ fun part1(fileName: String): Int {
                 val parts = it.trim().split(" ")
                 val name = parts.last()
                 val count = parts.first().toInt()
-                name in c && c[name]!! >= count
+                name in cubeCounts && cubeCounts[name]!! >= count
             }
         }
 
@@ -28,18 +28,18 @@ fun part1(fileName: String): Int {
 fun part2(fileName: String): Int {
     return fileToStream(fileName).mapIndexed { index, s ->
         val i = index + 1
-        val m = listOf("red", "blue", "green").associateWith { 0 }.toMutableMap()
+        val minCubeCountByColor = listOf("red", "blue", "green").associateWith { 0 }.toMutableMap()
         s.replace("Game ${i}: ", "").split(";").forEach { sections ->
             sections.trim().split(",").forEach {
                 val parts = it.trim().split(" ")
                 val name = parts.last()
                 val count = parts.first().toInt()
-                if (name in m && m[name]!! < count) {
-                    m[name] = count
+                if (name in minCubeCountByColor && minCubeCountByColor[name]!! < count) {
+                    minCubeCountByColor[name] = count
                 }
             }
         }
-        m.values.fold(1) { acc: Int, idx: Int -> acc * idx }
+        minCubeCountByColor.values.fold(1) { acc: Int, idx: Int -> acc * idx }
     }.toList().sum()
 }
 
