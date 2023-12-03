@@ -6,17 +6,15 @@ import kotlin.math.max
 import kotlin.math.min
 
 data class Symbol(val name: Char, val row: Int, val col: Int) {
-    private val touchingNumbers: MutableList<Int> = mutableListOf()
+    private val touchingNumbers: MutableSet<Int> = mutableSetOf()
 
     fun addAnyTouchingNumbers(numbers: List<Number>) {
-        for (number in numbers) {
-            if (number.row !in (row - 1..row + 1)) {
-                continue
-            } else if (max(number.colStart, col - 1) > min(number.colEnd, col + 1)) {
-                continue
-            }
-            touchingNumbers.add(number.num)
-        }
+        val toAdd = numbers.filter {
+            (it.row in (row - 1..row + 1)) && (max(it.colStart, col - 1) <= min(it.colEnd, col + 1))
+        }.map {
+            it.num
+        }.toSet()
+        touchingNumbers.addAll(toAdd)
     }
 
     fun touchingNumbersCount() = touchingNumbers.size
@@ -30,14 +28,8 @@ data class Number(val num: Int, val row: Int, val colStart: Int, val colEnd: Int
         if (hasTouchingSymbol) {
             return
         }
-        for (symbol in symbols) {
-            if (row !in (symbol.row - 1..symbol.row + 1)) {
-                continue
-            } else if (max(colStart, symbol.col - 1) > min(colEnd, symbol.col + 1)) {
-                continue
-            }
-            hasTouchingSymbol = true
-            break
+        hasTouchingSymbol = symbols.any {
+            (it.row in (row - 1..row + 1)) && (max(colStart, it.col - 1) <= min(colEnd, it.col + 1))
         }
     }
 
