@@ -10,10 +10,11 @@ data class Symbol(val name: Char, val row: Int, val col: Int) {
 
     fun addAnyTouchingNumbers(numbers: List<Number>) {
         for (number in numbers) {
-            if (number.row !in (row - 1..row + 1))
+            if (number.row !in (row - 1..row + 1)) {
                 continue
-            if (max(number.colStart, col - 1) > min(number.colEnd, col + 1))
+            } else if (max(number.colStart, col - 1) > min(number.colEnd, col + 1)) {
                 continue
+            }
             touchingNumbers.add(number.num)
         }
     }
@@ -26,13 +27,15 @@ data class Number(val num: Int, val row: Int, val colStart: Int, val colEnd: Int
     private var hasTouchingSymbol = false
 
     fun checkForTouchingSymbols(symbols: List<Symbol>) {
-        if (hasTouchingSymbol)
+        if (hasTouchingSymbol) {
             return
+        }
         for (symbol in symbols) {
-            if (row !in (symbol.row - 1..symbol.row + 1))
+            if (row !in (symbol.row - 1..symbol.row + 1)) {
                 continue
-            if (max(colStart, symbol.col - 1) > min(colEnd, symbol.col + 1))
+            } else if (max(colStart, symbol.col - 1) > min(colEnd, symbol.col + 1)) {
                 continue
+            }
             hasTouchingSymbol = true
             break
         }
