@@ -9,11 +9,7 @@ data class Symbol(val name: Char, val row: Int, val col: Int) {
     private val touchingNumbers: MutableSet<Int> = mutableSetOf()
 
     fun addAnyTouchingNumbers(numbers: List<Number>) {
-        val toAdd = numbers.filter {
-            (it.row in (row - 1..row + 1)) && (max(it.colStart, col - 1) <= min(it.colEnd, col + 1))
-        }.map {
-            it.num
-        }.toSet()
+        val toAdd = numbers.filter { hasOverlap(it.row, row, it.colStart, it.colEnd, col) }.map { it.num }.toSet()
         touchingNumbers.addAll(toAdd)
     }
 
@@ -28,12 +24,14 @@ data class Number(val num: Int, val row: Int, val colStart: Int, val colEnd: Int
         if (hasTouchingSymbol) {
             return
         }
-        hasTouchingSymbol = symbols.any {
-            (it.row in (row - 1..row + 1)) && (max(colStart, it.col - 1) <= min(colEnd, it.col + 1))
-        }
+        hasTouchingSymbol = symbols.any { hasOverlap(it.row, row, colStart, colEnd, it.col) }
     }
 
     fun hasTouchingSymbol() = hasTouchingSymbol
+}
+
+fun hasOverlap(srcRow: Int, destRow: Int, srcColStart: Int, srcColEnd: Int, destCol: Int): Boolean {
+    return srcRow in (destRow - 1..destRow + 1) && max(srcColStart, destCol - 1) <= min(srcColEnd, destCol + 1)
 }
 
 fun parseInput(fileName: String): Pair<List<Symbol>, List<Number>> {
