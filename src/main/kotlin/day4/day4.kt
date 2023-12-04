@@ -13,9 +13,8 @@ data class Card(val number: Int, val winners: Set<Int>, val mine: Set<Int>) {
 fun parseInput(fileName: String): List<Card> {
     return fileToStream(fileName).mapIndexed { index, line ->
         val sections = line.substringAfter(':').split('|')
-        println(sections)
-        val winners = sections[0].trim().split(' ').filter { it.isNotBlank() }.map { it.toInt() }.toSet()
-        val mine = sections[1].trim().split(' ').filter { it.isNotBlank() }.map { it.toInt() }.toSet()
+        val winners = sections[0].split(' ').filter { it.isNotBlank() }.map { it.toInt() }.toSet()
+        val mine = sections[1].split(' ').filter { it.isNotBlank() }.map { it.toInt() }.toSet()
         Card(index + 1, winners, mine)
     }.toList()
 }
@@ -23,17 +22,17 @@ fun parseInput(fileName: String): List<Card> {
 fun part1(cards: List<Card>): Int = cards.sumOf { it.points() }
 
 fun part2(cards: List<Card>): Int {
-    val c = cards.map { it.number }.associateWith { 1 }.toMutableMap()
+    val cardCounts = cards.associate { it.number to 1 }.toMutableMap()
     for (card in cards) {
-        val count = card.matchCount()
-        for (i in 1..count) {
-            if (card.number + i > cards.size) {
+        for (i in 1..card.matchCount()) {
+            val cardNum = card.number + i
+            if (cardNum > cards.size) {
                 break
             }
-            c[card.number + i] = c[card.number + i]!! + c[card.number]!!
+            cardCounts[cardNum] = cardCounts[cardNum]!! + cardCounts[card.number]!!
         }
     }
-    return c.values.sumOf { it }
+    return cardCounts.values.sumOf { it }
 }
 
 fun day4() {
