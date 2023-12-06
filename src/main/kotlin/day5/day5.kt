@@ -6,9 +6,8 @@ import helper.report
 data class Almanac(val seeds: List<Long>, val mappings: List<Mapping>) {
     private val destToCropMapping = mappings.associate { map -> map.destName to map.crops }
 
-    private fun getMappedValue(dest: String, value: Long): Long {
-        return destToCropMapping[dest]?.firstNotNullOfOrNull { it.getMappedValue(value) } ?: value
-    }
+    private fun getMappedValue(dest: String, value: Long) =
+        destToCropMapping[dest]?.firstNotNullOfOrNull { it.getMappedValue(value) } ?: value
 
     fun seedToLocation(seed: Long): Long {
         val soil = getMappedValue("soil", seed)
@@ -38,7 +37,7 @@ fun parseInput(fileName: String): Almanac {
     val lines = fileToStream(fileName).joinToString(separator = "\n") { it }.split("\n\n")
     val seeds = lines.first().substringAfter(':').trim().split(' ').map { it.toLong() }
 
-    val f = lines.drop(1).map { line ->
+    val mappings = lines.drop(1).map { line ->
         val parts = line.split('\n')
         val name = parts[0].substringBefore(' ').substringAfter("to-")
         val crops = parts.drop(1).map {
@@ -51,14 +50,10 @@ fun parseInput(fileName: String): Almanac {
         Mapping(name, crops)
     }
 
-    return Almanac(seeds, f)
+    return Almanac(seeds, mappings)
 }
 
-fun part1(almanac: Almanac): Long {
-    return almanac.seeds.map {
-        almanac.seedToLocation(it)
-    }.minBy { it }
-}
+fun part1(almanac: Almanac) = almanac.seeds.map { almanac.seedToLocation(it) }.minBy { it }
 
 fun part2(almanac: Almanac): Long {
     return almanac.seeds.chunked(2).parallelStream().map { pair ->
