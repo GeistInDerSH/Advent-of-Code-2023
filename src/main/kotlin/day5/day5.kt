@@ -2,74 +2,72 @@ package day5
 
 import helper.fileToStream
 import helper.report
-import java.math.BigInteger
 
-data class HLM(val seeds: List<BigInteger>, val mappings: List<Mapping>) {
-    val sourceToDest = mappings.associate { it.sourceName to it.destName }
-    private val destToCropMapping = mappings.associate { it.destName to it.crops }
+data class Almanac(val seeds: List<Long>, val mappings: List<Mapping>) {
+    private val destToCropMapping = mappings.associate { map -> map.destName to map.crops }
 
-    fun getMappedValue(dest: String, value: BigInteger): BigInteger {
-        if (dest !in destToCropMapping) {
-            return value
-        }
-        return destToCropMapping[dest]!!.firstNotNullOfOrNull { it.getMappedValue(value) } ?: value
+    private fun getMappedValue(dest: String, value: Long): Long {
+        return destToCropMapping[dest]?.firstNotNullOfOrNull { it.getMappedValue(value) } ?: value
+    }
+
+    fun seedToLocation(seed: Long): Long {
+        val soil = getMappedValue("soil", seed)
+        val fertilizer = getMappedValue("fertilizer", soil)
+        val water = getMappedValue("water", fertilizer)
+        val light = getMappedValue("light", water)
+        val temperature = getMappedValue("temperature", light)
+        val humidity = getMappedValue("humidity", temperature)
+        return getMappedValue("location", humidity)
     }
 }
 
-data class Mapping(val sourceName: String, val destName: String, val crops: List<CropMapping>)
+data class Mapping(val destName: String, val crops: List<CropMapping>)
 
-data class CropMapping(val sourceStart: BigInteger, val destStart: BigInteger, val size: BigInteger) {
-    fun getMappedValue(value: BigInteger): BigInteger? {
-        return if (value >= sourceStart && value <= sourceStart + size) {
-            val offset = value - sourceStart
-            destStart + offset
+data class CropMapping(val sourceStart: Long, val destStart: Long, val size: Long) {
+    private val sourceEnd = sourceStart + size
+    fun getMappedValue(value: Long): Long? {
+        return if (value in sourceStart..<sourceEnd) {
+            destStart + value - sourceStart
         } else {
             null
         }
     }
 }
 
-fun parseInput(fileName: String): HLM {
+fun parseInput(fileName: String): Almanac {
     val lines = fileToStream(fileName).joinToString(separator = "\n") { it }.split("\n\n")
-    val seeds = lines.first().substringAfter(':').trim().split(' ').map { it.toBigInteger() }
+    val seeds = lines.first().substringAfter(':').trim().split(' ').map { it.toLong() }
 
     val f = lines.drop(1).map { line ->
         val parts = line.split('\n')
-        val name = parts[0].substringBefore(' ').split('-')
+        val name = parts[0].substringBefore(' ').substringAfter("to-")
         val crops = parts.drop(1).map {
-            val nums = it.split(' ').map { it.toBigInteger() }
+            val nums = it.split(' ').map { num -> num.toLong() }
             val dest = nums[0]
             val src = nums[1]
             val size = nums[2]
             CropMapping(src, dest, size)
         }
-        Mapping(name[0], name[2], crops)
+        Mapping(name, crops)
     }
 
-    return HLM(seeds, f)
+    return Almanac(seeds, f)
 }
 
-fun part1(hlm: HLM): BigInteger {
-    return hlm.seeds.map {
-        val queue = ArrayDeque(listOf("seed" to it))
-        var minimum = BigInteger.valueOf(Long.MAX_VALUE)
-        while (queue.isNotEmpty()) {
-            val (source, number) = queue.removeFirst()
-
-            if (source !in hlm.sourceToDest) {
-                if (number < minimum) {
-                    minimum = number
-                }
-            } else {
-                val dest = hlm.sourceToDest[source]!!
-                val value = hlm.getMappedValue(dest, number)
-
-                queue.add(dest to value)
-            }
-        }
-
-        minimum
+fun part1(almanac: Almanac): Long {
+    return almanac.seeds.map {
+        almanac.seedToLocation(it)
     }.minBy { it }
+}
+
+fun part2(almanac: Almanac): Long {
+    return almanac.seeds.chunked(2).parallelStream().map { pair ->
+        val start = pair.first()
+        val length = pair.last()
+        var min = Long.MAX_VALUE
+        (start..<start + length).forEach { min = min.coerceAtMost(almanac.seedToLocation(it)) }
+        min
+    }.toList().minBy { it }
 }
 
 fun day5() {
@@ -77,6 +75,6 @@ fun day5() {
     report(
         dayNumber = 5,
         part1 = part1(input),
-        part2 = ""
+        part2 = part2(input),
     )
 }
