@@ -10,15 +10,8 @@ fun parseInput(fileName: String): Map<Long, Long> {
     return times.zip(distance).associate { it.first to it.second }
 }
 
-fun getPossibleWinCount(raceTime: Long, recordDistance: Long): Long {
-    var count = 0L
-    for (it in 0..raceTime) {
-        if ((it * (raceTime - it)) > recordDistance) {
-            count += 1
-        }
-    }
-    return count
-}
+fun getPossibleWinCount(raceTime: Long, recordDistance: Long) =
+    (0..raceTime).sumOf { if ((it * (raceTime - it)) > recordDistance) 1L else 0L }
 
 fun part1(map: Map<Long, Long>) = map.map { getPossibleWinCount(it.key, it.value) }.reduce { acc, i -> acc * i }
 
