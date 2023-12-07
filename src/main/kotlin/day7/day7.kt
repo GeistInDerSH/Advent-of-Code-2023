@@ -3,9 +3,25 @@ package day7
 import helper.fileToStream
 import helper.report
 
-data class Hand(val cards: List<Char>, val bid: Long) {
+data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean) {
     private val frequency = cards.associateWith { c -> cards.count { it == c } }
+    private val frequencyNoJoker: Map<Char, Int> by lazy {
+        if ('J' in frequency.keys) {
+            val freq = frequency.toMutableMap()
+            val jokerCount = freq.remove('J')!!
+            val maxKey = freq.keys.sortedBy { freq[it] }.last()
+            freq[maxKey] = freq[maxKey]!! + jokerCount
+            freq.toMap()
+        } else {
+            frequency
+        }
+    }
+
     fun kind(): Int {
+        if (frequency.keys.size == 1) {
+            return 5
+        }
+        val frequency = if (includeJokers) frequencyNoJoker else frequency
         val size = frequency.keys.size
         return when {
             size == 1 -> 5
@@ -20,7 +36,11 @@ data class Hand(val cards: List<Char>, val bid: Long) {
 
     companion object : Comparator<Hand> {
         override fun compare(o1: Hand, o2: Hand): Int {
-            val l = listOf('A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2')
+            val l = if (o1.includeJokers) {
+                "AKQT98765432J"
+            } else {
+                "AKQJT98765432"
+            }.toList()
             return when {
                 o1.kind() > o2.kind() -> 1
                 o1.kind() < o2.kind() -> -1
@@ -44,21 +64,23 @@ data class Hand(val cards: List<Char>, val bid: Long) {
     }
 }
 
-fun parseInput(fileName: String): List<Hand> {
+fun parseInput(fileName: String, includeJokers: Boolean): List<Hand> {
     return fileToStream(fileName).map {
         val (cards, bid) = it.split(' ')
-        Hand(cards.toList(), bid.toLong())
+        Hand(cards.toList(), bid.toLong(), includeJokers)
     }.toList().sortedWith(Hand)
 }
 
+fun part1(fileName: String) = part1(parseInput(fileName, false))
 fun part1(hands: List<Hand>) = hands.mapIndexed { i, hand -> (i + 1) * hand.bid }.sum()
 
+fun part2(fileName: String) = part1(parseInput(fileName, true))
+
 fun day7() {
-    val input = parseInput("src/main/resources/day_7/part_1.txt")
-    // val input = parseInput("src/main/resources/day_7/example.txt")
+    val fileName = "src/main/resources/day_7/part_1.txt"
     report(
         dayNumber = 7,
-        part1 = part1(input),
-        part2 = "",
+        part1 = part1(fileName),
+        part2 = part2(fileName),
     )
 }
