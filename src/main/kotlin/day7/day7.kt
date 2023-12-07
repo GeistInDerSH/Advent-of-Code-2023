@@ -36,7 +36,7 @@ data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean
 
     companion object : Comparator<Hand> {
         override fun compare(o1: Hand, o2: Hand): Int {
-            val l = if (o1.includeJokers) {
+            val cards = if (o1.includeJokers) {
                 "AKQT98765432J"
             } else {
                 "AKQJT98765432"
@@ -49,8 +49,8 @@ data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean
                         if (c1 == c2) {
                             continue
                         }
-                        val ci1 = l.indexOf(c1)
-                        val ci2 = l.indexOf(c2)
+                        val ci1 = cards.indexOf(c1)
+                        val ci2 = cards.indexOf(c2)
                         if (ci1 > ci2) {
                             return -1
                         } else if (ci1 < ci2) {
