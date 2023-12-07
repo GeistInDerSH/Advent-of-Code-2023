@@ -16,36 +16,36 @@ data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean
             frequency
         }
     }
-
-    fun kind(): Int {
+    private val kind: Int by lazy {
         if (frequency.keys.size == 1) {
-            return 5
-        }
-        val frequency = if (includeJokers) frequencyNoJoker else frequency
-        val size = frequency.keys.size
-        return when {
-            size == 1 -> 5
-            size == 2 && 4 in frequency.values -> 4
-            size == 2 && 3 in frequency.values -> 3
-            size == 3 && 3 in frequency.values -> 2
-            size == 3 && frequency.values.count { it == 2 } == 2 -> 1
-            size == 4 -> 0
-            else -> -1
+            5
+        } else {
+            val frequency = if (includeJokers) frequencyNoJoker else frequency
+            val size = frequency.keys.size
+            when {
+                size == 1 -> 5
+                size == 2 && 4 in frequency.values -> 4
+                size == 2 && 3 in frequency.values -> 3
+                size == 3 && 3 in frequency.values -> 2
+                size == 3 && frequency.values.count { it == 2 } == 2 -> 1
+                size == 4 -> 0
+                else -> -1
+            }
         }
     }
 
     companion object : Comparator<Hand> {
+        private val withJokers = "AKQT98765432J".toList()
+        private val withoutJokers = "AKQJT98765432".toList()
         override fun compare(o1: Hand, o2: Hand): Int {
-            val cards = if (o1.includeJokers) {
-                "AKQT98765432J"
-            } else {
-                "AKQJT98765432"
-            }.toList()
+            val cards = if (o1.includeJokers) withJokers else withoutJokers
             return when {
-                o1.kind() > o2.kind() -> 1
-                o1.kind() < o2.kind() -> -1
+                o1.kind > o2.kind -> 1
+                o1.kind < o2.kind -> -1
                 else -> {
-                    for ((c1, c2) in o1.cards.zip(o2.cards)) {
+                    for (i in 0..<o1.cards.size) {
+                        val c1 = o1.cards[i]
+                        val c2 = o2.cards[i]
                         if (c1 == c2) {
                             continue
                         }
