@@ -7,8 +7,9 @@ data class Almanac(val seeds: List<Long>, val mappings: List<List<CropMapping>>)
     fun seedToLocation(seed: Long): Long {
         var value = seed
         for (row in mappings.indices) {
-            for (col in mappings[row].indices) {
-                val crop = mappings[row][col]
+            val cropRow = mappings[row]
+            for (col in cropRow.indices) {
+                val crop = cropRow[col]
                 if (crop.sourceStart <= value && value < crop.sourceEnd) {
                     value += crop.offset
                     break
@@ -19,10 +20,7 @@ data class Almanac(val seeds: List<Long>, val mappings: List<List<CropMapping>>)
     }
 }
 
-data class CropMapping(val sourceStart: Long, val destStart: Long, val size: Long) {
-    val sourceEnd = sourceStart + size
-    val offset = destStart - sourceStart
-}
+data class CropMapping(val sourceStart: Long, val sourceEnd: Long, val offset: Long)
 
 fun parseInput(fileName: String): Almanac {
     val lines = fileToStream(fileName).joinToString(separator = "\n") { it }.split("\n\n")
@@ -34,7 +32,7 @@ fun parseInput(fileName: String): Almanac {
             val dest = nums[0]
             val src = nums[1]
             val size = nums[2]
-            CropMapping(src, dest, size)
+            CropMapping(src, src + size, dest - src)
         }
     }
 
