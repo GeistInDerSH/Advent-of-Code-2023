@@ -48,7 +48,10 @@ fun part2(almanac: Almanac): Long {
         }.toList().minOf { it }
 }
 
-fun day5() {
+fun day5(skip: Boolean = true) {
+    if (skip) {
+        return
+    }
     val input = parseInput("src/main/resources/day_5/part_1.txt")
     report(
         dayNumber = 5,
