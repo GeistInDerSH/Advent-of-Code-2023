@@ -2,7 +2,6 @@ package day10
 
 import helper.fileToStream
 import helper.report
-import kotlin.math.roundToInt
 
 class Grid(private val tiles: List<List<Tile>>) {
     val start = run {
@@ -15,6 +14,10 @@ class Grid(private val tiles: List<List<Tile>>) {
         }
         -1 to -1
     }
+    private val loops: MutableList<List<Pair<Int, Int>>> = mutableListOf()
+
+    fun getTileAt(pair: Pair<Int, Int>) = tiles[pair.first][pair.second]
+    fun toFlatSet() = tiles.flatMap { tile -> tile.map { it.row to it.col } }.toSet()
 
     private fun getFirstUnvisitedOrNull(positions: List<Pair<Int, Int>>): Pair<Int, Int>? {
         for (pos in positions) {
@@ -56,14 +59,23 @@ class Grid(private val tiles: List<List<Tile>>) {
         }
     }
 
-    fun generateLoopFrom(position: Pair<Int, Int>): List<Pair<Int, Int>> {
+    private fun generateLoopFrom(position: Pair<Int, Int>): List<Pair<Int, Int>> {
         var pos = next(position)
         val loop: MutableList<Pair<Int, Int>> = mutableListOf()
         while (pos != null) {
             loop.add(pos)
             pos = next(pos)
         }
+        loops.add(loop.toList() + start)
         return loop
+    }
+
+    fun getLoops(): List<List<Pair<Int, Int>>> {
+        if (loops.isNotEmpty()) {
+            return loops.toList()
+        }
+        repeat(4) { generateLoopFrom(start) }
+        return loops.toList()
     }
 }
 
@@ -88,17 +100,26 @@ fun parseInput(fileName: String): Grid {
 }
 
 fun part1(tiles: Grid): Int {
-    return (0..<4).maxOf {
-        val loop = tiles.generateLoopFrom(tiles.start)
-        (loop.size.toFloat() / 2f).roundToInt()
+    return tiles.getLoops().maxOf { it.size / 2 }
+}
+
+fun part2(tiles: Grid): Int {
+    val loop = tiles.getLoops().first { it.isNotEmpty() }.toSet()
+    val tileSet = tiles.toFlatSet()
+    val crossings = "|7F".toSet()
+
+    return (tileSet - loop).count { tile ->
+        loop.filter { it.first == tile.first && it.second in 0..<tile.second }
+            .count { tiles.getTileAt(it).symbol in crossings } % 2 == 1
     }
 }
 
 fun day10() {
     val input = parseInput("src/main/resources/day_10/part_1.txt")
+    // val input = parseInput("src/main/resources/day_10/example_part_2.txt")
     report(
         dayNumber = 10,
         part1 = part1(input),
-        part2 = "",
+        part2 = part2(input),
     )
 }
