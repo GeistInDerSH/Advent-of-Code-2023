@@ -87,6 +87,7 @@ data class Tile(val symbol: Char, val row: Int, val col: Int) {
     val up: Pair<Int, Int> by lazy { row - 1 to col }
     val down: Pair<Int, Int> by lazy { row + 1 to col }
     private var visited = false
+    val range = 0..col
 
     fun hasBeenVisited() = visited
     fun visit() {
@@ -106,10 +107,9 @@ fun part1(tiles: Grid) = tiles.mainLoop().size / 2
 fun part2(tiles: Grid): Int {
     val loop = tiles.mainLoop().toSet()
     val crossings = "|7F".toSet()
-    return (tiles.toFlatSet() - loop).count { tile ->
-        loop.filter { it.first == tile.first && it.second in 0..<tile.second }
-            .count { tiles.getTileAt(it).symbol in crossings } % 2 == 1
-    }
+    return (tiles.toFlatSet() - loop).parallelStream().map { tile ->
+        loop.count { it.first == tile.first && it.second in 0..<tile.second && tiles.getTileAt(it).symbol in crossings }
+    }.toList().count { it % 2 == 1 }
 }
 
 fun day10() {
