@@ -1,5 +1,6 @@
 import day1.day1
 import day10.day10
+import day11.day11
 import day2.day2
 import day3.day3
 import day4.day4
@@ -20,4 +21,5 @@ fun main() {
     day8()
     day9()
     day10()
+    day11()
 }
