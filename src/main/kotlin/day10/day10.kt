@@ -87,7 +87,6 @@ data class Tile(val symbol: Char, val row: Int, val col: Int) {
     val up: Pair<Int, Int> by lazy { row - 1 to col }
     val down: Pair<Int, Int> by lazy { row + 1 to col }
     private var visited = false
-    val range = 0..col
 
     fun hasBeenVisited() = visited
     fun visit() {
