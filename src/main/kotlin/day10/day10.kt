@@ -4,7 +4,7 @@ import helper.fileToStream
 import helper.report
 
 class Grid(private val tiles: List<List<Tile>>) {
-    val start = run {
+    private val start = run {
         for (row in tiles.indices) {
             for (col in tiles[row].indices) {
                 if (tiles[row][col].symbol == 'S') {
@@ -70,13 +70,15 @@ class Grid(private val tiles: List<List<Tile>>) {
         return loop
     }
 
-    fun getLoops(): List<List<Pair<Int, Int>>> {
+    private fun getLoops(): List<List<Pair<Int, Int>>> {
         if (loops.isNotEmpty()) {
             return loops.toList()
         }
         repeat(4) { generateLoopFrom(start) }
         return loops.toList()
     }
+
+    fun mainLoop() = getLoops().first { it.isNotEmpty() }
 }
 
 data class Tile(val symbol: Char, val row: Int, val col: Int) {
@@ -99,16 +101,12 @@ fun parseInput(fileName: String): Grid {
     return Grid(tiles)
 }
 
-fun part1(tiles: Grid): Int {
-    return tiles.getLoops().maxOf { it.size / 2 }
-}
+fun part1(tiles: Grid) = tiles.mainLoop().size / 2
 
 fun part2(tiles: Grid): Int {
-    val loop = tiles.getLoops().first { it.isNotEmpty() }.toSet()
-    val tileSet = tiles.toFlatSet()
+    val loop = tiles.mainLoop().toSet()
     val crossings = "|7F".toSet()
-
-    return (tileSet - loop).count { tile ->
+    return (tiles.toFlatSet() - loop).count { tile ->
         loop.filter { it.first == tile.first && it.second in 0..<tile.second }
             .count { tiles.getTileAt(it).symbol in crossings } % 2 == 1
     }
@@ -116,7 +114,6 @@ fun part2(tiles: Grid): Int {
 
 fun day10() {
     val input = parseInput("src/main/resources/day_10/part_1.txt")
-    // val input = parseInput("src/main/resources/day_10/example_part_2.txt")
     report(
         dayNumber = 10,
         part1 = part1(input),
