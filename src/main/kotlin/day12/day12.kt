@@ -4,17 +4,9 @@ import helper.fileToStream
 import helper.report
 
 data class SpringRecord(val springs: String, val records: List<Int>) {
-    private var permutations: Long? = null
     private val memorization = mutableMapOf<Pair<String, List<Int>>, Long>()
 
-    fun permutationCount(): Long {
-        return if (permutations != null) {
-            permutations!!
-        } else {
-            permutations = permutationCount(springs, records)
-            permutations!!
-        }
-    }
+    fun permutationCount() = permutationCount(springs, records)
 
     private fun permutationCount(input: String, records: List<Int>): Long {
         val pairedInput = input to records
@@ -24,28 +16,28 @@ data class SpringRecord(val springs: String, val records: List<Int>) {
             return if (records.isEmpty()) 1 else 0
         }
 
-        val char = input.first()
-        val remaining = input.substring(1)
-        val permutations = when (char) {
-            '.' -> permutationCount(remaining, records)
-            '?' -> permutationCount(".$remaining", records) + permutationCount("#$remaining", records)
+        val permutations = when (input.first()) {
+            '.' -> permutationCount(input.substring(1), records)
+            '?' -> {
+                val remaining = input.substring(1)
+                permutationCount(".$remaining", records) +
+                        permutationCount("#$remaining", records)
+            }
+
             '#' -> {
                 if (records.isEmpty()) {
                     0
                 } else {
                     val damaged = records.first()
-                    val areAllValid = input.chars().limit(damaged.toLong()).allMatch { it.toChar() in setOf('#', '?') }
+                    val areAllValid = input.take(damaged).all { it == '#' || it == '?' }
 
                     if (damaged <= input.length && areAllValid) {
                         val updatedRecords = records.subList(1, records.size)
-                        if (damaged == input.length) {
-                            if (updatedRecords.isEmpty()) 1 else 0
-                        } else if (input[damaged] == '.') {
-                            permutationCount(input.substring(damaged + 1), updatedRecords)
-                        } else if (input[damaged] == '?') {
-                            permutationCount(".${input.substring(damaged + 1)}", updatedRecords)
-                        } else {
-                            0
+                        when {
+                            damaged == input.length -> if (updatedRecords.isEmpty()) 1 else 0
+                            input[damaged] == '.' -> permutationCount(input.substring(damaged + 1), updatedRecords)
+                            input[damaged] == '?' -> permutationCount(input.substring(damaged + 1), updatedRecords)
+                            else -> 0
                         }
                     } else {
                         0
@@ -53,9 +45,7 @@ data class SpringRecord(val springs: String, val records: List<Int>) {
                 }
             }
 
-            else -> {
-                0
-            }
+            else -> 0
         }
 
         memorization[pairedInput] = permutations
@@ -85,7 +75,8 @@ fun parseInput(fileName: String, unfoldCount: Int): List<SpringRecord> {
     }.toList()
 }
 
-fun solution(input: List<SpringRecord>): Long = input.sumOf { it.permutationCount() }
+fun solution(input: List<SpringRecord>): Long =
+    input.parallelStream().map { it.permutationCount() }.reduce(0) { acc, p -> acc + p }
 
 fun part1(fileName: String): Long = solution(parseInput(fileName, 0))
 fun part2(fileName: String): Long = solution(parseInput(fileName, 5))
