@@ -62,7 +62,7 @@ fun parseInput(fileName: String): Almanac {
  * @param almanac The container with the seeds, and their transformations
  * @return The minimum value of the seed transformation
  */
-fun part1(almanac: Almanac) = almanac.seeds.map { almanac.seedToLocation(it) }.minBy { it }
+fun part1(almanac: Almanac) = almanac.seeds.minOf { almanac.seedToLocation(it) }
 
 /**
  * Each seed is now a pair of start to length, so we need to test each seed in all the pairs of ranges to

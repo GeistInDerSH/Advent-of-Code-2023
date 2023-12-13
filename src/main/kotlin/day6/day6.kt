@@ -18,7 +18,7 @@ fun parseInput(fileName: String): Map<Long, Long> {
  * @return The number of winning plays to make
  */
 fun getPossibleWinCount(raceTime: Long, recordDistance: Long) =
-    (0..raceTime).sumOf { if ((it * (raceTime - it)) > recordDistance) 1L else 0L }
+    (0..raceTime).count { (it * (raceTime - it)) > recordDistance }.toLong()
 
 /**
  * @return The product of the number of winning moves
