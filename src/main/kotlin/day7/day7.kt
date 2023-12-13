@@ -4,7 +4,10 @@ import helper.fileToStream
 import helper.report
 
 data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean) {
+    // map of the characters to the number of instances of that char
     private val frequency = cards.associateWith { c -> cards.count { it == c } }
+
+    // The frequency map with the jokers being replaced with the most frequent card
     private val frequencyNoJoker: Map<Char, Int> by lazy {
         if ('J' in frequency.keys) {
             val freq = frequency.toMutableMap()
@@ -16,6 +19,9 @@ data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean
             frequency
         }
     }
+
+    // Determine what kind of hand we have, this should be cached, so we don't re-calculate it when sorting
+    // but can do so lazily in case we don't end up needing it
     private val kind: Int by lazy {
         if (frequency.keys.size == 1) {
             5
@@ -35,6 +41,7 @@ data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean
     }
 
     companion object : Comparator<Hand> {
+        // The card ranking changes slightly between the two parts, and this should reflect that
         private val withJokers = "AKQT98765432J".toList()
         private val withoutJokers = "AKQJT98765432".toList()
         override fun compare(o1: Hand, o2: Hand): Int {
@@ -43,6 +50,7 @@ data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean
                 o1.kind > o2.kind -> 1
                 o1.kind < o2.kind -> -1
                 else -> {
+                    // Go through each card and find the first that doesn't match and sort by that
                     for (i in 0..<o1.cards.size) {
                         val c1 = o1.cards[i]
                         val c2 = o2.cards[i]

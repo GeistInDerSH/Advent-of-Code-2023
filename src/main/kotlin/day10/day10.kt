@@ -4,6 +4,7 @@ import helper.fileToStream
 import helper.report
 
 class Grid(private val tiles: List<List<Tile>>) {
+    // Find the starting position of the loop
     private val start = run {
         for (row in tiles.indices) {
             for (col in tiles[row].indices) {
@@ -14,6 +15,8 @@ class Grid(private val tiles: List<List<Tile>>) {
         }
         -1 to -1
     }
+
+    // Cached value for the located loops
     private val loops: MutableList<List<Pair<Int, Int>>> = mutableListOf()
 
     fun getTileAt(pair: Pair<Int, Int>) = tiles[pair.first][pair.second]
@@ -40,6 +43,12 @@ class Grid(private val tiles: List<List<Tile>>) {
         return null
     }
 
+    /**
+     * Follow the fence, getting the possible next unvisited position
+     *
+     * @param position The current position of the loop
+     * @return The next pair of row and column, or null if there is no next
+     */
     fun next(position: Pair<Int, Int>?): Pair<Int, Int>? {
         if (position == null) {
             return null
@@ -59,6 +68,12 @@ class Grid(private val tiles: List<List<Tile>>) {
         }
     }
 
+    /**
+     * Generate a loop of fence from a staring position
+     *
+     * @param position The starting position of the loop
+     * @return A list of row, column pairs for the edges of the fence
+     */
     private fun generateLoopFrom(position: Pair<Int, Int>): List<Pair<Int, Int>> {
         var pos = next(position)
         val loop: MutableList<Pair<Int, Int>> = mutableListOf()
@@ -70,18 +85,28 @@ class Grid(private val tiles: List<List<Tile>>) {
         return loop
     }
 
+    /**
+     * Attempt to generate a list of all possible fence loops
+     *
+     * @return A list of fence loops
+     */
     private fun getLoops(): List<List<Pair<Int, Int>>> {
         if (loops.isNotEmpty()) {
             return loops.toList()
         }
+        // Do  it 4 times for each of the directions, probably not needed but just to be safe
         repeat(4) { generateLoopFrom(start) }
         return loops.toList()
     }
 
+    /**
+     * @return The first non-empty loop of fencing
+     */
     fun mainLoop() = getLoops().first { it.isNotEmpty() }
 }
 
 data class Tile(val symbol: Char, val row: Int, val col: Int) {
+    // Be lazy about determining what the next positions are, as we likely won't use most of them
     val left: Pair<Int, Int> by lazy { row to col - 1 }
     val right: Pair<Int, Int> by lazy { row to col + 1 }
     val up: Pair<Int, Int> by lazy { row - 1 to col }
@@ -106,6 +131,8 @@ fun part1(tiles: Grid) = tiles.mainLoop().size / 2
 fun part2(tiles: Grid): Int {
     val loop = tiles.mainLoop().toSet()
     val crossings = "|7F".toSet()
+    // Use a form of [Ray Casting](https://en.wikipedia.org/wiki/Ray_casting#In-out_ray_classification) to determine
+    // what values are in and out of the loop
     return (tiles.toFlatSet() - loop).parallelStream().map { tile ->
         loop.count { it.first == tile.first && it.second in 0..<tile.second && tiles.getTileAt(it).symbol in crossings }
     }.toList().count { it % 2 == 1 }

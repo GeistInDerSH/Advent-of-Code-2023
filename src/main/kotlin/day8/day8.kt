@@ -33,6 +33,11 @@ fun parseInput(fileName: String): Walk {
     return Walk(instructions, nodes)
 }
 
+/**
+ * @param a The first value
+ * @param b The second value
+ * @return The least common multiple of [a] and [b]
+ */
 fun lcm(a: Long, b: Long): Long {
     val larger = max(a, b)
     val maxLCM = a * b
@@ -46,8 +51,14 @@ fun lcm(a: Long, b: Long): Long {
     return maxLCM
 }
 
+/**
+ * @return The number of steps to get from "AAA" to "ZZZ"
+ */
 fun part1(walk: Walk) = walk.getStepsCount("AAA", "ZZZ")
 
+/**
+ * @return The minimum number of steps to get from all nodes ending in "A" to all ending in "Z"
+ */
 fun part2(walk: Walk) = walk.nodes.keys.filter { it.endsWith('A') }.map { walk.getStepsCount(it, "Z") }
     .fold(1L) { acc, l -> lcm(acc, l) }
 

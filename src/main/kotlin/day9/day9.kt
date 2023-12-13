@@ -4,6 +4,7 @@ import helper.fileToStream
 import helper.report
 
 data class Sensor(val history: MutableList<Int>) {
+    // Calculate the historical values from the history, to allow for faster calculations later
     private val extrapolated: MutableList<MutableList<Int>> = run {
         val list: MutableList<MutableList<Int>> = mutableListOf()
         var currentList = history.toList()
@@ -21,7 +22,12 @@ data class Sensor(val history: MutableList<Int>) {
         list
     }
 
+    /**
+     * @return The next value in the [history] sequence
+     */
     fun next(): Int {
+        // Go through each of the extrapolated rows in reverse and add the difference between their
+        // last and their current to the end of the list
         for (row in extrapolated.indices.reversed()) {
             if (row == extrapolated.size - 1) {
                 extrapolated[row].add(extrapolated[row].last())
@@ -32,13 +38,20 @@ data class Sensor(val history: MutableList<Int>) {
             val prev = extrapolated[row + 1].last()
             extrapolated[row].add(current + prev)
         }
+
+        // Get the tail of the first row in the extrapolated values, and add it to the tail of the history
         val hist = extrapolated.first().last()
         val toAdd = hist + history.last()
         history.add(toAdd)
         return toAdd
     }
 
+    /**
+     * @return The previous value in the [history] sequence
+     */
     fun previous(): Int {
+        // Go through each of the extrapolated rows in reverse and add the difference between their
+        // first and their current to the start of the list
         for (row in extrapolated.indices.reversed()) {
             if (row == extrapolated.size - 1) {
                 extrapolated[row].add(extrapolated[row].first())
@@ -49,6 +62,7 @@ data class Sensor(val history: MutableList<Int>) {
             val prev = extrapolated[row + 1].first()
             extrapolated[row].addFirst(current - prev)
         }
+        // Get the head of the first row in the extrapolated values, and add it to the head of the history
         val hist = extrapolated.first().first()
         val toAdd = history.first() - hist
         history.addFirst(toAdd)

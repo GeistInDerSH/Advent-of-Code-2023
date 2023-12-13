@@ -10,11 +10,24 @@ fun parseInput(fileName: String): Map<Long, Long> {
     return times.zip(distance).associate { it.first to it.second }
 }
 
+/**
+ * Calculate the number of possible winning moves that beat the [recordDistance] within the [raceTime]
+ *
+ * @param raceTime The time in ms for how long the race will go
+ * @param recordDistance The distance to beat
+ * @return The number of winning plays to make
+ */
 fun getPossibleWinCount(raceTime: Long, recordDistance: Long) =
     (0..raceTime).sumOf { if ((it * (raceTime - it)) > recordDistance) 1L else 0L }
 
+/**
+ * @return The product of the number of winning moves
+ */
 fun part1(map: Map<Long, Long>) = map.map { getPossibleWinCount(it.key, it.value) }.reduce { acc, i -> acc * i }
 
+/**
+ * @return The number of winning moves
+ */
 fun part2(map: Map<Long, Long>): Long {
     val time = map.keys.joinToString(separator = "") { it.toString() }.toLong()
     val dist = map.values.joinToString(separator = "") { it.toString() }.toLong()

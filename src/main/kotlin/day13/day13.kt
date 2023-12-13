@@ -4,7 +4,11 @@ import helper.report
 import java.io.File
 
 data class Image(val image: List<String>) {
+    /**
+     * @return The value of the reflected image
+     */
     fun withoutSmudges(): Int {
+        // Check that a window of rows reflects perfectly on the other side of the list
         val rowCount = image.size
         val rowSum = (1..<rowCount).sumOf { row ->
             val shortest = row.coerceAtMost(rowCount - row)
@@ -13,6 +17,7 @@ data class Image(val image: List<String>) {
             if (start == end) row * 100 else 0
         }
 
+        // Check that a substring of all the rows can be folded in half to make a mirror
         val columnCount = image[0].length
         val colSum = (1..<columnCount).sumOf { col ->
             val shortest = (col).coerceAtMost(columnCount - col)
@@ -27,21 +32,29 @@ data class Image(val image: List<String>) {
         return rowSum + colSum
     }
 
+    /**
+     * @return The value of the reflected image, when accounting for smudges
+     */
     fun withSmudges(): Int {
         val rowCount = image.size
         val columnCount = image[0].length
 
+        // Check that a window of rows reflects perfectly on the other side of the list
         val rowSum = (1..<rowCount).sumOf { row ->
             val shortest = row.coerceAtMost(rowCount - row)
             val start = image.subList(row, row + shortest)
             val end = image.subList(row - shortest, row).reversed()
+            // The procedure is mostly the same as before, however now we want to know how many of the
+            // characters match in all of them, and check to see if there is only 1 mismatch
             val matchingChars =
                 start.indices.sumOf { col -> start[col].indices.count { start[col][it] == end[col][it] } }
             if (matchingChars == shortest * columnCount - 1) row * 100 else 0
         }
 
+        // Check that a substring of all the rows can be folded in half to make a mirror
         val colSum = (1..<columnCount).sumOf { col ->
             val shortest = (col).coerceAtMost(columnCount - col)
+            // Check to see if there is only 1 mismatch in all the rows
             val matchingChars = image.sumOf { row ->
                 val start = row.substring(col, col + shortest)
                 val end = row.substring(col - shortest, col).reversed()

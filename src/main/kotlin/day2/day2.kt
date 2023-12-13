@@ -9,6 +9,7 @@ data class Game(val id: Int, val pulls: List<Pull>)
 fun parseInput(fileName: String): List<Game> {
     return fileToStream(fileName).mapIndexed { index, s ->
         val pulls = s.substringAfter(':').split(";").map { sections ->
+            // Map the name to the count, so we can do a lookup later
             val cubes = sections.split(",").map { it.trim() }.map {
                 val parts = it.split(" ")
                 val name = parts.last()
@@ -27,12 +28,26 @@ fun parseInput(fileName: String): List<Game> {
     }.toList()
 }
 
+/**
+ * Go through each game, and add the IDs of each one that is a valid game
+ *
+ * @param games The games that have been played
+ * @param cubeCounts A [Pull] that contains the maximum values for each of the cube types
+ * @return The sum of the IDs
+ */
 fun part1(games: List<Game>, cubeCounts: Pull): Int {
     return games.filter { game ->
         game.pulls.all { cubeCounts.red >= it.red && cubeCounts.blue >= it.blue && cubeCounts.green >= it.green }
     }.sumOf { it.id }
 }
 
+/**
+ * Determine the minimum number of cubes needed for each game to be playable, then multiply them together, and
+ * sum them up for each game
+ *
+ * @param games The games that have been played
+ * @return The sum of the product of the minimum number of each cube type for each game
+ */
 fun part2(games: List<Game>): Int {
     return games.sumOf { game ->
         var red = 0
