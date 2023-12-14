@@ -7,6 +7,8 @@ enum class DataFile(val fileName: String) {
     Example2("example_2.txt"),
     Part1("part_1.txt"),
     Part2("part_2.txt");
+
+    fun filePath(day: Int) = "src/main/resources/day_${day}/${fileName}"
 }
 
 
@@ -25,7 +27,7 @@ fun fileToString(fileName: String) = File(fileName).readText()
  * @param fileType The [DataFile] corresponding to the file to read
  * @return The contents of the file as a string
  */
-fun fileToString(day: Int, fileType: DataFile) = fileToString("src/main/resources/day_${day}/${fileType.fileName}")
+fun fileToString(day: Int, fileType: DataFile) = fileToString(fileType.filePath(day))
 
 /**
  * This is a utility for making reading large files easier when doing the actual solutions
@@ -34,7 +36,7 @@ fun fileToString(day: Int, fileType: DataFile) = fileToString("src/main/resource
  * @param fileType The [DataFile] corresponding to the file to read
  * @return An iterable sequence of strings
  */
-fun fileToStream(day: Int, fileType: DataFile) = fileToStream("src/main/resources/day_${day}/${fileType.fileName}")
+fun fileToStream(day: Int, fileType: DataFile) = fileToStream(fileType.filePath(day))
 
 /**
  * This is a utility for making reading large files easier when doing the actual solutions
