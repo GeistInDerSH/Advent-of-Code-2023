@@ -2,7 +2,7 @@ package helper
 
 import java.io.File
 
-enum class DataFile(val fileName: String) {
+enum class DataFile(private val fileName: String) {
     Example("example.txt"),
     Example2("example_2.txt"),
     Part1("part_1.txt");
