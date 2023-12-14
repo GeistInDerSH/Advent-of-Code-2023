@@ -23,7 +23,7 @@ data class Grid(val rocks: List<LavaRock>) {
     private val rockCoordinates = rocks.map { it.row to it.col }.toMutableSet()
 
     /**
-     * Walk through each of the [LavaRock] in [rocks] and update their position so they have been moved as far as
+     * Walk through each of the [LavaRock] in [rocks] and update their position, so they have been moved as far as
      * possible in the given [direction]
      *
      * @param rocks The list of [LavaRock] that will be updated
@@ -71,21 +71,13 @@ data class Grid(val rocks: List<LavaRock>) {
     }
 
     /**
-     * Move the loose rocks on the grid in a single direction
-     *
-     * @param direction The [Direction] to move the rocks
-     * @return A new [Grid] with the updated positions
-     */
-    fun tilt(direction: Direction) = Grid(tilt(rocks.map { it.clone() }, direction))
-
-    /**
      * Rotate the Grid a set number of times, and return the updated grid
      *
      * @param count The number of times to rotate the [Grid]
      * @return A new Grid with the updated positions
      */
-    fun rotate(count: Int = 1): Grid {
-        // Internally, we can keep this as a mutable value, so we aren't calling 'tilt' and generating
+    private fun rotate(count: Int = 1): Grid {
+        // Internally, we can keep this as a mutable value, so we aren't generating
         // a ton of new object for no reason
         var newRocks = rocks.map { it.clone() }
 
@@ -99,9 +91,38 @@ data class Grid(val rocks: List<LavaRock>) {
         return Grid(newRocks)
     }
 
-    fun resetPositionMap() {
+    private fun resetPositionMap() {
         rockCoordinates.clear()
         rocks.forEach { rockCoordinates.add(Pair(it.row, it.col)) }
+    }
+
+    fun part1(): Int {
+        val rocks = rocks.map { it.clone() }
+        return tilt(rocks, Direction.NORTH).filter { it.char == 'O' }.sumOf { it.row }
+    }
+
+    fun part2(): Int {
+        val maxCycles = 1_000_000_000
+        var updatedRocks = this
+        resetPositionMap()
+
+        val previous = mutableMapOf(updatedRocks to 0)
+        var loopStart = 0
+        for (j in 0..<maxCycles) {
+            updatedRocks = updatedRocks.rotate()
+            if (updatedRocks in previous) {
+                break
+            }
+            loopStart += 1
+            previous[updatedRocks] = loopStart
+        }
+
+        val loopSize = previous[updatedRocks]!!
+        updatedRocks = updatedRocks.rotate()
+        loopStart += 1
+
+        val remainder = (maxCycles - loopStart - 1) % (loopStart - loopSize)
+        return updatedRocks.rotate(remainder).rocks.filter { it.char == 'O' }.sumOf { it.row }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -135,44 +156,12 @@ fun parseInput(fileType: DataFile): Grid {
     return Grid(rocks)
 }
 
-fun part1(lavaRocks: Grid) = lavaRocks.tilt(Direction.NORTH).rocks.filter { it.char == 'O' }.sumOf { it.row }
-fun part2(lavaRocks: Grid): Int {
-    val maxCycles = 1_000_000_000
-    var updatedRocks = lavaRocks
-    updatedRocks.resetPositionMap()
-
-    val (loopStart, loopSize) = run {
-        val previous = mutableMapOf(updatedRocks to 0)
-
-        var start = 0
-        for (j in 0..<maxCycles) {
-            updatedRocks = updatedRocks.rotate()
-            if (updatedRocks in previous) {
-                break
-            }
-            start += 1
-            previous[updatedRocks] = start
-        }
-
-        val size = previous[updatedRocks]!!
-        updatedRocks = updatedRocks.rotate()
-        start += 1
-
-        start to size
-    }
-
-    val remainder = (maxCycles - loopStart - 1) % (loopStart - loopSize)
-    updatedRocks = updatedRocks.rotate(remainder)
-
-    return updatedRocks.rocks.filter { it.char == 'O' }.sumOf { it.row }
-}
-
 fun day14() {
     val input = parseInput(DataFile.Part1)
 
     report(
         dayNumber = 14,
-        part1 = part1(input),
-        part2 = part2(input)
+        part1 = input.part1(),
+        part2 = input.part2()
     )
 }
