@@ -18,7 +18,7 @@ data class LavaRock(var row: Int, var col: Int, val char: Char) : Cloneable {
 data class Grid(val rocks: List<LavaRock>) {
     private val colMax = rocks.maxOf { it.col }
     private val rowMax = rocks.maxOf { it.row }
-    private val positionMap = rocks.map { it.row to it.col }.toMutableSet()
+    private val rockCoordinates = rocks.map { it.row to it.col }.toMutableSet()
 
     private fun tilt(rocks: List<LavaRock>, direction: Direction): List<LavaRock> {
         val newRocks = when (direction) {
@@ -36,14 +36,14 @@ data class Grid(val rocks: List<LavaRock>) {
             while (true) {
                 val rowUpdate = rock.row + direction.rowInc
                 val colUpdate = rock.col + direction.colInc
-                val pos = rowUpdate to colUpdate
+                val updatedCoord = rowUpdate to colUpdate
                 if (rowUpdate !in 1..rowMax || colUpdate !in 1..colMax) {
                     break
-                } else if (pos in positionMap) {
+                } else if (updatedCoord in rockCoordinates) {
                     break
                 }
-                positionMap.remove(rock.row to rock.col)
-                positionMap.add(pos)
+                rockCoordinates.remove(rock.row to rock.col)
+                rockCoordinates.add(updatedCoord)
                 rock.row = rowUpdate
                 rock.col = colUpdate
             }
@@ -66,12 +66,8 @@ data class Grid(val rocks: List<LavaRock>) {
     }
 
     fun resetPositionMap() {
-        positionMap.clear()
-        rocks.forEach { positionMap.add(Pair(it.row, it.col)) }
-    }
-
-    override fun toString(): String {
-        return rocks.joinToString("") { it.char.toString() }
+        rockCoordinates.clear()
+        rocks.forEach { rockCoordinates.add(Pair(it.row, it.col)) }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -112,25 +108,23 @@ fun part2(lavaRocks: Grid): Int {
     updatedRocks.resetPositionMap()
 
     val (loopStart, loopSize) = run {
-        val previous = mutableMapOf<Grid, Int>()
-        previous[updatedRocks] = 0
+        val previous = mutableMapOf(updatedRocks to 0)
 
-        var i = 0
         var start = 0
         for (j in 0..<maxCycles) {
             updatedRocks = updatedRocks.rotate()
             if (updatedRocks in previous) {
-                start = previous[updatedRocks]!!
-                updatedRocks = updatedRocks.rotate()
-                i += 1
                 break
-            } else {
-                previous[updatedRocks] = i + 1
             }
-            i += 1
+            start += 1
+            previous[updatedRocks] = start
         }
 
-        i to start
+        val size = previous[updatedRocks]!!
+        updatedRocks = updatedRocks.rotate()
+        start += 1
+
+        start to size
     }
 
     val remainder = (maxCycles - loopStart - 1) % (loopStart - loopSize)
