@@ -121,7 +121,9 @@ data class Grid(val rocks: List<LavaRock>) {
         updatedRocks = updatedRocks.rotate()
         loopStart += 1
 
-        val remainder = (maxCycles - loopStart - 1) % (loopStart - loopSize)
+        val mainLoopRemainder = maxCycles - loopStart - 1
+        val period = loopStart - loopSize
+        val remainder = mainLoopRemainder - period
         return updatedRocks.rotate(remainder).rocks.filter { it.char == 'O' }.sumOf { it.row }
     }
 
