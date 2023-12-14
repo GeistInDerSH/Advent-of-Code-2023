@@ -39,7 +39,7 @@ class Day1KtTest {
 
     @Test
     fun part2() {
-        assertEquals(solve(DataFile.Example, nameAndNumeric), 281)
+        assertEquals(solve(DataFile.Example2, nameAndNumeric), 281)
         assertEquals(solve(DataFile.Part1, nameAndNumeric), 55358)
     }
 }
