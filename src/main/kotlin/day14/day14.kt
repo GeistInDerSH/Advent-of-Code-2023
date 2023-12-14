@@ -15,7 +15,7 @@ data class LavaRock(var row: Int, var col: Int, val char: Char) : Cloneable {
     public override fun clone() = LavaRock(row, col, char)
 }
 
-data class Grid(val rocks: List<LavaRock>) {
+class Grid(private val rocks: List<LavaRock>) {
     private val colMax = rocks.maxOf { it.col }
     private val rowMax = rocks.maxOf { it.row }
 
