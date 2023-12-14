@@ -5,8 +5,7 @@ import java.io.File
 enum class DataFile(val fileName: String) {
     Example("example.txt"),
     Example2("example_2.txt"),
-    Part1("part_1.txt"),
-    Part2("part_2.txt");
+    Part1("part_1.txt");
 
     fun filePath(day: Int) = "src/main/resources/day_${day}/${fileName}"
 }
