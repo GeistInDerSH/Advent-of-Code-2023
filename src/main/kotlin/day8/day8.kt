@@ -1,5 +1,6 @@
 package day8
 
+import helper.DataFile
 import helper.fileToStream
 import helper.report
 import kotlin.math.max
@@ -63,7 +64,7 @@ fun part2(walk: Walk) = walk.nodes.keys.filter { it.endsWith('A') }.map { walk.g
     .fold(1L) { acc, l -> lcm(acc, l) }
 
 fun day8() {
-    val input = parseInput("src/main/resources/day_8/part_1.txt")
+    val input = parseInput(DataFile.Part1.filePath(8))
     report(
         dayNumber = 8,
         part1 = part1(input),
