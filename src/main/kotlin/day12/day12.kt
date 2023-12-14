@@ -1,5 +1,6 @@
 package day12
 
+import helper.DataFile
 import helper.fileToStream
 import helper.report
 
@@ -72,8 +73,8 @@ data class SpringRecord(val springs: String, val records: List<Int>) {
     }
 }
 
-fun parseInput(fileName: String, unfoldCount: Int): List<SpringRecord> {
-    return fileToStream(fileName).map { line ->
+fun parseInput(fileType: DataFile, unfoldCount: Int): List<SpringRecord> {
+    return fileToStream(12, fileType).map { line ->
         val (rawSprings, data) = line.split(' ')
         val rawRecords = data.split(',').map { it.toInt() }
 
@@ -98,11 +99,11 @@ fun parseInput(fileName: String, unfoldCount: Int): List<SpringRecord> {
 fun solution(input: List<SpringRecord>): Long =
     input.parallelStream().map { it.permutationCount() }.reduce(0) { acc, p -> acc + p }
 
-fun part1(fileName: String): Long = solution(parseInput(fileName, 0))
-fun part2(fileName: String): Long = solution(parseInput(fileName, 5))
+fun part1(fileType: DataFile): Long = solution(parseInput(fileType, 0))
+fun part2(fileType: DataFile): Long = solution(parseInput(fileType, 5))
 
 fun day12() {
-    val fileName = "src/main/resources/day_12/part_1.txt"
+    val fileName = DataFile.Part1
 
     report(
         dayNumber = 12,

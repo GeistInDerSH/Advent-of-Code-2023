@@ -1,15 +1,5 @@
 package helper
 
-import java.io.File
-
-/**
- * This is a utility for making reading large files easier when doing the actual solutions
- *
- * @param fileName The file to read
- * @return An iterable sequence of strings
- */
-fun fileToStream(fileName: String): Sequence<String> = File(fileName).inputStream().bufferedReader().lineSequence()
-
 /**
  * Standardized reporting function to avoid code duplication
  *

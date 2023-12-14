@@ -1,13 +1,14 @@
 package day2
 
+import helper.DataFile
 import helper.fileToStream
 import helper.report
 
 data class Pull(val red: Int, val blue: Int, val green: Int)
 data class Game(val id: Int, val pulls: List<Pull>)
 
-fun parseInput(fileName: String): List<Game> {
-    return fileToStream(fileName).mapIndexed { index, s ->
+fun parseInput(fileType: DataFile): List<Game> {
+    return fileToStream(2, fileType).mapIndexed { index, s ->
         val pulls = s.substringAfter(':').split(";").map { sections ->
             // Map the name to the count, so we can do a lookup later
             val cubes = sections.split(",").map { it.trim() }.map {
@@ -64,7 +65,7 @@ fun part2(games: List<Game>): Int {
 }
 
 fun day2() {
-    val input = parseInput("src/main/resources/day_2/part_1.txt")
+    val input = parseInput(DataFile.Part1)
     val cubeCounts = Pull(red = 12, blue = 14, green = 13)
     report(
         dayNumber = 2,

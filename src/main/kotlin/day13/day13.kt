@@ -1,5 +1,7 @@
 package day13
 
+import helper.DataFile
+import helper.fileToString
 import helper.report
 import java.io.File
 
@@ -68,11 +70,12 @@ data class Image(val image: List<String>) {
 }
 
 fun parseInput(fileName: String) = File(fileName).readText().split("\n\n").map { Image(it.split('\n')) }
+fun parseInput(type: DataFile) = fileToString(13, type).split("\n\n").map { Image(it.split('\n')) }
 fun part1(images: List<Image>) = images.sumOf { it.withoutSmudges() }
 fun part2(images: List<Image>) = images.sumOf { it.withSmudges() }
 
 fun day13() {
-    val input = parseInput("src/main/resources/day_13/part_1.txt")
+    val input = parseInput(DataFile.Part1)
 
     report(
         dayNumber = 13,

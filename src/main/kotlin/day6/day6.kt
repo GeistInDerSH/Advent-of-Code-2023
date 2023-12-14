@@ -1,10 +1,11 @@
 package day6
 
+import helper.DataFile
 import helper.fileToStream
 import helper.report
 
-fun parseInput(fileName: String): Map<Long, Long> {
-    val lines = fileToStream(fileName).toList()
+fun parseInput(fileType: DataFile): Map<Long, Long> {
+    val lines = fileToStream(6, fileType).toList()
     val times = lines[0].substringAfter(':').trim().split(' ').filter { it.isNotBlank() }.map { it.toLong() }
     val distance = lines[1].substringAfter(':').trim().split(' ').filter { it.isNotBlank() }.map { it.toLong() }
     return times.zip(distance).associate { it.first to it.second }
@@ -35,7 +36,7 @@ fun part2(map: Map<Long, Long>): Long {
 }
 
 fun day6() {
-    val input = parseInput("src/main/resources/day_6/part_1.txt")
+    val input = parseInput(DataFile.Part1)
     report(
         dayNumber = 6,
         part1 = part1(input),

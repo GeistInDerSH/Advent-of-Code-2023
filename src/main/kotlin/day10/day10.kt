@@ -1,5 +1,6 @@
 package day10
 
+import helper.DataFile
 import helper.fileToStream
 import helper.report
 
@@ -119,8 +120,8 @@ data class Tile(val symbol: Char, val row: Int, val col: Int) {
     }
 }
 
-fun parseInput(fileName: String): Grid {
-    val tiles = fileToStream(fileName).mapIndexed { row, line ->
+fun parseInput(fileType: DataFile): Grid {
+    val tiles = fileToStream(10, fileType).mapIndexed { row, line ->
         line.mapIndexed { col, it -> Tile(it, row, col) }
     }.toList()
     return Grid(tiles)
@@ -139,7 +140,7 @@ fun part2(tiles: Grid): Int {
 }
 
 fun day10() {
-    val input = parseInput("src/main/resources/day_10/part_1.txt")
+    val input = parseInput(DataFile.Part1)
     report(
         dayNumber = 10,
         part1 = part1(input),

@@ -1,5 +1,6 @@
 package day7
 
+import helper.DataFile
 import helper.fileToStream
 import helper.report
 
@@ -72,20 +73,20 @@ data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean
     }
 }
 
-fun parseInput(fileName: String, includeJokers: Boolean): List<Hand> {
-    return fileToStream(fileName).map {
+fun parseInput(fileType: DataFile, includeJokers: Boolean): List<Hand> {
+    return fileToStream(7, fileType).map {
         val (cards, bid) = it.split(' ')
         Hand(cards.toList(), bid.toLong(), includeJokers)
     }.toList().sortedWith(Hand)
 }
 
-fun part1(fileName: String) = part1(parseInput(fileName, false))
+fun part1(fileType: DataFile) = part1(parseInput(fileType, false))
 fun part1(hands: List<Hand>) = hands.mapIndexed { i, hand -> (i + 1) * hand.bid }.sum()
 
-fun part2(fileName: String) = part1(parseInput(fileName, true))
+fun part2(fileType: DataFile) = part1(parseInput(fileType, true))
 
 fun day7() {
-    val fileName = "src/main/resources/day_7/part_1.txt"
+    val fileName = DataFile.Part1
     report(
         dayNumber = 7,
         part1 = part1(fileName),

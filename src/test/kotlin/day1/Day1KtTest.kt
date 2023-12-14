@@ -1,5 +1,6 @@
 package day1
 
+import helper.DataFile
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -12,8 +13,8 @@ class Day1KtTest {
 
     @Test
     fun part1() {
-        assertEquals(solve("src/main/resources/day_1/example.txt", numericOnly), 142)
-        assertEquals(solve("src/main/resources/day_1/part_1.txt", numericOnly), 56042)
+        assertEquals(solve(DataFile.Example, numericOnly), 142)
+        assertEquals(solve(DataFile.Part1, numericOnly), 56042)
     }
 
     @Test
@@ -38,7 +39,7 @@ class Day1KtTest {
 
     @Test
     fun part2() {
-        assertEquals(solve("src/main/resources/day_1/example_2.txt", nameAndNumeric), 281)
-        assertEquals(solve("src/main/resources/day_1/part_1.txt", nameAndNumeric), 55358)
+        assertEquals(solve(DataFile.Example, nameAndNumeric), 281)
+        assertEquals(solve(DataFile.Part1, nameAndNumeric), 55358)
     }
 }

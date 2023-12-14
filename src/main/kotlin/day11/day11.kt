@@ -1,5 +1,6 @@
 package day11
 
+import helper.DataFile
 import helper.fileToStream
 import helper.report
 
@@ -33,8 +34,8 @@ data class StarChart(val galaxies: List<Galaxy>, val emptyRows: Set<Int>, val em
 }
 
 
-fun parseInput(fileName: String): StarChart {
-    val raw = fileToStream(fileName).map { it.toList() }.toList()
+fun parseInput(fileType: DataFile): StarChart {
+    val raw = fileToStream(11, fileType).map { it.toList() }.toList()
 
     // Get the indexes of the empty rows and columns, so we can statically check this later.
     // Attempting to expand the raw value into the correct size causes OOM errors (rightfully so...)
@@ -59,7 +60,7 @@ fun part1(chart: StarChart) = chart.sumDistanceWithEmptySpace(2)
 fun part2(chart: StarChart) = chart.sumDistanceWithEmptySpace(1000000)
 
 fun day11() {
-    val input = parseInput("src/main/resources/day_11/part_1.txt")
+    val input = parseInput(DataFile.Part1)
     report(
         dayNumber = 11,
         part1 = part1(input), // 9543156

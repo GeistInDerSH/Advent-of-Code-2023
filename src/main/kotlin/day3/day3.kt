@@ -1,5 +1,6 @@
 package day3
 
+import helper.DataFile
 import helper.fileToStream
 import helper.report
 import kotlin.math.max
@@ -61,8 +62,8 @@ fun hasOverlap(srcRow: Int, destRow: Int, srcColStart: Int, srcColEnd: Int, dest
     return srcRow in (destRow - 1..destRow + 1) && max(srcColStart, destCol - 1) <= min(srcColEnd, destCol + 1)
 }
 
-fun parseInput(fileName: String): Pair<List<Symbol>, List<Number>> {
-    val lines = fileToStream(fileName).toList()
+fun parseInput(fileType: DataFile): Pair<List<Symbol>, List<Number>> {
+    val lines = fileToStream(3, fileType).toList()
 
     // Extract only the symbols; these are any special characters that are non-`.`
     val symbols = lines.mapIndexed { row, line ->
@@ -134,7 +135,7 @@ fun part2(symbols: List<Symbol>, numbers: List<Number>): Int {
 }
 
 fun day3() {
-    val (symbols, numbers) = parseInput("src/main/resources/day_3/part_1.txt")
+    val (symbols, numbers) = parseInput(DataFile.Part1)
     report(
         dayNumber = 3,
         part1 = part1(symbols, numbers),

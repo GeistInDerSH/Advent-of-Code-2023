@@ -1,11 +1,12 @@
 package day4
 
+import helper.DataFile
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class Day4KtTest {
-    private val exampleInput = parseInput("src/main/resources/day_4/example.txt")
-    private val actual = parseInput("src/main/resources/day_4/part_1.txt")
+    private val exampleInput = parseInput(DataFile.Example)
+    private val actual = parseInput(DataFile.Part1)
 
     @Test
     fun part1() {

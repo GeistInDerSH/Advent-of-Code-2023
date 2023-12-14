@@ -1,5 +1,6 @@
 package day1
 
+import helper.DataFile
 import helper.fileToStream
 import helper.report
 
@@ -29,12 +30,12 @@ fun wordStringToInt(s: String): Int {
  * Read through each line of the file, finding the first and last instance that is in
  * the [validValues] param, and return the sum of each line.
  *
- * @param fileName The file to read the input from
+ * @param fileType The file to read the input from
  * @param validValues A list of valid matches for the numbers
  * @return The sum of the found values
  */
-fun solve(fileName: String, validValues: List<String>): Int {
-    return fileToStream(fileName).sumOf {
+fun solve(fileType: DataFile, validValues: List<String>): Int {
+    return fileToStream(1, fileType).sumOf {
         val first = wordStringToInt(it.findAnyOf(validValues)?.second ?: "0")
         val last = wordStringToInt(it.findLastAnyOf(validValues)?.second ?: "0")
         (first * 10) + last
@@ -51,7 +52,7 @@ fun day1() {
     )
     report(
         dayNumber = 1,
-        part1 = solve("src/main/resources/day_1/part_1.txt", validValuesNum),
-        part2 = solve("src/main/resources/day_1/part_1.txt", validValuesNumAndStr)
+        part1 = solve(DataFile.Part1, validValuesNum),
+        part2 = solve(DataFile.Part1, validValuesNumAndStr)
     )
 }

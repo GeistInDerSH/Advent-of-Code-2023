@@ -1,5 +1,6 @@
 package day9
 
+import helper.DataFile
 import helper.fileToStream
 import helper.report
 
@@ -70,8 +71,8 @@ data class Sensor(val history: MutableList<Int>) {
     }
 }
 
-fun parseInput(fileName: String): List<Sensor> {
-    return fileToStream(fileName).map { line ->
+fun parseInput(fileType: DataFile): List<Sensor> {
+    return fileToStream(9, fileType).map { line ->
         Sensor(line.split(' ').map { it.toInt() }.toMutableList())
     }.toList()
 }
@@ -81,7 +82,7 @@ fun part1(sequences: List<Sensor>) = sequences.sumOf { it.next() }
 fun part2(sequences: List<Sensor>) = sequences.sumOf { it.previous() }
 
 fun day9() {
-    val input = parseInput("src/main/resources/day_9/part_1.txt")
+    val input = parseInput(DataFile.Part1)
     report(
         dayNumber = 9,
         part1 = part1(input),

@@ -1,6 +1,7 @@
 package day5
 
-import helper.fileToStream
+import helper.DataFile
+import helper.fileToString
 import helper.report
 
 data class Almanac(val seeds: List<Long>, val mappings: List<List<CropMapping>>) {
@@ -37,8 +38,8 @@ data class Almanac(val seeds: List<Long>, val mappings: List<List<CropMapping>>)
  */
 data class CropMapping(val sourceStart: Long, val sourceEnd: Long, val offset: Long)
 
-fun parseInput(fileName: String): Almanac {
-    val lines = fileToStream(fileName).joinToString(separator = "\n") { it }.split("\n\n")
+fun parseInput(fileType: DataFile): Almanac {
+    val lines = fileToString(5, fileType).split("\n\n")
     val seeds = lines.first().substringAfter(':').trim().split(' ').map { it.toLong() }
 
     val mappings = lines.drop(1).map { line ->
@@ -83,7 +84,7 @@ fun day5(skip: Boolean = true) {
     if (skip) {
         return
     }
-    val input = parseInput("src/main/resources/day_5/part_1.txt")
+    val input = parseInput(DataFile.Part1)
     report(
         dayNumber = 5,
         part1 = part1(input),

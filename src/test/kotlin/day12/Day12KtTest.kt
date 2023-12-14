@@ -1,11 +1,12 @@
 package day12
 
+import helper.DataFile
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class Day12KtTest {
-    private val inputFileName = "src/main/resources/day_12/part_1.txt"
-    private val exampleFileName = "src/main/resources/day_12/example.txt"
+    private val inputFileName = DataFile.Part1
+    private val exampleFileName = DataFile.Example
 
     @Test
     fun part1() {
