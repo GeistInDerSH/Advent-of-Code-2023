@@ -28,6 +28,12 @@ data class HASH(val string: String) {
 
     override fun hashCode() = hashString(string)
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return string == (other as HASH).string
+    }
+
     /**
      * @return The string label, i.e. anything before the '=' or '-'
      */
