@@ -59,10 +59,8 @@ fun part2(hashes: List<HASH>): Int {
     for (hash in hashes) {
         val box = hash.box()
         if (hash.focus() == null) { // There isn't a focus, so it means the lens should be removed (if the box exists)
-            val index = boxes[box]?.indexOfFirst { it.label() == hash.label() } ?: continue
-            if (index >= 0) {
-                boxes[box]!!.removeAt(index)
-            }
+            val index = boxes[box]?.firstOrNull { it.label() == hash.label() } ?: continue
+            boxes[box]!!.remove(index)
         } else if (box !in boxes) { // Box does not yet exist, so add it and move on
             boxes[box] = mutableListOf(hash)
         } else { // Possibly locate the value and update it or add it if the label DNE
