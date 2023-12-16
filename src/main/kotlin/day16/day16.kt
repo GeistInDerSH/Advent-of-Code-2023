@@ -25,85 +25,82 @@ data class MirrorGrid(val grid: List<List<Char>>) {
         }
     }
 
-    private fun solution(row: Int, col: Int, direction: Direction) {
-        var currentRow = row
-        var currentCol = col
-        var direct = direction
+    private fun solution(row: Int, col: Int, direction: Direction): Int {
+        val visited = mutableSetOf<Energized>()
 
-        energized.add(Energized(row, col, direction))
+        fun solutionInternal(row: Int, col: Int, direction: Direction) {
+            var currentRow = row
+            var currentCol = col
+            var direct = direction
 
-        while (currentRow + direct.rowInc in 0..<maxRow && currentCol + direct.colInc in 0..<maxCol) {
-            currentRow += direct.rowInc
-            currentCol += direct.colInc
-            val char = grid[currentRow][currentCol]
-            energized.add(Energized(currentRow, currentCol, direct))
+            visited.add(Energized(row, col, direction))
 
-            when {
-                char == '|' && direct in setOf(Direction.East, Direction.West) -> {
-                    if (Energized(currentRow, currentCol, Direction.North) !in energized) {
-                        solution(currentRow, currentCol, Direction.North)
+            while (currentRow + direct.rowInc in 0..<maxRow && currentCol + direct.colInc in 0..<maxCol) {
+                currentRow += direct.rowInc
+                currentCol += direct.colInc
+                val char = grid[currentRow][currentCol]
+                visited.add(Energized(currentRow, currentCol, direct))
+
+                when {
+                    char == '|' && direct in setOf(Direction.East, Direction.West) -> {
+                        if (Energized(currentRow, currentCol, Direction.North) !in visited) {
+                            solutionInternal(currentRow, currentCol, Direction.North)
+                        }
+                        if (Energized(currentRow, currentCol, Direction.South) !in visited) {
+                            solutionInternal(currentRow, currentCol, Direction.South)
+                        }
+                        break
                     }
-                    if (Energized(currentRow, currentCol, Direction.South) !in energized) {
-                        solution(currentRow, currentCol, Direction.South)
+
+                    char == '-' && direct in setOf(Direction.North, Direction.South) -> {
+                        if (Energized(currentRow, currentCol, Direction.East) !in visited) {
+                            solutionInternal(currentRow, currentCol, Direction.East)
+                        }
+                        if (Energized(currentRow, currentCol, Direction.West) !in visited) {
+                            solutionInternal(currentRow, currentCol, Direction.West)
+                        }
+                        break
                     }
-                    break
+
+                    char == '\\' -> {
+                        direct = when (direct) {
+                            Direction.East -> Direction.South
+                            Direction.South -> Direction.East
+                            Direction.West -> Direction.North
+                            Direction.North -> Direction.West
+                        }
+                    }
+
+                    char == '/' -> {
+                        direct = when (direct) {
+                            Direction.East -> Direction.North
+                            Direction.North -> Direction.East
+                            Direction.West -> Direction.South
+                            Direction.South -> Direction.West
+                        }
+                    }
+
+                    else -> continue
                 }
-
-                char == '-' && direct in setOf(Direction.North, Direction.South) -> {
-                    if (Energized(currentRow, currentCol, Direction.East) !in energized) {
-                        solution(currentRow, currentCol, Direction.East)
-                    }
-                    if (Energized(currentRow, currentCol, Direction.West) !in energized) {
-                        solution(currentRow, currentCol, Direction.West)
-                    }
-                    break
-                }
-
-                char == '\\' -> {
-                    direct = when (direct) {
-                        Direction.East -> Direction.South
-                        Direction.South -> Direction.East
-                        Direction.West -> Direction.North
-                        Direction.North -> Direction.West
-                    }
-                }
-
-                char == '/' -> {
-                    direct = when (direct) {
-                        Direction.East -> Direction.North
-                        Direction.North -> Direction.East
-                        Direction.West -> Direction.South
-                        Direction.South -> Direction.West
-                    }
-                }
-
-                else -> continue
             }
         }
+        solutionInternal(row, col, direction)
+        return visited.map { it.row to it.col }.toSet().count()
     }
 
-    private fun solutionCountAndClear(row: Int, col: Int, direction: Direction): Int {
-        solution(row, col, direction)
-        val count = energizedCount()
-        energized.clear()
-        return count
-    }
-
-    private fun energizedCount() = energized.map { it.row to it.col }.toSet().count()
-
-    fun part1() = solutionCountAndClear(0, 0, Direction.East)
+    fun part1() = solution(0, 0, Direction.East)
 
     fun part2(): Int {
-        val rowMax = grid.indices.maxOf { row ->
-            val eastCount = solutionCountAndClear(row, 0, Direction.East)
-            val westCount = solutionCountAndClear(row, grid[0].size, Direction.West)
+        val rowMax = grid.indices.map { it }.parallelStream().map { row ->
+            val eastCount = solution(row, 0, Direction.East)
+            val westCount = solution(row, grid[0].size, Direction.West)
             eastCount.coerceAtLeast(westCount)
-        }
-        val colMax = grid[0].indices.maxOf { col ->
-            val southCount = solutionCountAndClear(0, col, Direction.South)
-            val northCount = solutionCountAndClear(grid.size, col, Direction.North)
+        }.toList().max()
+        val colMax = grid[0].indices.map { it }.parallelStream().map { col ->
+            val southCount = solution(0, col, Direction.South)
+            val northCount = solution(grid.size, col, Direction.North)
             southCount.coerceAtLeast(northCount)
-        }
+        }.toList().max()
 
         return rowMax.coerceAtLeast(colMax)
     }
