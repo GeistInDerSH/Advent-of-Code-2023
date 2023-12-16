@@ -16,7 +16,6 @@ data class Energized(val row: Int, val col: Int, val direction: Direction)
 data class MirrorGrid(val grid: List<List<Char>>) {
     private val maxRow = grid.size
     private val maxCol = grid[0].size
-    private val energized = mutableSetOf<Energized>()
 
     companion object {
         fun parseInput(fileType: DataFile): MirrorGrid {
@@ -27,38 +26,35 @@ data class MirrorGrid(val grid: List<List<Char>>) {
 
     private fun solution(row: Int, col: Int, direction: Direction): Int {
         val visited = mutableSetOf<Energized>()
+        val eastWest = setOf(Direction.East, Direction.West)
+        val northSouth = setOf(Direction.North, Direction.South)
 
         fun solutionInternal(row: Int, col: Int, direction: Direction) {
             var currentRow = row
             var currentCol = col
             var direct = direction
 
-            visited.add(Energized(row, col, direction))
+            val energized = Energized(row, col, direction)
+            if (!visited.add(energized)) {
+                return
+            }
 
             while (currentRow + direct.rowInc in 0..<maxRow && currentCol + direct.colInc in 0..<maxCol) {
                 currentRow += direct.rowInc
                 currentCol += direct.colInc
-                val char = grid[currentRow][currentCol]
                 visited.add(Energized(currentRow, currentCol, direct))
+                val char = grid[currentRow][currentCol]
 
                 when {
-                    char == '|' && direct in setOf(Direction.East, Direction.West) -> {
-                        if (Energized(currentRow, currentCol, Direction.North) !in visited) {
-                            solutionInternal(currentRow, currentCol, Direction.North)
-                        }
-                        if (Energized(currentRow, currentCol, Direction.South) !in visited) {
-                            solutionInternal(currentRow, currentCol, Direction.South)
-                        }
+                    char == '|' && direct in eastWest -> {
+                        solutionInternal(currentRow, currentCol, Direction.North)
+                        solutionInternal(currentRow, currentCol, Direction.South)
                         break
                     }
 
-                    char == '-' && direct in setOf(Direction.North, Direction.South) -> {
-                        if (Energized(currentRow, currentCol, Direction.East) !in visited) {
-                            solutionInternal(currentRow, currentCol, Direction.East)
-                        }
-                        if (Energized(currentRow, currentCol, Direction.West) !in visited) {
-                            solutionInternal(currentRow, currentCol, Direction.West)
-                        }
+                    char == '-' && direct in northSouth -> {
+                        solutionInternal(currentRow, currentCol, Direction.East)
+                        solutionInternal(currentRow, currentCol, Direction.West)
                         break
                     }
 
@@ -91,18 +87,13 @@ data class MirrorGrid(val grid: List<List<Char>>) {
     fun part1() = solution(0, 0, Direction.East)
 
     fun part2(): Int {
-        val rowMax = grid.indices.map { it }.parallelStream().map { row ->
-            val eastCount = solution(row, 0, Direction.East)
-            val westCount = solution(row, grid[0].size, Direction.West)
-            eastCount.coerceAtLeast(westCount)
-        }.toList().max()
-        val colMax = grid[0].indices.map { it }.parallelStream().map { col ->
-            val southCount = solution(0, col, Direction.South)
-            val northCount = solution(grid.size, col, Direction.North)
-            southCount.coerceAtLeast(northCount)
-        }.toList().max()
+        val toRun = grid.indices.map { Energized(it, 0, Direction.East) } +
+                grid.indices.map { Energized(it, grid[0].size, Direction.West) } +
+                grid[0].indices.map { Energized(0, it, Direction.South) } +
+                grid[0].indices.map { Energized(grid.size, it, Direction.North) }
 
-        return rowMax.coerceAtLeast(colMax)
+        return toRun.parallelStream().map { solution(it.row, it.col, it.direction) }
+            .reduce(0) { max, energized -> max.coerceAtLeast(energized) }
     }
 }
 
