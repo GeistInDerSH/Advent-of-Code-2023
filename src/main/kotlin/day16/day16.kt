@@ -16,6 +16,8 @@ data class Energized(val row: Int, val col: Int, val direction: Direction)
 data class MirrorGrid(val grid: List<List<Char>>) {
     private val maxRow = grid.size
     private val maxCol = grid[0].size
+    private val eastWest = setOf(Direction.East, Direction.West)
+    private val northSouth = setOf(Direction.North, Direction.South)
 
     companion object {
         fun parseInput(fileType: DataFile): MirrorGrid {
@@ -24,20 +26,15 @@ data class MirrorGrid(val grid: List<List<Char>>) {
         }
     }
 
-    private fun solution(row: Int, col: Int, direction: Direction): Int {
+    private fun solution(start: Energized): Int {
         val visited = mutableSetOf<Energized>()
-        val eastWest = setOf(Direction.East, Direction.West)
-        val northSouth = setOf(Direction.North, Direction.South)
 
-        fun solutionInternal(row: Int, col: Int, direction: Direction) {
-            var currentRow = row
-            var currentCol = col
-            var direct = direction
-
-            val energized = Energized(row, col, direction)
-            if (!visited.add(energized)) {
+        fun solutionInternal(start: Energized) {
+            if (!visited.add(start)) {
                 return
             }
+
+            var (currentRow, currentCol, direct) = start
 
             while (currentRow + direct.rowInc in 0..<maxRow && currentCol + direct.colInc in 0..<maxCol) {
                 currentRow += direct.rowInc
@@ -47,14 +44,14 @@ data class MirrorGrid(val grid: List<List<Char>>) {
 
                 when {
                     char == '|' && direct in eastWest -> {
-                        solutionInternal(currentRow, currentCol, Direction.North)
-                        solutionInternal(currentRow, currentCol, Direction.South)
+                        solutionInternal(Energized(currentRow, currentCol, Direction.North))
+                        solutionInternal(Energized(currentRow, currentCol, Direction.South))
                         break
                     }
 
                     char == '-' && direct in northSouth -> {
-                        solutionInternal(currentRow, currentCol, Direction.East)
-                        solutionInternal(currentRow, currentCol, Direction.West)
+                        solutionInternal(Energized(currentRow, currentCol, Direction.East))
+                        solutionInternal(Energized(currentRow, currentCol, Direction.West))
                         break
                     }
 
@@ -80,11 +77,11 @@ data class MirrorGrid(val grid: List<List<Char>>) {
                 }
             }
         }
-        solutionInternal(row, col, direction)
+        solutionInternal(start)
         return visited.map { it.row to it.col }.toSet().count()
     }
 
-    fun part1() = solution(0, 0, Direction.East)
+    fun part1() = solution(Energized(0, 0, Direction.East))
 
     fun part2(): Int {
         val toRun = grid.indices.map { Energized(it, 0, Direction.East) } +
@@ -92,8 +89,7 @@ data class MirrorGrid(val grid: List<List<Char>>) {
                 grid[0].indices.map { Energized(0, it, Direction.South) } +
                 grid[0].indices.map { Energized(grid.size, it, Direction.North) }
 
-        return toRun.parallelStream().map { solution(it.row, it.col, it.direction) }
-            .reduce(0) { max, energized -> max.coerceAtLeast(energized) }
+        return toRun.parallelStream().map { solution(it) }.reduce(0) { max, energized -> max.coerceAtLeast(energized) }
     }
 }
 
