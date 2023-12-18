@@ -5,6 +5,9 @@ import helper.fileToStream
 import helper.report
 import java.util.*
 
+/**
+ * What plane the given vertex is on
+ */
 enum class Plane {
     Vertical,
     Horizontal,
@@ -14,7 +17,7 @@ enum class Plane {
 data class Vertex(val position: Pair<Int, Int>, var direction: Plane, val heatLoss: Int) :
     Comparable<Vertex> {
     var calculatedHeatLoss = 0
-    var total = 1 shl 30
+    var total = 1 shl 30 // Do not use Int.MAX_VALUE as it may overflow
     override fun compareTo(other: Vertex): Int {
         return total - other.total
     }
@@ -38,6 +41,12 @@ data class Graph(val nodes: List<List<Int>>) {
 
     private fun end() = vertices.last()
 
+    /**
+     * @param x The x position of the value
+     * @param y The y position of the value
+     * @param plane Which plane the value should be located on
+     * @return A vertex, or null if the value is out of bounds
+     */
     private fun getVertexAt(x: Int, y: Int, plane: Plane): Vertex? {
         return if (x < 0 || y < 0 || y >= nodes.size || x >= nodes[0].size) {
             null
@@ -46,6 +55,14 @@ data class Graph(val nodes: List<List<Int>>) {
         }
     }
 
+    /**
+     * Get vertices along the horizontal axis
+     *
+     * @param v The starting vertex to get edges of
+     * @param minDistance The minimum distance we can step
+     * @param maxDistance The maximum distance in a line that can be traveled
+     * @return Vertices along the axis of [v]
+     */
     private fun horizontalEdges(v: Vertex, minDistance: Int, maxDistance: Int): List<Vertex> {
         var heatLoss = 0
         val (x, y) = v.position
@@ -75,6 +92,14 @@ data class Graph(val nodes: List<List<Int>>) {
         return up + down
     }
 
+    /**
+     * Get vertices along the vertical axis
+     *
+     * @param v The starting vertex to get edges of
+     * @param minDistance The minimum distance we can step
+     * @param maxDistance The maximum distance in a line that can be traveled
+     * @return Vertices along the vertical axis of [v]
+     */
     private fun verticalEdges(v: Vertex, minDistance: Int, maxDistance: Int): List<Vertex> {
         var heatLoss = 0
         val (x, y) = v.position
@@ -104,6 +129,14 @@ data class Graph(val nodes: List<List<Int>>) {
         return up + down
     }
 
+    /**
+     * Get the edges extending out from the given [Vertex] [v]
+     *
+     * @param v The starting vertex to get edges of
+     * @param minDistance The minimum distance we can step
+     * @param maxDistance The maximum distance in a line that can be traveled
+     * @return Vertices along the axis of [v]
+     */
     private fun edges(v: Vertex, minDistance: Int, maxDistance: Int): List<Vertex> {
         return when (v.direction) {
             Plane.Vertical -> verticalEdges(v, minDistance, maxDistance)
@@ -114,10 +147,19 @@ data class Graph(val nodes: List<List<Int>>) {
         }
     }
 
+    /**
+     * @param minDistance The minimum distance we can step
+     * @param maxDistance The maximum distance in a line that can be traveled
+     * @return The total heat loss along the shortest path
+     */
     fun solution(minDistance: Int, maxDistance: Int): Int {
+        // make a priority queue, sorting by the vertex total heat loss with the lowest being the first
         val queue = PriorityQueue(vertices)
         var current: Vertex
         val endPosition = end().position
+
+        // Walk the queue, removing the head and determine any viable paths along the edges from the current node,
+        // then we will continue until we've reached the ending node
         while (true) {
             current = queue.remove()
             if (current.position == endPosition) {
@@ -125,6 +167,8 @@ data class Graph(val nodes: List<List<Int>>) {
             }
 
             for (edge in edges(current, minDistance, maxDistance)) {
+                // Ensure we are loosing as little heat as possible, by only adding the edge back to the queue if
+                // the amount of heat we would lose from the current position is less than what would be at the edge
                 if (current.total + edge.calculatedHeatLoss < edge.total) {
                     edge.total = current.total + edge.calculatedHeatLoss
                     queue.add(edge)
