@@ -14,13 +14,11 @@ enum class Plane {
     Start,
 }
 
-data class Vertex(val position: Pair<Int, Int>, var direction: Plane, val heatLoss: Int) :
-    Comparable<Vertex> {
+data class Vertex(val position: Pair<Int, Int>, var plane: Plane, val heatLoss: Int) : Comparable<Vertex> {
     var calculatedHeatLoss = 0
-    var total = 1 shl 30 // Do not use Int.MAX_VALUE as it may overflow
-    override fun compareTo(other: Vertex): Int {
-        return total - other.total
-    }
+    var totalHeatLoss = 1 shl 30 // Do not use Int.MAX_VALUE as it may overflow
+
+    override fun compareTo(other: Vertex) = totalHeatLoss - other.totalHeatLoss
 }
 
 data class Graph(val nodes: List<List<Int>>) {
@@ -33,8 +31,8 @@ data class Graph(val nodes: List<List<Int>>) {
             }
         }
 
-        vertices[0].total = 0
-        vertices[0].direction = Plane.Start
+        vertices[0].totalHeatLoss = 0
+        vertices[0].plane = Plane.Start
 
         vertices
     }
@@ -66,7 +64,7 @@ data class Graph(val nodes: List<List<Int>>) {
     private fun horizontalEdges(v: Vertex, minDistance: Int, maxDistance: Int): List<Vertex> {
         var heatLoss = 0
         val (x, y) = v.position
-        val up = (1..maxDistance).mapNotNull { distance ->
+        val right = (1..maxDistance).mapNotNull { distance ->
             val vertex = getVertexAt(x, y + distance, Plane.Vertical) ?: return@mapNotNull null
             heatLoss += vertex.heatLoss
             if (distance >= minDistance) {
@@ -78,7 +76,7 @@ data class Graph(val nodes: List<List<Int>>) {
         }
 
         heatLoss = 0
-        val down = (1..maxDistance).mapNotNull { distance ->
+        val left = (1..maxDistance).mapNotNull { distance ->
             val vertex = getVertexAt(x, y - distance, Plane.Vertical) ?: return@mapNotNull null
             heatLoss += vertex.heatLoss
             if (distance >= minDistance) {
@@ -89,7 +87,7 @@ data class Graph(val nodes: List<List<Int>>) {
             }
         }
 
-        return up + down
+        return right + left
     }
 
     /**
@@ -138,7 +136,7 @@ data class Graph(val nodes: List<List<Int>>) {
      * @return Vertices along the axis of [v]
      */
     private fun edges(v: Vertex, minDistance: Int, maxDistance: Int): List<Vertex> {
-        return when (v.direction) {
+        return when (v.plane) {
             Plane.Vertical -> verticalEdges(v, minDistance, maxDistance)
             Plane.Horizontal -> horizontalEdges(v, minDistance, maxDistance)
             Plane.Start -> {
@@ -169,14 +167,14 @@ data class Graph(val nodes: List<List<Int>>) {
             for (edge in edges(current, minDistance, maxDistance)) {
                 // Ensure we are loosing as little heat as possible, by only adding the edge back to the queue if
                 // the amount of heat we would lose from the current position is less than what would be at the edge
-                if (current.total + edge.calculatedHeatLoss < edge.total) {
-                    edge.total = current.total + edge.calculatedHeatLoss
+                if (current.totalHeatLoss + edge.calculatedHeatLoss < edge.totalHeatLoss) {
+                    edge.totalHeatLoss = current.totalHeatLoss + edge.calculatedHeatLoss
                     queue.add(edge)
                 }
             }
         }
 
-        return current.total
+        return current.totalHeatLoss
     }
 
     companion object {
