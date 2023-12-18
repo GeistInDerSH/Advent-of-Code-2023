@@ -181,16 +181,16 @@ data class Graph(val nodes: List<List<Int>>) {
         fun parseInput(fileType: DataFile): Graph {
             return Graph(fileToStream(17, fileType).map { line -> line.map { it.digitToInt() } }.toList())
         }
-
-        fun part1(fileType: DataFile) = parseInput(fileType).solution(1, 3)
-        fun part2(fileType: DataFile) = parseInput(fileType).solution(4, 10)
     }
 }
+
+fun part1(fileType: DataFile) = Graph.parseInput(fileType).solution(1, 3)
+fun part2(fileType: DataFile) = Graph.parseInput(fileType).solution(4, 10)
 
 fun day17() {
     report(
         dayNumber = 17,
-        part1 = Graph.part1(DataFile.Part1),
-        part2 = Graph.part2(DataFile.Part1),
+        part1 = part1(DataFile.Part1),
+        part2 = part2(DataFile.Part1),
     )
 }
