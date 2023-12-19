@@ -9,6 +9,8 @@ enum class Direction(val rowInc: Int, val colInc: Int) {
     fun pair() = rowInc to colInc
 
     companion object {
+        fun tryFromChar(c: Char) = tryFromString(c.toString())
+
         fun tryFromString(s: String): Direction? {
             return when (s) {
                 "E", "R", "0" -> East

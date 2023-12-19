@@ -32,7 +32,7 @@ fun part1(dataFile: DataFile): Long {
     val plan = fileToStream(18, dataFile).map { line ->
         val (dir, dis, _) = line.split(' ')
         val direction = Direction.tryFromString(dir) ?: throw Exception("Couldn't convert $dir to Direction")
-        val distance = dis.toIntOrNull() ?: throw Exception("Failed to convert $dis to int")
+        val distance = dis.toInt()
         DigLocation(direction, distance)
     }.toList()
     return DigPlan(plan).areaInsideLocations()
@@ -43,8 +43,8 @@ fun part2(dataFile: DataFile): Long {
         val (_, _, hex) = line.split(' ')
         val hexString = hex.substringAfter('#').substringBefore(')')
         // Get the dig Direction as Char
-        val last = hexString.last().toString()
-        val direction = Direction.tryFromString(last) ?: throw Exception("Failed to convert $last to Direction")
+        val last = hexString.last()
+        val direction = Direction.tryFromChar(last) ?: throw Exception("Failed to convert $last to Direction")
 
         // Get the distance of the edge
         val distance = hexString.substring(0, hexString.length - 1).toInt(16)
