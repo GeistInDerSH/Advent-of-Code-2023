@@ -29,66 +29,20 @@ data class Data(val map: Map<String, Long>) {
     fun sum() = map.values.sum()
 }
 
-fun parseInput(fileType: DataFile): Pair<Map<String, List<Condition>>, List<Data>> {
-    val (code, data) = fileToString(19, fileType).split("\n\n")
-
-    val workflow = code.split('\n').associate { line ->
-        val stage = line.substringBefore('{')
-        val conditions = line.substringAfter('{').substringBefore('}').split(',').map { cond ->
-            if (!cond.contains("[<>]".toRegex())) {
-                Condition("", 0, cond, ' ')
-            } else {
-                val delim = if ('<' in cond) '<' else '>'
-                val key = cond.substringBefore(delim)
-                val number = cond.substringAfter(delim).substringBefore(':').toInt()
-                val dest = cond.substringAfter(':')
-
-                Condition(key, number, dest, delim)
+data class GearProcessing(private val workflow: Workflow, private val inputs: List<Data>) {
+    fun part1(): Long {
+        val termination = setOf("A", "R")
+        return inputs.sumOf { value ->
+            var workflowName = "in"
+            while (workflowName !in termination) {
+                workflowName = workflow[workflowName]!!.map { it.eval(value) }.first { it.isNotEmpty() }
             }
+            if (workflowName == "A") value.sum()
+            else 0
         }
-        stage to conditions
     }
 
-    val parsedData = data.split('\n').map { line ->
-        val parts = line.substring(1, line.length - 1).split(',').associate {
-            val (k, v) = it.split('=')
-            k to v.toLong()
-        }
-        Data(parts)
-    }
-
-    return workflow to parsedData
-}
-
-fun part1(workflow: Workflow, data: List<Data>): Long {
-    val termination = setOf("A", "R")
-    return data.sumOf { value ->
-        var workflowName = "in"
-        while (workflowName !in termination) {
-            workflowName = workflow[workflowName]!!.map { it.eval(value) }.first { it.isNotEmpty() }
-        }
-        if (workflowName == "A") value.sum()
-        else 0
-    }
-}
-
-/**
- * @param r1 The first range
- * @param r2 The second range
- * @return The intersection of the two ranges, or an empty range if there is no overlap
- */
-fun intersect(r1: IntRange, r2: IntRange): IntRange {
-    val intersect = r1.intersect(r2)
-    return if (intersect.isEmpty()) {
-        IntRange.EMPTY
-    } else {
-        intersect.min()..intersect.max()
-    }
-}
-
-
-fun part2(workflow: Workflow): Long {
-    fun part2(ranges: Map<String, IntRange>, ruleName: String): Long {
+    private fun part2(ranges: Map<String, IntRange>, ruleName: String): Long {
         if (ruleName == "A") {
             return ranges.values.fold(1) { prod, range -> prod * range.count() }
         } else if (ruleName == "R") {
@@ -133,20 +87,66 @@ fun part2(workflow: Workflow): Long {
         return combinations
     }
 
-    val map = mapOf(
-        "x" to 1..4000,
-        "m" to 1..4000,
-        "a" to 1..4000,
-        "s" to 1..4000,
-    )
-    return part2(map, "in")
+    fun part2(): Long {
+        val map = "xmas".associate { it.toString() to 1..4000 }
+        return part2(map, "in")
+    }
+
+    companion object {
+        fun parseInput(fileType: DataFile): GearProcessing {
+            val (code, data) = fileToString(19, fileType).split("\n\n")
+
+            val workflow = code.lines().associate { line ->
+                val stage = line.substringBefore('{')
+                val conditions = line.substringAfter('{').substringBefore('}').split(',').map { cond ->
+                    if (!cond.contains("[<>]".toRegex())) {
+                        Condition("", 0, cond, ' ')
+                    } else {
+                        val delim = if ('<' in cond) '<' else '>'
+                        val key = cond.substringBefore(delim)
+                        val number = cond.substringAfter(delim).substringBefore(':').toInt()
+                        val dest = cond.substringAfter(':')
+
+                        Condition(key, number, dest, delim)
+                    }
+                }
+                stage to conditions
+            }
+
+
+            val parsedData = data.lines().map { line ->
+                val parts = line.substring(1, line.length - 1).split(',').associate {
+                    val (k, v) = it.split('=')
+                    k to v.toLong()
+                }
+                Data(parts)
+            }
+
+            return GearProcessing(workflow, parsedData)
+        }
+    }
+}
+
+
+/**
+ * @param r1 The first range
+ * @param r2 The second range
+ * @return The intersection of the two ranges, or an empty range if there is no overlap
+ */
+fun intersect(r1: IntRange, r2: IntRange): IntRange {
+    val intersect = r1.intersect(r2)
+    return if (intersect.isEmpty()) {
+        IntRange.EMPTY
+    } else {
+        intersect.min()..intersect.max()
+    }
 }
 
 fun day19() {
-    val (workflow, data) = parseInput(DataFile.Part1)
+    val gears = GearProcessing.parseInput(DataFile.Part1)
     report(
         dayNumber = 19,
-        part1 = part1(workflow, data),
-        part2 = part2(workflow),
+        part1 = gears.part1(),
+        part2 = gears.part2(),
     )
 }
