@@ -1,7 +1,7 @@
 package day11
 
-import helper.DataFile
-import helper.fileToStream
+import helper.files.DataFile
+import helper.files.fileToStream
 import helper.report
 
 private typealias Galaxy = Pair<Int, Int>

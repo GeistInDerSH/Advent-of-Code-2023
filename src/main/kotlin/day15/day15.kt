@@ -1,7 +1,7 @@
 package day15
 
-import helper.DataFile
-import helper.fileToString
+import helper.files.DataFile
+import helper.files.fileToString
 import helper.report
 
 data class HASH(val string: String) {

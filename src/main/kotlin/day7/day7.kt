@@ -1,7 +1,7 @@
 package day7
 
-import helper.DataFile
-import helper.fileToStream
+import helper.files.DataFile
+import helper.files.fileToStream
 import helper.report
 
 data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean) {

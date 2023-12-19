@@ -1,8 +1,8 @@
 package day18
 
-import helper.DataFile
+import helper.files.DataFile
 import helper.enums.Direction
-import helper.fileToStream
+import helper.files.fileToStream
 import helper.report
 
 data class DigLocation(val direction: Direction, val distance: Int)

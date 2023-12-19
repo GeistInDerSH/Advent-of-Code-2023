@@ -1,7 +1,7 @@
 package day19
 
-import helper.DataFile
-import helper.fileToString
+import helper.files.DataFile
+import helper.files.fileToString
 import helper.ranges.intersect
 import helper.report
 

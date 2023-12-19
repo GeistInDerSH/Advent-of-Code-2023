@@ -1,7 +1,7 @@
 package day9
 
-import helper.DataFile
-import helper.fileToStream
+import helper.files.DataFile
+import helper.files.fileToStream
 import helper.report
 
 data class Sensor(val history: MutableList<Int>) {

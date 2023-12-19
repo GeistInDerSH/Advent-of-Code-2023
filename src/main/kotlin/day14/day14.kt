@@ -1,8 +1,8 @@
 package day14
 
-import helper.DataFile
+import helper.files.DataFile
 import helper.enums.Direction
-import helper.fileToStream
+import helper.files.fileToStream
 import helper.report
 
 data class LavaRock(var row: Int, var col: Int, val char: Char) : Cloneable {

@@ -1,7 +1,7 @@
 package day2
 
-import helper.DataFile
-import helper.fileToStream
+import helper.files.DataFile
+import helper.files.fileToStream
 import helper.report
 
 data class Pull(val red: Int, val blue: Int, val green: Int)

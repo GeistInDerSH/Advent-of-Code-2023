@@ -1,7 +1,7 @@
 package day12
 
-import helper.DataFile
-import helper.fileToStream
+import helper.files.DataFile
+import helper.files.fileToStream
 import helper.report
 
 data class SpringRecord(val springs: String, val records: List<Int>) {

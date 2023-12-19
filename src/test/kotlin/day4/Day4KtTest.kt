@@ -1,6 +1,6 @@
 package day4
 
-import helper.DataFile
+import helper.files.DataFile
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

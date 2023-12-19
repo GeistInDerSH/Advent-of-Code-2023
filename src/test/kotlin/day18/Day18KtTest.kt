@@ -1,6 +1,6 @@
 package day18
 
-import helper.DataFile
+import helper.files.DataFile
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

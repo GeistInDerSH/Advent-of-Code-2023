@@ -1,8 +1,8 @@
 package day16
 
-import helper.DataFile
+import helper.files.DataFile
 import helper.enums.Direction
-import helper.fileToStream
+import helper.files.fileToStream
 import helper.report
 
 data class Energized(val row: Int, val col: Int, val direction: Direction)

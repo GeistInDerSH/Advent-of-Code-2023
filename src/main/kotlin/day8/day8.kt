@@ -1,7 +1,7 @@
 package day8
 
-import helper.DataFile
-import helper.fileToStream
+import helper.files.DataFile
+import helper.files.fileToStream
 import helper.report
 import kotlin.math.max
 

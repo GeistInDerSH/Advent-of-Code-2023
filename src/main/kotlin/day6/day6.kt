@@ -1,7 +1,7 @@
 package day6
 
-import helper.DataFile
-import helper.fileToStream
+import helper.files.DataFile
+import helper.files.fileToStream
 import helper.report
 
 fun parseInput(fileType: DataFile): Map<Long, Long> {
