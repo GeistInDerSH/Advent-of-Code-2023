@@ -30,6 +30,12 @@ data class Data(val map: Map<String, Long>) {
 }
 
 data class GearProcessing(private val workflow: Workflow, private val inputs: List<Data>) {
+    /**
+     * Walk through each of the [inputs] and determine which ones end in the "A" final state. This is done
+     * using repeated dictionary lookups and fun-calls to determine the next function to call
+     *
+     * @return The sum of all [inputs] that end in an "A" state
+     */
     fun part1(): Long {
         val termination = setOf("A", "R")
         return inputs.sumOf { value ->
@@ -42,6 +48,13 @@ data class GearProcessing(private val workflow: Workflow, private val inputs: Li
         }
     }
 
+    /**
+     * Recursively determine the total number of combinations of valid inputs for the different map keys
+     *
+     * @param ranges A map from 'x', 'm', 'a', 's' to the range of valid values
+     * @param ruleName The current starting rule to process, corresponding to a rule in the [workflow]
+     * @return The number of combinations
+     */
     private fun part2(ranges: Map<String, IntRange>, ruleName: String): Long {
         if (ruleName == "A") {
             return ranges.values.fold(1) { prod, range -> prod * range.count() }
