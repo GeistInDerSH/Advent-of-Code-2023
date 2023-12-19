@@ -2,6 +2,7 @@ package day19
 
 import helper.DataFile
 import helper.fileToString
+import helper.ranges.intersect
 import helper.report
 
 typealias Workflow = Map<String, List<Condition>>
@@ -77,8 +78,8 @@ data class GearProcessing(private val workflow: Workflow, private val inputs: Li
                 // range should be AFTER the number up to the upper bound
                 '<' -> {
                     val rangeWithBelow = mutableRange.toMutableMap()
-                    rangeWithBelow[cond.key] = intersect(rangeWithBelow[cond.key]!!, 0..<cond.number)
-                    mutableRange[cond.key] = intersect(mutableRange[cond.key]!!, cond.number..4000)
+                    rangeWithBelow[cond.key] = rangeWithBelow[cond.key]!!.intersect(0..<cond.number)
+                    mutableRange[cond.key] = mutableRange[cond.key]!!.intersect(cond.number..4000)
                     part2(rangeWithBelow, cond.dest)
                 }
 
@@ -86,8 +87,8 @@ data class GearProcessing(private val workflow: Workflow, private val inputs: Li
                 // range should be BEFORE the number up to 4000
                 '>' -> {
                     val rangeWithAbove = mutableRange.toMutableMap()
-                    rangeWithAbove[cond.key] = intersect(rangeWithAbove[cond.key]!!, cond.number + 1..4000)
-                    mutableRange[cond.key] = intersect(mutableRange[cond.key]!!, 0..cond.number)
+                    rangeWithAbove[cond.key] = rangeWithAbove[cond.key]!!.intersect(cond.number + 1..4000)
+                    mutableRange[cond.key] = mutableRange[cond.key]!!.intersect(0..cond.number)
                     part2(rangeWithAbove, cond.dest)
                 }
 
@@ -137,21 +138,6 @@ data class GearProcessing(private val workflow: Workflow, private val inputs: Li
 
             return GearProcessing(workflow, parsedData)
         }
-    }
-}
-
-
-/**
- * @param r1 The first range
- * @param r2 The second range
- * @return The intersection of the two ranges, or an empty range if there is no overlap
- */
-fun intersect(r1: IntRange, r2: IntRange): IntRange {
-    val intersect = r1.intersect(r2)
-    return if (intersect.isEmpty()) {
-        IntRange.EMPTY
-    } else {
-        intersect.min()..intersect.max()
     }
 }
 
