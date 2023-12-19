@@ -1,15 +1,9 @@
 package day16
 
 import helper.DataFile
+import helper.enums.Direction
 import helper.fileToStream
 import helper.report
-
-enum class Direction(val rowInc: Int, val colInc: Int) {
-    North(-1, 0),
-    South(1, 0),
-    East(0, 1),
-    West(0, -1),
-}
 
 data class Energized(val row: Int, val col: Int, val direction: Direction)
 

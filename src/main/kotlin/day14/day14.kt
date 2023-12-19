@@ -1,15 +1,9 @@
 package day14
 
 import helper.DataFile
+import helper.enums.Direction
 import helper.fileToStream
 import helper.report
-
-enum class Direction(val rowInc: Int, val colInc: Int) {
-    NORTH(1, 0),
-    EAST(0, 1),
-    SOUTH(-1, 0),
-    WEST(0, -1),
-}
 
 data class LavaRock(var row: Int, var col: Int, val char: Char) : Cloneable {
     public override fun clone() = LavaRock(row, col, char)
@@ -35,10 +29,10 @@ class Grid(private val rocks: List<LavaRock>) {
         // to be moving them. Otherwise, we may move some rocks to early and find they collide with a rock that should
         // have been moved
         val newRocks = when (direction) {
-            Direction.NORTH -> rocks.sortedBy { it.row }.reversed().toMutableList()
-            Direction.SOUTH -> rocks.sortedBy { it.row }.toMutableList()
-            Direction.EAST -> rocks.sortedBy { it.col }.reversed().toMutableList()
-            Direction.WEST -> rocks.sortedBy { it.col }.toMutableList()
+            Direction.South -> rocks.sortedBy { it.row }.reversed().toMutableList()
+            Direction.North -> rocks.sortedBy { it.row }.toMutableList()
+            Direction.East -> rocks.sortedBy { it.col }.reversed().toMutableList()
+            Direction.West -> rocks.sortedBy { it.col }.toMutableList()
         }
 
         for (rock in newRocks) {
@@ -84,7 +78,7 @@ class Grid(private val rocks: List<LavaRock>) {
         // Having repeat when count == 1 is silly, but we can avoid extra garbage when count > 1 (e.g. when we find
         // the remaining number of times to rotate the grid
         repeat(count) {
-            for (direction in listOf(Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST)) {
+            for (direction in listOf(Direction.South, Direction.West, Direction.North, Direction.East)) {
                 newRocks = tilt(newRocks, direction)
             }
         }
@@ -98,7 +92,7 @@ class Grid(private val rocks: List<LavaRock>) {
 
     fun part1(): Int {
         val rocks = rocks.map { it.clone() }
-        return tilt(rocks, Direction.NORTH).filter { it.char == 'O' }.sumOf { it.row }
+        return tilt(rocks, Direction.South).filter { it.char == 'O' }.sumOf { it.row }
     }
 
     fun part2(): Int {

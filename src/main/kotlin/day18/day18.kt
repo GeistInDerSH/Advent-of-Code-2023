@@ -1,29 +1,9 @@
 package day18
 
 import helper.DataFile
+import helper.enums.Direction
 import helper.fileToStream
 import helper.report
-
-enum class Direction(private val rowInc: Int, private val colInc: Int) {
-    Up(-1, 0),
-    Left(0, -1),
-    Right(0, 1),
-    Down(1, 0);
-
-    fun pair() = rowInc to colInc
-
-    companion object {
-        fun tryFromString(s: String): Direction? {
-            return when (s) {
-                "R", "0" -> Right
-                "L", "2" -> Left
-                "U", "3" -> Up
-                "D", "1" -> Down
-                else -> null
-            }
-        }
-    }
-}
 
 data class DigLocation(val direction: Direction, val distance: Int)
 
