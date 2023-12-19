@@ -10,6 +10,8 @@ data class DigLocation(val direction: Direction, val distance: Int)
 data class DigPlan(private val digLocations: List<DigLocation>) {
     /**
      * @return The area inside the [digLocations]
+     * @see <a href="https://en.wikipedia.org/wiki/Shoelace_formula">Shoelace Formula</a>
+     * @see <a href="https://en.wikipedia.org/wiki/Pick%27s_theorem">Pick's Theorem</a>
      */
     fun areaInsideLocations(): Long {
         var colPosition = 0.0
