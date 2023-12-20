@@ -20,3 +20,10 @@ fun lcm(a: Long, b: Long): Long {
     }
     return maxLCM
 }
+
+/**
+ * Determine the least common multiple of all values in the [Collection]
+ *
+ * @return The least common multiple
+ */
+fun Collection<Long>.lcm(): Long = this.fold(1L) { acc, i -> lcm(acc, i) }

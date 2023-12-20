@@ -201,7 +201,7 @@ data class Propagation(val modules: List<Module>) {
             }
         }
 
-        return cycles.values.fold(1L) { acc, value -> lcm(acc, value) }
+        return cycles.values.lcm()
     }
 
     companion object {
