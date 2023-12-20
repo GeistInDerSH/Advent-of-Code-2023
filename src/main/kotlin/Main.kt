@@ -10,6 +10,7 @@ import day17.day17
 import day18.day18
 import day19.day19
 import day2.day2
+import day20.day20
 import day3.day3
 import day4.day4
 import day5.day5
@@ -38,4 +39,5 @@ fun main() {
     day17()
     day18()
     day19()
+    day20()
 }
