@@ -7,7 +7,7 @@ package helper.ranges
  * @return The intersection of the two ranges, or an empty range if there is no overlap
  */
 fun IntRange.intersect(other: IntRange): IntRange {
-    val intersect = this.intersect(other)
+    val intersect = this.intersect(other.toSet())
     return if (intersect.isEmpty()) {
         IntRange.EMPTY
     } else {
