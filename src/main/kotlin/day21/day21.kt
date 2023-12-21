@@ -85,28 +85,31 @@ data class Grid(private val start: Location, private val rocks: Set<Location>, p
         val n = maxSteps / lineLength
         return (x0 * n * n) + (x1 * n) + x2
     }
+
+    companion object {
+        fun parseInput(dataFile: DataFile): Grid {
+            var lineLength = 0
+            val parsed = fileToStream(21, dataFile).flatMapIndexed { row, line ->
+                lineLength = line.length
+                line.mapIndexed { col, c -> Obstacle(row, col, c) }
+            }.toList()
+
+            val start = parsed.first { it.char == 'S' }.let { Location(it.row, it.col) }
+            val rocks = parsed.filter { it.char == '#' }.map { Location(it.row, it.col) }.toSet()
+            return Grid(start, rocks, lineLength)
+        }
+    }
 }
 
-fun parseInput(dataFile: DataFile): Grid {
-    var lineLength = 0
-    val parsed = fileToStream(21, dataFile).flatMapIndexed { row, line ->
-        lineLength = line.length
-        line.mapIndexed { col, c -> Obstacle(row, col, c) }
-    }.toList()
 
-    val start = parsed.first { it.char == 'S' }.let { Location(it.row, it.col) }
-    val rocks = parsed.filter { it.char == '#' }.map { Location(it.row, it.col) }.toSet()
-    return Grid(start, rocks, lineLength)
-}
-
-fun day21(skip: Boolean = true) {
+fun day21(skip: Boolean = false) {
     if (skip) {
         return
     }
 
-    val input = parseInput(DataFile.Part1)
+    val input = Grid.parseInput(DataFile.Part1)
     report(
-        dayNumber = 8,
+        dayNumber = 21,
         part1 = input.part1(64),
         part2 = input.part2(26501365),
     )
