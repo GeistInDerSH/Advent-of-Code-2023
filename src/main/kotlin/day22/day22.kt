@@ -14,6 +14,7 @@ data class Brick(val lx: Int, val ly: Int, val lz: Int, val rx: Int, val ry: Int
             }
         }.toSet()
     }
+    val dropVolume: Volume by lazy { volume.map { Triple(it.first, it.second, it.third - 1) }.toSet() }
 
     /**
      * @param brick The brick to check against
@@ -60,19 +61,15 @@ data class Tower(val bricks: List<Brick>) {
      */
     private fun cascade(): Pair<List<Brick>, Volume> {
         var volume: Volume = setOf()
-        val updatedBricks = bricks.sortedBy { it.lz }.map { b ->
-            var brick = b
-            while (true) {
-                val drop = brick.drop()
-                if (drop.lz > 0 && volume.intersect(drop.volume).isEmpty()) {
-                    brick = drop
-                } else {
-                    break
-                }
+        val updatedBricks = bricks
+            .sortedBy { it.lz }
+            .map {
+                var brick = it
+                while (brick.lz - 1 > 0 && brick.dropVolume.none { it in volume })
+                    brick = brick.drop()
+                volume = volume.union(brick.volume)
+                brick
             }
-            volume = volume.union(brick.volume)
-            brick
-        }
 
         return Pair(updatedBricks, volume)
     }
@@ -85,45 +82,50 @@ data class Tower(val bricks: List<Brick>) {
      * @return If the [brick] can be removed
      */
     private fun canRemove(brick: Brick, bricks: List<Brick>): Boolean {
-        val volumeWithoutBrick = volume - brick.volume
-        return !bricks.any { other ->
+        val volumeWithoutBrick = volume.filterNot { it in brick.volume }
+        return bricks.none { other ->
             if (!brick.isBelow(other) || other.lz == 1) {
                 false
             } else {
-                val drop = other.drop()
-                val removedVol = volumeWithoutBrick - other.volume
-                removedVol.intersect(drop.volume).isEmpty()
+                volumeWithoutBrick
+                    .filterNot { it in other.volume }
+                    .none { it in other.dropVolume }
             }
         }
     }
 
     fun part1(): Int {
-        return droppedBricks.mapIndexed { index, brick -> canRemove(brick, droppedBricks.drop(index + 1)) }
+        return droppedBricks
+            .mapIndexed { index, brick -> canRemove(brick, droppedBricks.drop(index + 1)) }
             .count { it }
     }
 
     fun part2(): Int {
-        return droppedBricks.mapIndexed { index, brick -> brick to droppedBricks.drop(index + 1) }
+        return droppedBricks
+            .mapIndexed { index, brick -> brick to droppedBricks.drop(index + 1) }
             .parallelStream()
-            .map { (b, remaining) ->
-                val removed = mutableSetOf(b)
-                var removedVol = volume - b.volume
+            .map { (baseBrick, remainingBricks) ->
+                val removed = mutableSetOf(baseBrick)
+                var removedVol = volume.filterNot { it in baseBrick.volume }
 
-                for (brick in remaining) {
-                    val isSupporting = removed.any { brick.isSupporting(it) }
+                var count = 0
+                for (brick in remainingBricks) {
+                    if (removed.none { brick.isSupporting(it) }) {
+                        continue
+                    }
 
                     // Do this on demand as it's quite computationally expensive
-                    val volWithoutBrick by lazy { removedVol - brick.volume }
-                    val canDrop by lazy { volWithoutBrick.intersect(brick.drop().volume).isEmpty() }
-                    if (isSupporting && canDrop) {
+                    val volWithoutBrick = removedVol.filterNot { it in brick.volume }
+                    if (volWithoutBrick.none { it in brick.dropVolume }) {
                         removedVol = volWithoutBrick
                         removed.add(brick)
+                        count += 1
                     }
                 }
 
                 // The number of removed bricks, minus the default one
-                removed.count() - 1
-            }.reduce(0) { acc, v -> acc + v }
+                count
+            }.reduce(0, Int::plus)
     }
 
     companion object {
@@ -136,11 +138,7 @@ data class Tower(val bricks: List<Brick>) {
 }
 
 
-fun day22(skip: Boolean = true) {
-    if (skip) {
-        return
-    }
-
+fun day22() {
     val input = Tower.parseInput(DataFile.Part1)
     report(
         dayNumber = 22,
