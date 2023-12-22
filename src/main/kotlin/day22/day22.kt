@@ -7,14 +7,12 @@ import helper.report
 typealias Volume = Set<Triple<Int, Int, Int>>
 
 data class Brick(val lx: Int, val ly: Int, val lz: Int, val rx: Int, val ry: Int, val rz: Int) {
-    val volume: Volume by lazy {
-        (lx..rx).flatMap { x ->
-            (ly..ry).flatMap { y ->
-                (lz..rz).map { z -> Triple(x, y, z) }
-            }
-        }.toSet()
-    }
-    val dropVolume: Volume by lazy { volume.map { Triple(it.first, it.second, it.third - 1) }.toSet() }
+    val volume: Volume = (lx..rx).flatMap { x ->
+        (ly..ry).flatMap { y ->
+            (lz..rz).map { z -> Triple(x, y, z) }
+        }
+    }.toSet()
+    val dropVolume: Volume = volume.map { Triple(it.first, it.second, it.third - 1) }.toSet()
 
     /**
      * @param brick The brick to check against
@@ -50,10 +48,11 @@ data class Brick(val lx: Int, val ly: Int, val lz: Int, val rx: Int, val ry: Int
     }
 }
 
-data class Tower(val bricks: List<Brick>) {
+class Tower(private val bricks: List<Brick>) {
     private val cascade = cascade()
     private val droppedBricks = cascade.first
     private val volume = cascade.second
+    private val brickToDropped = droppedBricks.mapIndexed { index, brick -> brick to droppedBricks.drop(index + 1) }
 
     /**
      * Move all [bricks] down until they cannot be moved lower
@@ -63,8 +62,8 @@ data class Tower(val bricks: List<Brick>) {
         var volume: Volume = setOf()
         val updatedBricks = bricks
             .sortedBy { it.lz }
-            .map {
-                var brick = it
+            .map { b ->
+                var brick = b
                 while (brick.lz - 1 > 0 && brick.dropVolume.none { it in volume })
                     brick = brick.drop()
                 volume = volume.union(brick.volume)
@@ -95,14 +94,11 @@ data class Tower(val bricks: List<Brick>) {
     }
 
     fun part1(): Int {
-        return droppedBricks
-            .mapIndexed { index, brick -> canRemove(brick, droppedBricks.drop(index + 1)) }
-            .count { it }
+        return brickToDropped.map { canRemove(it.first, it.second) }.count { it }
     }
 
     fun part2(): Int {
-        return droppedBricks
-            .mapIndexed { index, brick -> brick to droppedBricks.drop(index + 1) }
+        return brickToDropped
             .parallelStream()
             .map { (baseBrick, remainingBricks) ->
                 val removed = mutableSetOf(baseBrick)
