@@ -102,7 +102,7 @@ data class Grid(private val start: Location, private val rocks: Set<Location>, p
 }
 
 
-fun day21(skip: Boolean = false) {
+fun day21(skip: Boolean = true) {
     if (skip) {
         return
     }
