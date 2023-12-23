@@ -21,6 +21,7 @@ fun IntRange.intersect(other: IntRange): IntRange {
  * @param other The [IntRange] to check for an overlap in
  * @return If there is an overlap between the two ranges of numbers
  */
+@Suppress("unused")
 fun IntRange.hasOverlap(other: IntRange): Boolean {
     return hasOverlap(this.first, this.last, other.first, other.last)
 }
