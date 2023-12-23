@@ -87,9 +87,7 @@ class Tower(private val bricks: List<Brick>) {
             if (!brick.isBelow(other) || other.lz == 1) {
                 false
             } else {
-                volumeWithoutBrick
-                    .filterNot { it in other.volume }
-                    .none { it in other.dropVolume }
+                volumeWithoutBrick.none { it !in other.volume && it in other.dropVolume }
             }
         }
     }
