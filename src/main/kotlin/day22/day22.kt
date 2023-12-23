@@ -2,6 +2,7 @@ package day22
 
 import helper.files.DataFile
 import helper.files.fileToStream
+import helper.ranges.hasOverlap
 import helper.report
 
 typealias Volume = Set<Triple<Int, Int, Int>>
@@ -32,8 +33,8 @@ data class Brick(val lx: Int, val ly: Int, val lz: Int, val rx: Int, val ry: Int
     fun isSupporting(other: Brick): Boolean {
         return when {
             !other.isBelow(this) -> false
-            (ly..ry).intersect(other.ly..other.ry).isNotEmpty() -> true
-            (lx..rx).intersect(other.lx..other.rx).isNotEmpty() -> true
+            hasOverlap(ly, ry, other.ly, other.ry) -> true
+            hasOverlap(lx, rx, other.lx, other.rx) -> true
             else -> false
         }
     }
@@ -59,14 +60,14 @@ class Tower(private val bricks: List<Brick>) {
      * @return The bricks moved as far down as they can go, and the volume of those bricks
      */
     private fun cascade(): Pair<List<Brick>, Volume> {
-        var volume: Volume = setOf()
+        val volume = mutableSetOf<Triple<Int, Int, Int>>()
         val updatedBricks = bricks
             .sortedBy { it.lz }
             .map { b ->
                 var brick = b
                 while (brick.lz - 1 > 0 && brick.dropVolume.none { it in volume })
                     brick = brick.drop()
-                volume = volume.union(brick.volume)
+                volume.addAll(brick.volume)
                 brick
             }
 
@@ -94,7 +95,9 @@ class Tower(private val bricks: List<Brick>) {
     }
 
     fun part1(): Int {
-        return brickToDropped.map { canRemove(it.first, it.second) }.count { it }
+        return brickToDropped
+            .map { canRemove(it.first, it.second) }
+            .count { it }
     }
 
     fun part2(): Int {
