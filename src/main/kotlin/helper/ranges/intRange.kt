@@ -34,8 +34,6 @@ fun IntRange.hasOverlap(other: IntRange): Boolean {
  * @param end2 The end of the second range
  * @return If there is an overlap between the two ranges of numbers
  */
-fun <T, V> hasOverlap(start1: T, end1: T, start2: V, end2: V): Boolean
-        where T : Comparable<T>, T : Number,
-              V : Comparable<V>, V : Number {
+fun hasOverlap(start1: Int, end1: Int, start2: Int, end2: Int): Boolean {
     return start1 <= end1 && end2 <= start2
 }
