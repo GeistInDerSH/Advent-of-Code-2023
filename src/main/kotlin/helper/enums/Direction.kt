@@ -8,6 +8,8 @@ enum class Direction(val rowInc: Int, val colInc: Int) {
 
     fun pair() = rowInc to colInc
 
+    operator fun plus(pair: Pair<Int, Int>) = Pair(pair.first + rowInc, pair.second + colInc)
+
     companion object {
         fun tryFromChar(c: Char) = tryFromString(c.toString())
 
