@@ -9,13 +9,23 @@ data class Vector(val px: Double, val py: Double, val pz: Double, val vx: Double
     private val b = -vx
     val c = vy * px - vx * py
 
+    /**
+     * @param other A second vector to compare against
+     * @return If the current and [other] [Vector] are parallel to each other
+     */
     private fun isParallel(other: Vector) = a * other.b == b * other.a
 
-    private fun positive(x: Double, y: Double): Boolean {
+    private fun isPositive(x: Double, y: Double): Boolean {
         return (x - px < 0.0) == (vx < 0.0) &&
                 (y - py < 0.0) == (vy < 0.0)
     }
 
+    /**
+     * Check to see if two vectors intersect, and return the point that they do
+     *
+     * @param other The vector to check intersection with
+     * @return The point the [Vector]s intersect, or null if they don't
+     */
     fun intersection(other: Vector): Pair<Double, Double>? {
         if (isParallel(other)) {
             return null
@@ -25,7 +35,7 @@ data class Vector(val px: Double, val py: Double, val pz: Double, val vx: Double
         val x = (c * other.b - b * other.c) / div
         val y = (a * other.c - c * other.a) / div
 
-        return if (positive(x, y) && other.positive(x, y)) {
+        return if (isPositive(x, y) && other.isPositive(x, y)) {
             Pair(x, y)
         } else {
             null
@@ -39,9 +49,11 @@ data class Hailstones(val vectors: Set<Vector>) {
         val range = start.toDouble()..end.toDouble()
         return vectors
             .mapIndexed { index, vector ->
+                // Take a unique set of pairs
                 vectors
                     .drop(index + 1)
                     .mapNotNull { vector.intersection(it) }
+                    // only count those that intersect in the range
                     .count { it.first in range && it.second in range }
                     .toLong()
             }
@@ -49,6 +61,7 @@ data class Hailstones(val vectors: Set<Vector>) {
     }
 
     private fun solve(a: List<List<Double>>, b: List<List<Double>>): List<Double> {
+        // Generate a matrix with the positional / magnitude info of the vectors
         val m = a.zip(b).map { (a, b) -> a + b }
         val n = m
             .take(4)
@@ -114,10 +127,4 @@ fun day24() {
         part1 = input.part1(200000000000000, 400000000000000),
         part2 = input.part2(),
     )
-    // val input = parseInput(DataFile.Example)
-    // report(
-    //     dayNumber = 24,
-    //     part1 = input.part1(7, 27),
-    //     part2 = "",
-    // )
 }
