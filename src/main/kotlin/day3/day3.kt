@@ -66,18 +66,18 @@ fun parseInput(fileType: DataFile): Pair<List<Symbol>, List<Number>> {
     val lines = fileToStream(3, fileType).toList()
 
     // Extract only the symbols; these are any special characters that are non-`.`
-    val symbols = lines.mapIndexed { row, line ->
-        line.mapIndexed { col, char ->
+    val symbols = lines.flatMapIndexed { row, line ->
+        line.mapIndexedNotNull { col, char ->
             if (char.isDigit() || char == '.') {
                 null
             } else {
                 Symbol(char, row, col)
             }
-        }.filterNotNull()
-    }.flatten().toList()
+        }
+    }
 
     // Extract the numbers, and ensure that "1234" is 1234 not 1,2,3,4
-    val numbers = lines.mapIndexed { row, line ->
+    val numbers = lines.flatMapIndexed { row, line ->
         val numbers: MutableList<Number> = mutableListOf()
         val num = StringBuilder()
         line.forEachIndexed { index, char ->
@@ -93,7 +93,7 @@ fun parseInput(fileType: DataFile): Pair<List<Symbol>, List<Number>> {
         }
 
         numbers
-    }.flatten().toList()
+    }
 
     return Pair(symbols, numbers)
 }
@@ -106,14 +106,13 @@ fun parseInput(fileType: DataFile): Pair<List<Symbol>, List<Number>> {
  * @return The sum of numbers with touching symbols
  */
 fun part1(symbols: List<Symbol>, numbers: List<Number>): Int {
-    return numbers.map { num ->
-        num.checkForTouchingSymbols(symbols)
-        num
-    }.filter {
-        it.hasTouchingSymbol()
-    }.sumOf {
-        it.num
-    }
+    return numbers
+        .map { num ->
+            num.checkForTouchingSymbols(symbols)
+            num
+        }
+        .filter { it.hasTouchingSymbol() }
+        .sumOf { it.num }
 }
 
 /**
@@ -124,14 +123,13 @@ fun part1(symbols: List<Symbol>, numbers: List<Number>): Int {
  * @return The sum of the product of '*' symbols with 2 touching numbers
  */
 fun part2(symbols: List<Symbol>, numbers: List<Number>): Int {
-    return symbols.map { sym ->
-        sym.addAnyTouchingNumbers(numbers)
-        sym
-    }.filter {
-        it.name == '*' && it.touchingNumbersCount() == 2
-    }.sumOf {
-        it.touchingNumbersProduct()
-    }
+    return symbols
+        .map { sym ->
+            sym.addAnyTouchingNumbers(numbers)
+            sym
+        }
+        .filter { it.name == '*' && it.touchingNumbersCount() == 2 }
+        .sumOf { it.touchingNumbersProduct() }
 }
 
 fun day3() {

@@ -122,13 +122,16 @@ class Tower(private val bricks: List<Brick>) {
 
                 // The number of removed bricks, minus the default one
                 count
-            }.reduce(0, Int::plus)
+            }
+            .reduce(0, Int::plus)
     }
 
     companion object {
 
         fun parseInput(dataFile: DataFile): Tower {
-            val bricks = fileToStream(22, dataFile).map { Brick.fromString(it) }.toList()
+            val bricks = fileToStream(22, dataFile)
+                .map { Brick.fromString(it) }
+                .toList()
             return Tower(bricks)
         }
     }

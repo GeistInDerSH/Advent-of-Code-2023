@@ -67,9 +67,9 @@ data class Module(val name: String, val moduleType: ModuleType, val targets: Lis
 
 data class Propagation(val modules: List<Module>) {
     private val initialTargets by lazy {
-        modules.first { it.name == "broadcaster" }.let { start ->
-            start.targets.map { start to it }
-        }
+        modules
+            .first { it.name == "broadcaster" }
+            .let { start -> start.targets.map { start to it } }
     }
 
     /**
@@ -80,10 +80,14 @@ data class Propagation(val modules: List<Module>) {
 
         // Initialize the memory of all Conjunction modules, by getting values that will write to the module
         // and storing the current pulse of the module to the Conjunction's memory
-        modules.filter { it.moduleType == ModuleType.Conjunction }.forEach { module ->
-            val inputs = modules.filter { module.name in it.targets }.map { it.name }
-            module.initializeMemory(inputs)
-        }
+        modules
+            .filter { it.moduleType == ModuleType.Conjunction }
+            .forEach { module ->
+                val inputs = modules
+                    .filter { module.name in it.targets }
+                    .map { it.name }
+                module.initializeMemory(inputs)
+            }
     }
 
     /**
@@ -140,9 +144,12 @@ data class Propagation(val modules: List<Module>) {
      */
     fun part1(): Long {
         reset()
-        return (0..<1000).map { part1(initialTargets, 1, 0) }.reduce { acc, pair ->
-            Pair(acc.first + pair.first, acc.second + pair.second)
-        }.let { it.first * it.second }
+        return (0..<1000)
+            .map { part1(initialTargets, 1, 0) }
+            .reduce { acc, pair ->
+                Pair(acc.first + pair.first, acc.second + pair.second)
+            }
+            .let { it.first * it.second }
     }
 
     /**

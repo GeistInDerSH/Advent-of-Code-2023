@@ -128,9 +128,12 @@ data class Hike(val trail: Set<Trail>) {
 }
 
 fun parseInput(dataFile: DataFile): Hike {
-    val trails = fileToStream(23, dataFile).flatMapIndexed { row, line ->
-        line.mapIndexed { col, c -> Trail(row, col, c) }.filter { it.symbol != '#' }
-    }.toSet()
+    val trails = fileToStream(23, dataFile)
+        .flatMapIndexed { row, line ->
+            line.mapIndexed { col, c -> Trail(row, col, c) }
+                .filter { it.symbol != '#' }
+        }
+        .toSet()
     return Hike(trails)
 }
 

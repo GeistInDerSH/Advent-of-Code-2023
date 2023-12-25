@@ -111,12 +111,14 @@ data class Hailstones(val vectors: Set<Vector>) {
 }
 
 fun parseInput(dataFile: DataFile): Hailstones {
-    val hail = fileToStream(24, dataFile).map { line ->
-        val (pos, vel) = line.split(" @ ")
-        val (px, py, pz) = pos.split(',').map { it.trim().toDouble() }
-        val (vx, vy, vz) = vel.split(',').map { it.trim().toDouble() }
-        Vector(px, py, pz, vx, vy, vz)
-    }.toSet()
+    val hail = fileToStream(24, dataFile)
+        .map { line ->
+            val (pos, vel) = line.split(" @ ")
+            val (px, py, pz) = pos.split(',').map { it.trim().toDouble() }
+            val (vx, vy, vz) = vel.split(',').map { it.trim().toDouble() }
+            Vector(px, py, pz, vx, vy, vz)
+        }
+        .toSet()
     return Hailstones(hail)
 }
 

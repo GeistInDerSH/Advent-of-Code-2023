@@ -3,7 +3,6 @@ package day13
 import helper.files.DataFile
 import helper.files.fileToString
 import helper.report
-import java.io.File
 
 data class Image(val image: List<String>) {
     /**
@@ -48,8 +47,13 @@ data class Image(val image: List<String>) {
             val end = image.subList(row - shortest, row).reversed()
             // The procedure is mostly the same as before, however now we want to know how many of the
             // characters match in all of them, and check to see if there is only 1 mismatch
-            val matchingChars =
-                start.indices.sumOf { col -> start[col].indices.count { start[col][it] == end[col][it] } }
+            val matchingChars = start
+                .indices
+                .sumOf { col ->
+                    start[col]
+                        .indices
+                        .count { start[col][it] == end[col][it] }
+                }
             if (matchingChars == shortest * columnCount - 1) row * 100 else 0
         }
 
@@ -69,8 +73,12 @@ data class Image(val image: List<String>) {
     }
 }
 
-fun parseInput(fileName: String) = File(fileName).readText().split("\n\n").map { Image(it.split('\n')) }
-fun parseInput(type: DataFile) = fileToString(13, type).split("\n\n").map { Image(it.split('\n')) }
+fun parseInput(type: DataFile): List<Image> {
+    return fileToString(13, type)
+        .split("\n\n")
+        .map { Image(it.split('\n')) }
+}
+
 fun part1(images: List<Image>) = images.sumOf { it.withoutSmudges() }
 fun part2(images: List<Image>) = images.sumOf { it.withSmudges() }
 

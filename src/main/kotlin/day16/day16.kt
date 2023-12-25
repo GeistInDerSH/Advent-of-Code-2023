@@ -1,7 +1,7 @@
 package day16
 
-import helper.files.DataFile
 import helper.enums.Direction
+import helper.files.DataFile
 import helper.files.fileToStream
 import helper.report
 
@@ -72,7 +72,11 @@ data class MirrorGrid(val grid: List<List<Char>>) {
             }
         }
         solutionInternal(start)
-        return visited.map { it.row to it.col }.toSet().count()
+
+        return visited
+            .map { it.row to it.col }
+            .toSet()
+            .count()
     }
 
     fun part1() = solution(Energized(0, 0, Direction.East))
@@ -83,7 +87,10 @@ data class MirrorGrid(val grid: List<List<Char>>) {
                 grid[0].indices.map { Energized(0, it, Direction.South) } +
                 grid[0].indices.map { Energized(grid.size, it, Direction.North) }
 
-        return toRun.parallelStream().map { solution(it) }.reduce(0) { max, energized -> max.coerceAtLeast(energized) }
+        return toRun
+            .parallelStream()
+            .map { solution(it) }
+            .reduce(0) { max, energized -> max.coerceAtLeast(energized) }
     }
 }
 

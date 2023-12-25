@@ -37,9 +37,11 @@ fun parseInput(fileType: DataFile): List<Game> {
  * @return The sum of the IDs
  */
 fun part1(games: List<Game>, cubeCounts: Pull): Int {
-    return games.filter { game ->
-        game.pulls.all { cubeCounts.red >= it.red && cubeCounts.blue >= it.blue && cubeCounts.green >= it.green }
-    }.sumOf { it.id }
+    return games
+        .filter { game ->
+            game.pulls.all { cubeCounts.red >= it.red && cubeCounts.blue >= it.blue && cubeCounts.green >= it.green }
+        }
+        .sumOf { it.id }
 }
 
 /**

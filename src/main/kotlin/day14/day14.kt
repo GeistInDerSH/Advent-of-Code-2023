@@ -1,7 +1,7 @@
 package day14
 
-import helper.files.DataFile
 import helper.enums.Direction
+import helper.files.DataFile
 import helper.files.fileToStream
 import helper.report
 
@@ -92,7 +92,9 @@ class Grid(private val rocks: List<LavaRock>) {
 
     fun part1(): Int {
         val rocks = rocks.map { it.clone() }
-        return tilt(rocks, Direction.South).filter { it.char == 'O' }.sumOf { it.row }
+        return tilt(rocks, Direction.South)
+            .filter { it.char == 'O' }
+            .sumOf { it.row }
     }
 
     fun part2(): Int {
@@ -118,7 +120,11 @@ class Grid(private val rocks: List<LavaRock>) {
         val mainLoopRemainder = maxCycles - loopStart - 1
         val period = loopStart - loopSize
         val remainder = mainLoopRemainder % period
-        return updatedRocks.rotate(remainder).rocks.filter { it.char == 'O' }.sumOf { it.row }
+        return updatedRocks
+            .rotate(remainder)
+            .rocks
+            .filter { it.char == 'O' }
+            .sumOf { it.row }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -140,15 +146,19 @@ class Grid(private val rocks: List<LavaRock>) {
 }
 
 fun parseInput(fileType: DataFile): Grid {
-    val rocks = fileToStream(14, fileType).toList().reversed().flatMapIndexed { row, string ->
-        string.mapIndexed { col, c ->
-            if (c != '.') {
-                LavaRock(row + 1, col + 1, c)
-            } else {
-                null
+    val rocks = fileToStream(14, fileType)
+        .toList()
+        .reversed()
+        .flatMapIndexed { row, string ->
+            string.mapIndexedNotNull { col, c ->
+                if (c != '.') {
+                    LavaRock(row + 1, col + 1, c)
+                } else {
+                    null
+                }
             }
-        }.filterNotNull()
-    }.reversed()
+        }
+        .reversed()
     return Grid(rocks)
 }
 

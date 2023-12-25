@@ -50,7 +50,11 @@ data class HASH(val string: String) {
     fun box() = hashString(label.value)
 }
 
-fun parseInput(fileType: DataFile) = fileToString(15, fileType).split(',').map { HASH(it) }
+fun parseInput(fileType: DataFile): List<HASH> {
+    return fileToString(15, fileType)
+        .split(',')
+        .map { HASH(it) }
+}
 
 fun part1(hashes: List<HASH>) = hashes.sumOf { it.hashCode() }
 
@@ -73,9 +77,11 @@ fun part2(hashes: List<HASH>): Int {
         }
     }
 
-    return boxes.flatMap { (key, value) ->
-        value.mapIndexed { index, hash -> (key + 1) * (index + 1) * hash.focus()!! }
-    }.sum()
+    return boxes
+        .flatMap { (key, value) ->
+            value.mapIndexed { index, hash -> (key + 1) * (index + 1) * hash.focus()!! }
+        }
+        .sum()
 }
 
 fun day15() {

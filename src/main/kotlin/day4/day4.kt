@@ -20,9 +20,17 @@ data class Card(val number: Int, val winners: Set<Int>, val mine: Set<Int>) {
 
 fun parseInput(fileType: DataFile): List<Card> {
     return fileToStream(4, fileType).mapIndexed { index, line ->
-        val sections = line.substringAfter(':').split('|')
-        val winners = sections[0].split(' ').filter { it.isNotBlank() }.map { it.toInt() }.toSet()
-        val mine = sections[1].split(' ').filter { it.isNotBlank() }.map { it.toInt() }.toSet()
+        val (winners, mine) = line
+            .substringAfter(':')
+            .split('|')
+            .map { section ->
+                section
+                    .split(' ')
+                    .filter { it.isNotBlank() }
+                    .map { it.toInt() }
+                    .toSet()
+            }
+
         Card(index + 1, winners, mine)
     }.toList()
 }

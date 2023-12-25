@@ -43,4 +43,9 @@ fun fileToStream(day: Int, fileType: DataFile) = fileToStream(fileType.filePath(
  * @param fileName The file to read
  * @return An iterable sequence of strings
  */
-fun fileToStream(fileName: String): Sequence<String> = File(fileName).inputStream().bufferedReader().lineSequence()
+fun fileToStream(fileName: String): Sequence<String> {
+    return File(fileName)
+        .inputStream()
+        .bufferedReader()
+        .lineSequence()
+}

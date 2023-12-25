@@ -8,11 +8,10 @@ import helper.report
  * Attempt to convert the given string into a numeric value. If it does not match one of the
  * supported values, return 0 as to not impact the solution.
  *
- * @param s The parsed string to convert to an int
  * @return The numeric representation of the string
  */
-fun wordStringToInt(s: String): Int {
-    return when (s) {
+fun String.wordStringToInt(): Int {
+    return when (this) {
         "one", "1" -> 1
         "two", "2" -> 2
         "three", "3" -> 3
@@ -36,8 +35,8 @@ fun wordStringToInt(s: String): Int {
  */
 fun solve(fileType: DataFile, validValues: List<String>): Int {
     return fileToStream(1, fileType).sumOf {
-        val first = wordStringToInt(it.findAnyOf(validValues)?.second ?: "0")
-        val last = wordStringToInt(it.findLastAnyOf(validValues)?.second ?: "0")
+        val first = (it.findAnyOf(validValues)?.second ?: "0").wordStringToInt()
+        val last = (it.findLastAnyOf(validValues)?.second ?: "0").wordStringToInt()
         (first * 10) + last
     }
 }

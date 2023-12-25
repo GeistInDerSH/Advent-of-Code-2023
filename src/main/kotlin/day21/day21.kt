@@ -22,9 +22,14 @@ data class Grid(private val start: Location, private val rocks: Set<Location>, p
      */
     private tailrec fun part1(locations: Set<Location>, step: Int, limit: Int): Int {
         return if (step < limit) {
-            val newLocations = locations.flatMap { loc ->
-                Direction.entries.map { loc + it }.filter { it !in rocks }
-            }.toSet()
+            val newLocations = locations
+                .flatMap { loc ->
+                    Direction
+                        .entries
+                        .map { loc + it }
+                        .filter { it !in rocks }
+                }
+                .toSet()
 
             part1(newLocations, step + 1, limit)
         } else {
@@ -49,15 +54,20 @@ data class Grid(private val start: Location, private val rocks: Set<Location>, p
         }
 
         return if (step < limit) {
-            val newLocations = locations.flatMap { loc ->
-                Direction.entries.map { loc + it }.filter { direction ->
-                    // Get the actual row / column in the original field
-                    val row = ((direction.row % lineLength) + lineLength) % lineLength
-                    val col = ((direction.col % lineLength) + lineLength) % lineLength
+            val newLocations = locations
+                .flatMap { loc ->
+                    Direction
+                        .entries
+                        .map { loc + it }
+                        .filter { direction ->
+                            // Get the actual row / column in the original field
+                            val row = ((direction.row % lineLength) + lineLength) % lineLength
+                            val col = ((direction.col % lineLength) + lineLength) % lineLength
 
-                    Location(row, col) !in rocks
+                            Location(row, col) !in rocks
+                        }
                 }
-            }.toSet()
+                .toSet()
 
             part2(newLocations, step + 1, limit, list)
         } else {
@@ -89,13 +99,20 @@ data class Grid(private val start: Location, private val rocks: Set<Location>, p
     companion object {
         fun parseInput(dataFile: DataFile): Grid {
             var lineLength = 0
-            val parsed = fileToStream(21, dataFile).flatMapIndexed { row, line ->
-                lineLength = line.length
-                line.mapIndexed { col, c -> Obstacle(row, col, c) }
-            }.toList()
+            val parsed = fileToStream(21, dataFile)
+                .flatMapIndexed { row, line ->
+                    lineLength = line.length
+                    line.mapIndexed { col, c -> Obstacle(row, col, c) }
+                }
+                .toList()
 
-            val start = parsed.first { it.char == 'S' }.let { Location(it.row, it.col) }
-            val rocks = parsed.filter { it.char == '#' }.map { Location(it.row, it.col) }.toSet()
+            val start = parsed
+                .first { it.char == 'S' }
+                .let { Location(it.row, it.col) }
+            val rocks = parsed
+                .filter { it.char == '#' }
+                .map { Location(it.row, it.col) }
+                .toSet()
             return Grid(start, rocks, lineLength)
         }
     }

@@ -42,8 +42,7 @@ data class GearProcessing(private val workflow: Map<String, List<Condition>>, pr
             while (workflowName !in termination) {
                 workflowName = workflow[workflowName]!!.map { it.eval(value) }.first { it.isNotEmpty() }
             }
-            if (workflowName == "A") value.sum()
-            else 0
+            if (workflowName == "A") value.sum() else 0
         }
     }
 
@@ -110,27 +109,35 @@ data class GearProcessing(private val workflow: Map<String, List<Condition>>, pr
 
             val workflow = code.lines().associate { line ->
                 val stage = line.substringBefore('{')
-                val conditions = line.substringAfter('{').substringBefore('}').split(',').map { cond ->
-                    if (!cond.contains("[<>]".toRegex())) {
-                        Condition("", 0, cond, ' ')
-                    } else {
-                        val delim = if ('<' in cond) '<' else '>'
-                        val key = cond.substringBefore(delim)
-                        val number = cond.substringAfter(delim).substringBefore(':').toInt()
-                        val dest = cond.substringAfter(':')
+                val conditions = line
+                    .substringAfter('{')
+                    .substringBefore('}')
+                    .split(',')
+                    .map { cond ->
+                        if (!cond.contains("[<>]".toRegex())) {
+                            Condition("", 0, cond, ' ')
+                        } else {
+                            val delim = if ('<' in cond) '<' else '>'
+                            val key = cond.substringBefore(delim)
+                            val number = cond.substringAfter(delim).substringBefore(':').toInt()
+                            val dest = cond.substringAfter(':')
 
-                        Condition(key, number, dest, delim)
+                            Condition(key, number, dest, delim)
+                        }
                     }
-                }
+
                 stage to conditions
             }
 
 
             val parsedData = data.lines().map { line ->
-                val parts = line.substring(1, line.length - 1).split(',').associate {
-                    val (k, v) = it.split('=')
-                    k to v.toLong()
-                }
+                val parts = line
+                    .substring(1, line.length - 1)
+                    .split(',')
+                    .associate {
+                        val (k, v) = it.split('=')
+                        k to v.toLong()
+                    }
                 Data(parts)
             }
 

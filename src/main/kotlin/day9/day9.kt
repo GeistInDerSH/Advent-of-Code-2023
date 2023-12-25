@@ -72,9 +72,15 @@ data class Sensor(val history: MutableList<Int>) {
 }
 
 fun parseInput(fileType: DataFile): List<Sensor> {
-    return fileToStream(9, fileType).map { line ->
-        Sensor(line.split(' ').map { it.toInt() }.toMutableList())
-    }.toList()
+    return fileToStream(9, fileType)
+        .map { line ->
+            val history = line
+                .split(' ')
+                .map { it.toInt() }
+                .toMutableList()
+            Sensor(history)
+        }
+        .toList()
 }
 
 fun part1(sequences: List<Sensor>) = sequences.sumOf { it.next() }

@@ -23,11 +23,10 @@ data class Vertex(val position: Pair<Int, Int>, var plane: Plane, val heatLoss: 
 
 data class Graph(val nodes: List<List<Int>>) {
     private val vertices = run {
+        val planes = listOf(Plane.Vertical, Plane.Horizontal)
         val vertices = nodes.indices.flatMap { y ->
             nodes[0].indices.flatMap { x ->
-                listOf(Plane.Vertical, Plane.Horizontal).map {
-                    Vertex(Pair(x, y), it, nodes[y][x])
-                }
+                planes.map { Vertex(Pair(x, y), it, nodes[y][x]) }
             }
         }
 
@@ -179,7 +178,10 @@ data class Graph(val nodes: List<List<Int>>) {
 
     companion object {
         fun parseInput(fileType: DataFile): Graph {
-            return Graph(fileToStream(17, fileType).map { line -> line.map { it.digitToInt() } }.toList())
+            val nodes = fileToStream(17, fileType)
+                .map { line -> line.map { it.digitToInt() } }
+                .toList()
+            return Graph(nodes)
         }
     }
 }

@@ -42,7 +42,14 @@ fun part1(walk: Walk) = walk.getStepsCount("AAA", "ZZZ")
 /**
  * @return The minimum number of steps to get from all nodes ending in "A" to all ending in "Z"
  */
-fun part2(walk: Walk) = walk.nodes.keys.filter { it.endsWith('A') }.map { walk.getStepsCount(it, "Z") }.lcm()
+fun part2(walk: Walk): Long {
+    return walk
+        .nodes
+        .keys
+        .filter { it.endsWith('A') }
+        .map { walk.getStepsCount(it, "Z") }
+        .lcm()
+}
 
 fun day8() {
     val input = parseInput(DataFile.Part1.filePath(8))

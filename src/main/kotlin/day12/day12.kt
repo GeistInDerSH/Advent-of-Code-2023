@@ -74,30 +74,36 @@ data class SpringRecord(val springs: String, val records: List<Int>) {
 }
 
 fun parseInput(fileType: DataFile, unfoldCount: Int): List<SpringRecord> {
-    return fileToStream(12, fileType).map { line ->
-        val (rawSprings, data) = line.split(' ')
-        val rawRecords = data.split(',').map { it.toInt() }
+    return fileToStream(12, fileType)
+        .map { line ->
+            val (rawSprings, data) = line.split(' ')
+            val rawRecords = data.split(',').map { it.toInt() }
 
-        val springs = if (unfoldCount > 0) {
-            // ##. -> ##.?##.?##.?
-            (0..<unfoldCount - 1).joinToString(separator = "") { "$rawSprings?" } + rawSprings
-        } else {
-            // ##. -> ##.
-            rawSprings
+            val springs = if (unfoldCount > 0) {
+                // ##. -> ##.?##.?##.?
+                (0..<unfoldCount - 1).joinToString(separator = "") { "$rawSprings?" } + rawSprings
+            } else {
+                // ##. -> ##.
+                rawSprings
+            }
+
+            val records = if (unfoldCount > 0) {
+                (0..<unfoldCount).flatMap { rawRecords }
+            } else {
+                rawRecords
+            }
+
+            SpringRecord(springs, records)
         }
-
-        val records = if (unfoldCount > 0) {
-            (0..<unfoldCount).flatMap { rawRecords }
-        } else {
-            rawRecords
-        }
-
-        SpringRecord(springs, records)
-    }.toList()
+        .toList()
 }
 
-fun solution(input: List<SpringRecord>): Long =
-    input.parallelStream().map { it.permutationCount() }.reduce(0) { acc, p -> acc + p }
+fun solution(input: List<SpringRecord>): Long {
+    return input
+        .parallelStream()
+        .map { it.permutationCount() }
+        .reduce(0) { acc, p -> acc + p }
+}
 
 fun part1(fileType: DataFile): Long = solution(parseInput(fileType, 0))
 fun part2(fileType: DataFile): Long = solution(parseInput(fileType, 5))

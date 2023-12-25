@@ -5,9 +5,15 @@ import helper.files.fileToStream
 import helper.report
 
 fun parseInput(fileType: DataFile): Map<Long, Long> {
-    val lines = fileToStream(6, fileType).toList()
-    val times = lines[0].substringAfter(':').trim().split(' ').filter { it.isNotBlank() }.map { it.toLong() }
-    val distance = lines[1].substringAfter(':').trim().split(' ').filter { it.isNotBlank() }.map { it.toLong() }
+    val (times, distance) = fileToStream(6, fileType)
+        .map { line ->
+            line.substringAfter(':')
+                .trim()
+                .split(' ')
+                .filter { it.isNotBlank() }
+                .map { it.toLong() }
+        }
+        .toList()
     return times.zip(distance).associate { it.first to it.second }
 }
 
@@ -18,13 +24,20 @@ fun parseInput(fileType: DataFile): Map<Long, Long> {
  * @param recordDistance The distance to beat
  * @return The number of winning plays to make
  */
-fun getPossibleWinCount(raceTime: Long, recordDistance: Long) =
-    (0..raceTime).count { (it * (raceTime - it)) > recordDistance }.toLong()
+fun getPossibleWinCount(raceTime: Long, recordDistance: Long): Long {
+    return (0..raceTime)
+        .count { (it * (raceTime - it)) > recordDistance }
+        .toLong()
+}
 
 /**
  * @return The product of the number of winning moves
  */
-fun part1(map: Map<Long, Long>) = map.map { getPossibleWinCount(it.key, it.value) }.reduce { acc, i -> acc * i }
+fun part1(map: Map<Long, Long>): Long {
+    return map
+        .map { getPossibleWinCount(it.key, it.value) }
+        .reduce { acc, i -> acc * i }
+}
 
 /**
  * @return The number of winning moves

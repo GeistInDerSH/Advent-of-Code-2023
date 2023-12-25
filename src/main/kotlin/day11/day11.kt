@@ -44,13 +44,13 @@ fun parseInput(fileType: DataFile): StarChart {
 
     // We just want the X,Y values for the galaxies as a pair
     val galaxies = raw.flatMapIndexed { x: Int, row: List<Char> ->
-        row.mapIndexed { y, c ->
+        row.mapIndexedNotNull { y, c ->
             if (c == '.') {
                 null
             } else {
                 Galaxy(x, y)
             }
-        }.filterNotNull()
+        }
     }
 
     return StarChart(galaxies, emptyRows, emptyCol)
@@ -63,7 +63,7 @@ fun day11() {
     val input = parseInput(DataFile.Part1)
     report(
         dayNumber = 11,
-        part1 = part1(input), // 9543156
-        part2 = part2(input), // 625243292686
+        part1 = part1(input),
+        part2 = part2(input),
     )
 }

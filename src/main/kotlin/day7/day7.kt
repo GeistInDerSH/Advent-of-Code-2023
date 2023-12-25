@@ -74,10 +74,13 @@ data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean
 }
 
 fun parseInput(fileType: DataFile, includeJokers: Boolean): List<Hand> {
-    return fileToStream(7, fileType).map {
-        val (cards, bid) = it.split(' ')
-        Hand(cards.toList(), bid.toLong(), includeJokers)
-    }.toList().sortedWith(Hand)
+    return fileToStream(7, fileType)
+        .map {
+            val (cards, bid) = it.split(' ')
+            Hand(cards.toList(), bid.toLong(), includeJokers)
+        }
+        .toList()
+        .sortedWith(Hand)
 }
 
 fun part1(fileType: DataFile) = part1(parseInput(fileType, false))

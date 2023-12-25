@@ -33,7 +33,7 @@ class Day1KtTest {
         )
 
         mapping.forEach { (input, expected) ->
-            assertEquals(wordStringToInt(input), expected)
+            assertEquals(input.wordStringToInt(), expected)
         }
     }
 

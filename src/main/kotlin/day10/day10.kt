@@ -1,5 +1,6 @@
 package day10
 
+import helper.enums.Direction
 import helper.files.DataFile
 import helper.files.fileToStream
 import helper.report
@@ -21,7 +22,9 @@ class Grid(private val tiles: List<List<Tile>>) {
     private val loops: MutableList<List<Pair<Int, Int>>> = mutableListOf()
 
     fun getTileAt(pair: Pair<Int, Int>) = tiles[pair.first][pair.second]
-    fun toFlatSet() = tiles.flatMap { tile -> tile.map { it.row to it.col } }.toSet()
+    fun toFlatSet() = tiles
+        .flatMap { tile -> tile.map { it.position } }
+        .toSet()
 
     private fun getFirstUnvisitedOrNull(positions: List<Pair<Int, Int>>): Pair<Int, Int>? {
         for (pos in positions) {
@@ -108,10 +111,11 @@ class Grid(private val tiles: List<List<Tile>>) {
 
 data class Tile(val symbol: Char, val row: Int, val col: Int) {
     // Be lazy about determining what the next positions are, as we likely won't use most of them
-    val left: Pair<Int, Int> by lazy { row to col - 1 }
-    val right: Pair<Int, Int> by lazy { row to col + 1 }
-    val up: Pair<Int, Int> by lazy { row - 1 to col }
-    val down: Pair<Int, Int> by lazy { row + 1 to col }
+    val position = Pair(row, col)
+    val left: Pair<Int, Int> by lazy { Direction.West + position }
+    val right: Pair<Int, Int> by lazy { Direction.East + position }
+    val up: Pair<Int, Int> by lazy { Direction.North + position }
+    val down: Pair<Int, Int> by lazy { Direction.South + position }
     private var visited = false
 
     fun hasBeenVisited() = visited
@@ -121,9 +125,11 @@ data class Tile(val symbol: Char, val row: Int, val col: Int) {
 }
 
 fun parseInput(fileType: DataFile): Grid {
-    val tiles = fileToStream(10, fileType).mapIndexed { row, line ->
-        line.mapIndexed { col, it -> Tile(it, row, col) }
-    }.toList()
+    val tiles = fileToStream(10, fileType)
+        .mapIndexed { row, line ->
+            line.mapIndexed { col, it -> Tile(it, row, col) }
+        }
+        .toList()
     return Grid(tiles)
 }
 
@@ -134,9 +140,13 @@ fun part2(tiles: Grid): Int {
     val crossings = "|7F".toSet()
     // Use a form of [Ray Casting](https://en.wikipedia.org/wiki/Ray_casting#In-out_ray_classification) to determine
     // what values are in and out of the loop
-    return (tiles.toFlatSet() - loop).parallelStream().map { tile ->
-        loop.count { it.first == tile.first && it.second in 0..<tile.second && tiles.getTileAt(it).symbol in crossings }
-    }.toList().count { it % 2 == 1 }
+    return (tiles.toFlatSet() - loop)
+        .parallelStream()
+        .map { tile ->
+            loop.count { it.first == tile.first && it.second in 0..<tile.second && tiles.getTileAt(it).symbol in crossings }
+        }
+        .toList()
+        .count { it % 2 == 1 }
 }
 
 fun day10() {

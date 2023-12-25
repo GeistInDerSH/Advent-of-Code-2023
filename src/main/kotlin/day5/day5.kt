@@ -40,14 +40,16 @@ data class CropMapping(val sourceStart: Long, val sourceEnd: Long, val offset: L
 
 fun parseInput(fileType: DataFile): Almanac {
     val lines = fileToString(5, fileType).split("\n\n")
-    val seeds = lines.first().substringAfter(':').trim().split(' ').map { it.toLong() }
+    val seeds = lines
+        .first()
+        .substringAfter(':')
+        .trim()
+        .split(' ')
+        .map { it.toLong() }
 
     val mappings = lines.drop(1).map { line ->
         line.split('\n').drop(1).map {
-            val nums = it.split(' ').map { num -> num.toLong() }
-            val dest = nums[0]
-            val src = nums[1]
-            val size = nums[2]
+            val (dest, src, size) = it.split(' ').map { num -> num.toLong() }
             // Calculate the end of the source range, and the offset we will jump to if there is a match,
             // so we don't have to do it later
             CropMapping(src, src + size, dest - src)
@@ -73,17 +75,16 @@ fun part1(almanac: Almanac) = almanac.seeds.minOf { almanac.seedToLocation(it) }
  * @return The minimum value of the seed transformation
  */
 fun part2(almanac: Almanac): Long {
-    return almanac.seeds.chunked(2).parallelStream()
-        .map { (start, length) ->
-            (start..<start + length).minOf { almanac.seedToLocation(it) }
-        }.toList().minOf { it }
+    return almanac
+        .seeds
+        .chunked(2)
+        .parallelStream()
+        .map { (start, length) -> (start..<start + length).minOf { almanac.seedToLocation(it) } }
+        .toList()
+        .minOf { it }
 }
 
-fun day5(skip: Boolean = true) {
-    // Takes 10-30s to run depending on the machine, so it's best to skip by default
-    if (skip) {
-        return
-    }
+fun day5() {
     val input = parseInput(DataFile.Part1)
     report(
         dayNumber = 5,
