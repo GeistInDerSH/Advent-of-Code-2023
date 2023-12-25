@@ -15,6 +15,7 @@ import day21.day21
 import day22.day22
 import day23.day23
 import day24.day24
+import day25.day25
 import day3.day3
 import day4.day4
 import day5.day5
@@ -48,4 +49,5 @@ fun main() {
     day22()
     day23()
     day24()
+    day25()
 }
