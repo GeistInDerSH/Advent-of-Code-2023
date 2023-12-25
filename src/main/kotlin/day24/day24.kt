@@ -7,7 +7,7 @@ import helper.report
 data class Vector(val px: Double, val py: Double, val pz: Double, val vx: Double, val vy: Double, val vz: Double) {
     private val a = vy
     private val b = -vx
-    private val c = vy * px - vx * py
+    val c = vy * px - vx * py
 
     private fun isParallel(other: Vector) = a * other.b == b * other.a
 
@@ -47,6 +47,54 @@ data class Hailstones(val vectors: Set<Vector>) {
             }
             .sumOf { it }
     }
+
+    private fun solve(a: List<List<Double>>, b: List<List<Double>>): List<Double> {
+        val m = a.zip(b).map { (a, b) -> a + b }
+        val n = m
+            .take(4)
+            .map { lst ->
+                lst.zip(m[4])
+                    .map { it.first - it.second }
+                    .toMutableList()
+            }
+            .toMutableList()
+
+        n.indices.forEach { i ->
+            n[i] = n[i].indices
+                .map { k -> n[i][k] / n[i][i] }
+                .toMutableList()
+
+            (i + 1..<n.size).forEach { j ->
+                n[j] = n[i]
+                    .indices
+                    .map { k -> n[j][k] - n[i][k] * n[j][i] }
+                    .toMutableList()
+            }
+        }
+
+        n.indices.reversed().forEach { i ->
+            (0..<i).forEach { j ->
+                n[j] = n[i]
+                    .indices
+                    .map { k -> n[j][k] - n[i][k] * n[j][i] }
+                    .toMutableList()
+            }
+        }
+
+        return n.map { it.last() }
+    }
+
+    fun part2(): Long {
+        val xyA = vectors.map { listOf(it.vx, -it.vy, it.px, it.py) }
+        val xyB = vectors.map { listOf(it.py * it.vx - it.px * it.vy) }
+        val yzA = vectors.map { listOf(it.vy, -it.vz, it.py, it.pz) }
+        val yzB = vectors.map { listOf(it.pz * it.vy - it.py * it.vz) }
+
+        val (x, y, _) = solve(xyA, xyB)
+        val (z, _) = solve(yzA, yzB)
+
+        return (x + y + z).toLong()
+    }
 }
 
 fun parseInput(dataFile: DataFile): Hailstones {
@@ -64,7 +112,7 @@ fun day24() {
     report(
         dayNumber = 24,
         part1 = input.part1(200000000000000, 400000000000000),
-        part2 = "",
+        part2 = input.part2(),
     )
     // val input = parseInput(DataFile.Example)
     // report(
