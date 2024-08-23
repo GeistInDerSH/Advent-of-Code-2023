@@ -16,7 +16,6 @@ class Day7(dataFile: DataFile) {
         }
         .toList()
         .drop(1)
-        .reversed()
 
     interface Cmd
     private data class Command(val name: String, val arg: String?) : Cmd
@@ -36,51 +35,40 @@ class Day7(dataFile: DataFile) {
         }
     }
 
-    private fun directoryWalk(
-        cwd: String,
-        commands: List<Cmd>,
-        tree: Map<String, Tree>
-    ): Pair<String, Map<String, Tree>> {
-        return if (commands.size == 1) {
-            when (val command = commands[0]) {
+    private fun directoryWalk(): Map<String, Tree> {
+        var cwd = "/"
+        val dirTree = mutableMapOf<String, Tree>()
+        for (cmd in commands) {
+            when (cmd) {
                 is Command -> {
-                    if (command.name == "ls") {
-                        Pair(cwd, tree)
-                    } else {
-                        val dirName = command.arg ?: ""
-                        val newDir = getNewDirName(cwd, dirName)
-                        Pair(newDir, tree)
+                    if (cmd.name == "ls") {
+                        continue
                     }
+                    val dirName = cmd.arg ?: ""
+                    cwd = getNewDirName(cwd, dirName)
                 }
 
                 is Dir -> {
-                    val name = getNewDirName(cwd, command.name)
+                    val name = getNewDirName(cwd, cmd.name)
                     val newDir = Tree(name, mutableListOf(), mutableListOf())
-                    val dirEntry: Tree = tree[cwd] ?: Tree(cwd, emptyList(), emptyList())
+                    val dirEntry: Tree = dirTree[cwd] ?: Tree(cwd, emptyList(), emptyList())
                     val updatedDir = Tree(name, dirEntry.subDirs + listOf(name), dirEntry.files)
-                    val updatedTree = tree.toMutableMap()
-                    updatedTree[cwd] = updatedDir
-                    updatedTree[name] = newDir
-                    Pair(cwd, updatedTree.toMap())
+
+                    dirTree[cwd] = updatedDir
+                    dirTree[name] = newDir
                 }
 
                 is File -> {
-                    val dirEntry = tree[cwd] as Tree
-                    val newFiles = dirEntry.files + listOf(command)
-                    val updatedDir = Tree(cwd, dirEntry.subDirs, newFiles)
-
-                    val updatedTree = tree.toMutableMap()
-                    updatedTree[cwd] = updatedDir
-                    Pair(cwd, updatedTree.toMap())
+                    val dirEntry = dirTree[cwd] as Tree
+                    val newFiles = dirEntry.files + listOf(cmd)
+                    dirTree[cwd] = Tree(cwd, dirEntry.subDirs, newFiles)
                 }
 
                 else -> throw UnknownError("Could not reach")
             }
-        } else {
-            val command = commands[0]
-            val (workDir, dirTree) = directoryWalk(cwd, commands.drop(1), tree)
-            directoryWalk(workDir, listOf(command), dirTree)
         }
+
+        return dirTree
     }
 
     private fun sumSize(root: Map<String, Tree>, dir: Tree): Int {
@@ -93,7 +81,7 @@ class Day7(dataFile: DataFile) {
     }
 
     fun part1(): Int {
-        val fs = directoryWalk("/", commands, emptyMap()).second
+        val fs = directoryWalk()
         return fs
             .map { (_, value) -> sumSize(fs, value) }
             .filter { it < 100000 }
@@ -102,7 +90,7 @@ class Day7(dataFile: DataFile) {
 
     fun part2(): Int {
         val spaceNeeded = 30000000
-        val fs = directoryWalk("/", commands, emptyMap()).second
+        val fs = directoryWalk()
         val spaceUsed = sumSize(fs, fs["/"]!!)
         val spaceAvail = 70000000 - spaceUsed
         val toFree = spaceNeeded - spaceAvail
