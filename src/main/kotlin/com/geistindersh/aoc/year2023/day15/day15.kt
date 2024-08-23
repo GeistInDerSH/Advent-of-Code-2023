@@ -51,7 +51,7 @@ data class HASH(val string: String) {
 }
 
 fun parseInput(fileType: DataFile): List<HASH> {
-    return fileToString(15, fileType)
+    return fileToString(2023, 15, fileType)
         .split(',')
         .map { HASH(it) }
 }
@@ -88,6 +88,7 @@ fun day15() {
     val input = parseInput(DataFile.Part1)
 
     report(
+        year = 2023,
         dayNumber = 15,
         part1 = part1(input),
         part2 = part2(input),

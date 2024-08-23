@@ -178,7 +178,7 @@ data class Graph(val nodes: List<List<Int>>) {
 
     companion object {
         fun parseInput(fileType: DataFile): Graph {
-            val nodes = fileToStream(17, fileType)
+            val nodes = fileToStream(2023, 17, fileType)
                 .map { line -> line.map { it.digitToInt() } }
                 .toList()
             return Graph(nodes)
@@ -191,6 +191,7 @@ fun part2(fileType: DataFile) = Graph.parseInput(fileType).solution(4, 10)
 
 fun day17() {
     report(
+        year = 2023,
         dayNumber = 17,
         part1 = part1(DataFile.Part1),
         part2 = part2(DataFile.Part1),

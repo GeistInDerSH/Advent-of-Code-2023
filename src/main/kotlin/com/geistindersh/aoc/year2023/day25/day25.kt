@@ -83,7 +83,7 @@ fun part1(connections: MutableMap<String, MutableList<String>>): Int {
 fun parseInput(dataFile: DataFile): MutableMap<String, MutableList<String>> {
     val nodes = mutableMapOf<String, MutableList<String>>()
 
-    fileToStream(25, dataFile).forEach {
+    fileToStream(2023, 25, dataFile).forEach {
         val key = it.substringBefore(':')
         val values = it
             .substringAfter(':')
@@ -106,6 +106,7 @@ fun day25() {
     val input = parseInput(DataFile.Part1)
 
     report(
+        year = 2023,
         dayNumber = 25,
         part1 = part1(input),
         part2 = "Push the button!",

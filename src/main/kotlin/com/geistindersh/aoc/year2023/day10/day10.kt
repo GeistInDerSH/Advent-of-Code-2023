@@ -125,7 +125,7 @@ data class Tile(val symbol: Char, val row: Int, val col: Int) {
 }
 
 fun parseInput(fileType: DataFile): Grid {
-    val tiles = fileToStream(10, fileType)
+    val tiles = fileToStream(2023, 10, fileType)
         .mapIndexed { row, line ->
             line.mapIndexed { col, it -> Tile(it, row, col) }
         }
@@ -152,6 +152,7 @@ fun part2(tiles: Grid): Int {
 fun day10() {
     val input = parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 10,
         part1 = part1(input),
         part2 = part2(input),

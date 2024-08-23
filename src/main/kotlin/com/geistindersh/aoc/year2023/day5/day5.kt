@@ -39,7 +39,7 @@ data class Almanac(val seeds: List<Long>, val mappings: List<List<CropMapping>>)
 data class CropMapping(val sourceStart: Long, val sourceEnd: Long, val offset: Long)
 
 fun parseInput(fileType: DataFile): Almanac {
-    val lines = fileToString(5, fileType).split("\n\n")
+    val lines = fileToString(2023, 5, fileType).split("\n\n")
     val seeds = lines
         .first()
         .substringAfter(':')
@@ -87,6 +87,7 @@ fun part2(almanac: Almanac): Long {
 fun day5() {
     val input = parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 5,
         part1 = part1(input),
         part2 = part2(input),

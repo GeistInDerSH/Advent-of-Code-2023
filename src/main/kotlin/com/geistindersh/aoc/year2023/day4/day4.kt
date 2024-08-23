@@ -19,7 +19,7 @@ data class Card(val number: Int, val winners: Set<Int>, val mine: Set<Int>) {
 }
 
 fun parseInput(fileType: DataFile): List<Card> {
-    return fileToStream(4, fileType).mapIndexed { index, line ->
+    return fileToStream(2023, 4, fileType).mapIndexed { index, line ->
         val (winners, mine) = line
             .substringAfter(':')
             .split('|')
@@ -67,6 +67,7 @@ fun part2(cards: List<Card>): Int {
 fun day4() {
     val cards = parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 4,
         part1 = part1(cards),
         part2 = part2(cards)

@@ -105,7 +105,7 @@ data class GearProcessing(private val workflow: Map<String, List<Condition>>, pr
 
     companion object {
         fun parseInput(fileType: DataFile): GearProcessing {
-            val (code, data) = fileToString(19, fileType).split("\n\n")
+            val (code, data) = fileToString(2023, 19, fileType).split("\n\n")
 
             val workflow = code.lines().associate { line ->
                 val stage = line.substringBefore('{')
@@ -149,6 +149,7 @@ data class GearProcessing(private val workflow: Map<String, List<Condition>>, pr
 fun day19() {
     val gears = GearProcessing.parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 19,
         part1 = gears.part1(),
         part2 = gears.part2(),

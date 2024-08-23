@@ -63,7 +63,7 @@ fun hasOverlap(srcRow: Int, destRow: Int, srcColStart: Int, srcColEnd: Int, dest
 }
 
 fun parseInput(fileType: DataFile): Pair<List<Symbol>, List<Number>> {
-    val lines = fileToStream(3, fileType).toList()
+    val lines = fileToStream(2023, 3, fileType).toList()
 
     // Extract only the symbols; these are any special characters that are non-`.`
     val symbols = lines.flatMapIndexed { row, line ->
@@ -135,6 +135,7 @@ fun part2(symbols: List<Symbol>, numbers: List<Number>): Int {
 fun day3() {
     val (symbols, numbers) = parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 3,
         part1 = part1(symbols, numbers),
         part2 = part2(symbols, numbers),

@@ -74,7 +74,7 @@ data class SpringRecord(val springs: String, val records: List<Int>) {
 }
 
 fun parseInput(fileType: DataFile, unfoldCount: Int): List<SpringRecord> {
-    return fileToStream(12, fileType)
+    return fileToStream(2023, 12, fileType)
         .map { line ->
             val (rawSprings, data) = line.split(' ')
             val rawRecords = data.split(',').map { it.toInt() }
@@ -112,6 +112,7 @@ fun day12() {
     val fileName = DataFile.Part1
 
     report(
+        year = 2023,
         dayNumber = 12,
         part1 = part1(fileName),
         part2 = part2(fileName),

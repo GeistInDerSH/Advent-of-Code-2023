@@ -72,7 +72,7 @@ data class Sensor(val history: MutableList<Int>) {
 }
 
 fun parseInput(fileType: DataFile): List<Sensor> {
-    return fileToStream(9, fileType)
+    return fileToStream(2023, 9, fileType)
         .map { line ->
             val history = line
                 .split(' ')
@@ -90,6 +90,7 @@ fun part2(sequences: List<Sensor>) = sequences.sumOf { it.previous() }
 fun day9() {
     val input = parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 9,
         part1 = part1(input),
         part2 = part2(input),

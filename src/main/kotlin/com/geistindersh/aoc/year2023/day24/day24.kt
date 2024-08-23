@@ -111,7 +111,7 @@ data class Hailstones(val vectors: Set<Vector>) {
 }
 
 fun parseInput(dataFile: DataFile): Hailstones {
-    val hail = fileToStream(24, dataFile)
+    val hail = fileToStream(2023, 24, dataFile)
         .map { line ->
             val (pos, vel) = line.split(" @ ")
             val (px, py, pz) = pos.split(',').map { it.trim().toDouble() }
@@ -125,6 +125,7 @@ fun parseInput(dataFile: DataFile): Hailstones {
 fun day24() {
     val input = parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 24,
         part1 = input.part1(200000000000000, 400000000000000),
         part2 = input.part2(),

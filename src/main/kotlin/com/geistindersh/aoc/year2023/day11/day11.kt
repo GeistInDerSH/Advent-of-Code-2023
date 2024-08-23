@@ -35,7 +35,7 @@ data class StarChart(val galaxies: List<Galaxy>, val emptyRows: Set<Int>, val em
 
 
 fun parseInput(fileType: DataFile): StarChart {
-    val raw = fileToStream(11, fileType).map { it.toList() }.toList()
+    val raw = fileToStream(2023, 11, fileType).map { it.toList() }.toList()
 
     // Get the indexes of the empty rows and columns, so we can statically check this later.
     // Attempting to expand the raw value into the correct size causes OOM errors (rightfully so...)
@@ -62,6 +62,7 @@ fun part2(chart: StarChart) = chart.sumDistanceWithEmptySpace(1000000)
 fun day11() {
     val input = parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 11,
         part1 = part1(input),
         part2 = part2(input),

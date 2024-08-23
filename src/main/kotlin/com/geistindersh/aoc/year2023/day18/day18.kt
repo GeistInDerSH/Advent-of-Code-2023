@@ -31,7 +31,7 @@ data class DigPlan(private val digLocations: List<DigLocation>) {
 }
 
 fun part1(dataFile: DataFile): Long {
-    val plan = fileToStream(18, dataFile)
+    val plan = fileToStream(2023, 18, dataFile)
         .map { line ->
             val (dir, dis, _) = line.split(' ')
             val direction = Direction.tryFromString(dir) ?: throw Exception("Couldn't convert $dir to Direction")
@@ -43,7 +43,7 @@ fun part1(dataFile: DataFile): Long {
 }
 
 fun part2(dataFile: DataFile): Long {
-    val plan = fileToStream(18, dataFile)
+    val plan = fileToStream(2023, 18, dataFile)
         .map { line ->
             val (_, _, hex) = line.split(' ')
             val hexString = hex.substringAfter('#').substringBefore(')')
@@ -63,6 +63,7 @@ fun part2(dataFile: DataFile): Long {
 fun day18() {
     val file = DataFile.Part1
     report(
+        year = 2023,
         dayNumber = 18,
         part1 = part1(file),
         part2 = part2(file),

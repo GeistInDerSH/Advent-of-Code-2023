@@ -15,7 +15,7 @@ data class MirrorGrid(val grid: List<List<Char>>) {
 
     companion object {
         fun parseInput(fileType: DataFile): MirrorGrid {
-            val grid = fileToStream(16, fileType).map { it.toList() }.toList()
+            val grid = fileToStream(2023, 16, fileType).map { it.toList() }.toList()
             return MirrorGrid(grid)
         }
     }
@@ -97,6 +97,7 @@ data class MirrorGrid(val grid: List<List<Char>>) {
 fun day16() {
     val input = MirrorGrid.parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 16,
         part1 = input.part1(),
         part2 = input.part2(),

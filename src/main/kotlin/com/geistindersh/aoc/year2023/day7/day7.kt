@@ -74,7 +74,7 @@ data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean
 }
 
 fun parseInput(fileType: DataFile, includeJokers: Boolean): List<Hand> {
-    return fileToStream(7, fileType)
+    return fileToStream(2023, 7, fileType)
         .map {
             val (cards, bid) = it.split(' ')
             Hand(cards.toList(), bid.toLong(), includeJokers)
@@ -91,6 +91,7 @@ fun part2(fileType: DataFile) = part1(parseInput(fileType, true))
 fun day7() {
     val fileName = DataFile.Part1
     report(
+        year = 2023,
         dayNumber = 7,
         part1 = part1(fileName),
         part2 = part2(fileName),

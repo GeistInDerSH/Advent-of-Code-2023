@@ -5,7 +5,7 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 fun parseInput(fileType: DataFile): Map<Long, Long> {
-    val (times, distance) = fileToStream(6, fileType)
+    val (times, distance) = fileToStream(2023, 6, fileType)
         .map { line ->
             line.substringAfter(':')
                 .trim()
@@ -51,6 +51,7 @@ fun part2(map: Map<Long, Long>): Long {
 fun day6() {
     val input = parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 6,
         part1 = part1(input),
         part2 = part2(input),
