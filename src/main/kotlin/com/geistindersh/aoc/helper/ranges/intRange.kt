@@ -23,7 +23,7 @@ fun IntRange.intersect(other: IntRange): IntRange {
  */
 @Suppress("unused")
 fun IntRange.hasOverlap(other: IntRange): Boolean {
-    return hasOverlap(this.first, this.last, other.first, other.last)
+    return hasOverlap(this.first, other.last, this.last, other.first)
 }
 
 /**
@@ -37,4 +37,8 @@ fun IntRange.hasOverlap(other: IntRange): Boolean {
  */
 fun hasOverlap(start1: Int, end1: Int, start2: Int, end2: Int): Boolean {
     return start1 <= end1 && end2 <= start2
+}
+
+fun IntRange.isFullyContained(other: IntRange): Boolean {
+    return this.toSet().containsAll(other.toSet())
 }
