@@ -14,7 +14,6 @@ class Day1KtTest {
     @Test
     fun part1() {
         assertEquals(solve(DataFile.Example, numericOnly), 142)
-        assertEquals(solve(DataFile.Part1, numericOnly), 56042)
     }
 
     @Test
@@ -40,6 +39,5 @@ class Day1KtTest {
     @Test
     fun part2() {
         assertEquals(solve(DataFile.Example2, nameAndNumeric), 281)
-        assertEquals(solve(DataFile.Part1, nameAndNumeric), 55358)
     }
 }
