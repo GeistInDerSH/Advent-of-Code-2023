@@ -34,7 +34,7 @@ fun String.wordStringToInt(): Int {
  * @return The sum of the found values
  */
 fun solve(fileType: DataFile, validValues: List<String>): Int {
-    return fileToStream(1, fileType).sumOf {
+    return fileToStream(2023, 1, fileType).sumOf {
         val first = (it.findAnyOf(validValues)?.second ?: "0").wordStringToInt()
         val last = (it.findLastAnyOf(validValues)?.second ?: "0").wordStringToInt()
         (first * 10) + last
@@ -50,6 +50,7 @@ fun day1() {
         "1", "2", "3", "4", "5", "6", "7", "8", "9"
     )
     report(
+        year = 2023,
         dayNumber = 1,
         part1 = solve(DataFile.Part1, validValuesNum),
         part2 = solve(DataFile.Part1, validValuesNumAndStr)

@@ -129,7 +129,7 @@ class Tower(private val bricks: List<Brick>) {
     companion object {
 
         fun parseInput(dataFile: DataFile): Tower {
-            val bricks = fileToStream(22, dataFile)
+            val bricks = fileToStream(2023, 22, dataFile)
                 .map { Brick.fromString(it) }
                 .toList()
             return Tower(bricks)
@@ -141,6 +141,7 @@ class Tower(private val bricks: List<Brick>) {
 fun day22() {
     val input = Tower.parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 22,
         part1 = input.part1(),
         part2 = input.part2(),

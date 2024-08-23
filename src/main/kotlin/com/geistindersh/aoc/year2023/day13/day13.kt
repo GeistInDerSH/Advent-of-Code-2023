@@ -74,7 +74,7 @@ data class Image(val image: List<String>) {
 }
 
 fun parseInput(type: DataFile): List<Image> {
-    return fileToString(13, type)
+    return fileToString(2023, 13, type)
         .split("\n\n")
         .map { Image(it.split('\n')) }
 }
@@ -86,6 +86,7 @@ fun day13() {
     val input = parseInput(DataFile.Part1)
 
     report(
+        year = 2023,
         dayNumber = 13,
         part1 = part1(input),
         part2 = part2(input),

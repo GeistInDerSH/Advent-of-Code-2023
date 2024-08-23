@@ -146,7 +146,7 @@ class Grid(private val rocks: List<LavaRock>) {
 }
 
 fun parseInput(fileType: DataFile): Grid {
-    val rocks = fileToStream(14, fileType)
+    val rocks = fileToStream(2023, 14, fileType)
         .toList()
         .reversed()
         .flatMapIndexed { row, string ->
@@ -166,6 +166,7 @@ fun day14() {
     val input = parseInput(DataFile.Part1)
 
     report(
+        year = 2023,
         dayNumber = 14,
         part1 = input.part1(),
         part2 = input.part2()

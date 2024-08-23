@@ -52,8 +52,9 @@ fun part2(walk: Walk): Long {
 }
 
 fun day8() {
-    val input = parseInput(DataFile.Part1.filePath(8))
+    val input = parseInput(DataFile.Part1.filePath(2023, 8))
     report(
+        year = 2023,
         dayNumber = 8,
         part1 = part1(input),
         part2 = part2(input),

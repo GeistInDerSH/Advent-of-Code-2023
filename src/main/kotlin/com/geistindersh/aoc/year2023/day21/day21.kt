@@ -99,7 +99,7 @@ data class Grid(private val start: Location, private val rocks: Set<Location>, p
     companion object {
         fun parseInput(dataFile: DataFile): Grid {
             var lineLength = 0
-            val parsed = fileToStream(21, dataFile)
+            val parsed = fileToStream(2023, 21, dataFile)
                 .flatMapIndexed { row, line ->
                     lineLength = line.length
                     line.mapIndexed { col, c -> Obstacle(row, col, c) }
@@ -126,6 +126,7 @@ fun day21(skip: Boolean = true) {
 
     val input = Grid.parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 21,
         part1 = input.part1(64),
         part2 = input.part2(26501365),

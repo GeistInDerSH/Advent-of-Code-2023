@@ -128,7 +128,7 @@ data class Hike(val trail: Set<Trail>) {
 }
 
 fun parseInput(dataFile: DataFile): Hike {
-    val trails = fileToStream(23, dataFile)
+    val trails = fileToStream(2023, 23, dataFile)
         .flatMapIndexed { row, line ->
             line.mapIndexed { col, c -> Trail(row, col, c) }
                 .filter { it.symbol != '#' }
@@ -143,6 +143,7 @@ fun day23(skip: Boolean = true) {
     }
     val input = parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 23,
         part1 = input.part1(),
         part2 = input.part2(),

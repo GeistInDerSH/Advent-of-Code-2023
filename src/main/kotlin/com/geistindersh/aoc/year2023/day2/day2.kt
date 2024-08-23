@@ -8,7 +8,7 @@ data class Pull(val red: Int, val blue: Int, val green: Int)
 data class Game(val id: Int, val pulls: List<Pull>)
 
 fun parseInput(fileType: DataFile): List<Game> {
-    return fileToStream(2, fileType).mapIndexed { index, s ->
+    return fileToStream(2023, 2, fileType).mapIndexed { index, s ->
         val pulls = s.substringAfter(':').split(";").map { sections ->
             // Map the name to the count, so we can do a lookup later
             val cubes = sections.split(",").map { it.trim() }.map {
@@ -70,6 +70,7 @@ fun day2() {
     val input = parseInput(DataFile.Part1)
     val cubeCounts = Pull(red = 12, blue = 14, green = 13)
     report(
+        year = 2023,
         dayNumber = 2,
         part1 = part1(input, cubeCounts),
         part2 = part2(input)

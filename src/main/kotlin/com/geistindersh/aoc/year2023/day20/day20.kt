@@ -213,7 +213,7 @@ data class Propagation(val modules: List<Module>) {
 
     companion object {
         fun parseInput(dataFile: DataFile): Propagation {
-            val modules = fileToStream(20, dataFile).map { Module.fromString(it) }.toList()
+            val modules = fileToStream(2023, 20, dataFile).map { Module.fromString(it) }.toList()
             return Propagation(modules)
         }
     }
@@ -223,6 +223,7 @@ data class Propagation(val modules: List<Module>) {
 fun day20() {
     val input = Propagation.parseInput(DataFile.Part1)
     report(
+        year = 2023,
         dayNumber = 20,
         part1 = input.part1(),
         part2 = input.part2(),
