@@ -2,6 +2,7 @@ package com.geistindersh.aoc.year2022
 
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
+import com.geistindersh.aoc.helper.report
 
 class Day5(dataFile: DataFile) {
     private val parts = fileToString(2022, 5, dataFile).split("\n\n")
@@ -62,4 +63,9 @@ class Day5(dataFile: DataFile) {
     fun part2() = applyMoves(cargo, commands, true)
         .map { it.last() }
         .joinToString("")
+}
+
+fun day5() {
+    val day = Day5(DataFile.Part1)
+    report(2022, 5, day.part1(), day.part2())
 }
