@@ -56,8 +56,8 @@ class Day16(dataFile: DataFile) {
             }
 
             val newState = state or pipeOffsetMap[pipe]!!
-            val newFlow = flow + newBudget * pipeOffsetMap[pipe]!!
-            localVisited = visit(pipe, newBudget, newState, newFlow, visited).toMutableMap()
+            val newFlow = flow + newBudget * pipeFlowMap[pipe]!!
+            localVisited = visit(pipe, newBudget, newState, newFlow, localVisited).toMutableMap()
         }
 
         return localVisited
