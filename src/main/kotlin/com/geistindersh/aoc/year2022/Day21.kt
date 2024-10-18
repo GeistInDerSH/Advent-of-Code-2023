@@ -15,12 +15,31 @@ class Day21(dataFile: DataFile) {
                 "/" -> Long::div
                 else -> throw IllegalArgumentException("Illegal op: $op")
             }
-            val invertFn: (Long, Long) -> Long = when (op) {
-                "-" -> Long::plus
-                "+" -> Long::minus
-                "/" -> Long::times
-                "*" -> Long::div
-                else -> throw IllegalArgumentException("Illegal op: $op")
+
+            val invertFn: (Long, Long) -> Long = op.let {
+                if (left == "") {
+                    when (op) {
+                        "-" -> Long::plus
+                        "+" -> Long::minus
+                        "/" -> Long::times
+                        "*" -> Long::div
+                        else -> throw IllegalArgumentException("Illegal op: $op")
+                    }
+                } else {
+                    when (op) {
+                        "+" -> Long::minus
+                        "-" -> { a, b -> b - a }
+                        "*" -> Long::div
+                        "/" -> { a, b -> b / a }
+                        else -> throw IllegalArgumentException("Illegal op: $op")
+                    }
+                }
+            }
+
+            fun invertValue() = if (left == "") {
+                right.toLong()
+            } else {
+                left.toLong()
             }
         }
     }
@@ -47,9 +66,43 @@ class Day21(dataFile: DataFile) {
         }
     }
 
+    private fun findOps(name: String): Pair<List<Fn.Func>, Long?> {
+        return if (name == "humn") {
+            emptyList<Fn.Func>() to null
+        } else {
+            findOps(table[name]!!)
+        }
+    }
+
+    private fun findOps(fn: Fn): Pair<List<Fn.Func>, Long?> {
+        val empty = emptyList<Fn.Func>()
+        return when (fn) {
+            is Fn.Const -> empty to fn.value
+            is Fn.Func -> {
+                val (lhsOps, lhs) = findOps(fn.left)
+                val (rhsOps, rhs) = findOps(fn.right)
+                when {
+                    lhs != null && rhs != null -> empty to fn.fn(lhs, rhs)
+                    lhs == null && rhs != null -> (lhsOps + listOf(Fn.Func(fn.op, "", "$rhs"))) to null
+                    lhs != null && rhs == null -> (rhsOps + listOf(Fn.Func(fn.op, "$lhs", ""))) to null
+                    else -> throw IllegalArgumentException("$fn")
+                }
+            }
+        }
+    }
+
     fun part1() = run("root")
 
-    fun part2() = 0
+    fun part2(): Long {
+        val root = table["root"]!! as Fn.Func
+        val (lhsOps, lhs) = findOps(root.left)
+        val (rhsOps, rhs) = findOps(root.right)
+        val ops = lhsOps.ifEmpty { rhsOps }.reversed()
+        val base = lhs ?: rhs!!
+
+        return ops
+            .fold(base) { acc, func -> func.invertFn(acc, func.invertValue()) }
+    }
 }
 
 fun day21() {
