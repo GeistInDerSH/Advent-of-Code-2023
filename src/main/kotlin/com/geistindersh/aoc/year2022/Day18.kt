@@ -103,6 +103,6 @@ class Day18(dataFile: DataFile) {
 }
 
 fun day18() {
-    val day = Day17(DataFile.Part1)
+    val day = Day18(DataFile.Part1)
     report(2022, 18, day.part1(), day.part2())
 }
