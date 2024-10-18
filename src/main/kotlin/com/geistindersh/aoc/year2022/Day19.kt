@@ -93,16 +93,16 @@ class Day19(dataFile: DataFile) {
     }
 
     private fun best(blueprint: Blueprint, minutes: Int): Int {
-        var currentBest = 0
+        var best = 0
         val queue = PriorityQueue<State>()
             .apply { add(State(minutes = minutes)) }
 
         while (queue.isNotEmpty()) {
             val state = queue.poll()
-            if (state.canOutproduce(currentBest)) queue.addAll(state.nextStates(blueprint))
-            currentBest = max(currentBest, state.geode + state.geodeRobots * (state.minutes - 1))
+            if (state.canOutproduce(best)) queue.addAll(state.nextStates(blueprint))
+            best = max(best, state.geode + state.geodeRobots * (state.minutes - 1))
         }
-        return currentBest
+        return best
     }
 
     fun part1() = blueprints.sumOf { it.id * best(it, 24) }
