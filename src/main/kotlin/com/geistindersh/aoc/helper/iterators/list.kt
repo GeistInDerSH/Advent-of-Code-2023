@@ -13,3 +13,12 @@ fun <T> List<T>.pairCombinations() = sequence {
         }
     }
 }
+
+fun <T> List<T>.cycle() = sequence {
+    var i = 0
+    while (true) {
+        val idx = i % this@cycle.size
+        yield(get(idx))
+        i += 1
+    }
+}
