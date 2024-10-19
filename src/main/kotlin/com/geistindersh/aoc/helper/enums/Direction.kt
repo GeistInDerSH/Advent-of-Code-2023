@@ -10,6 +10,27 @@ enum class Direction(val rowInc: Int, val colInc: Int) {
 
     operator fun plus(pair: Pair<Int, Int>) = Pair(pair.first + rowInc, pair.second + colInc)
 
+    fun turnRight() = when (this) {
+        North -> East
+        East -> South
+        South -> West
+        West -> North
+    }
+
+    fun turnLeft() = when (this) {
+        North -> West
+        East -> North
+        South -> East
+        West -> South
+    }
+
+    fun turnAround() = when (this) {
+        North -> South
+        East -> West
+        South -> North
+        West -> East
+    }
+
     companion object {
         fun tryFromChar(c: Char) = tryFromString(c.toString())
 
