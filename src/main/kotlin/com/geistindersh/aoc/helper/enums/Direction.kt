@@ -9,6 +9,7 @@ enum class Direction(val rowInc: Int, val colInc: Int) {
     fun pair() = rowInc to colInc
 
     operator fun plus(pair: Pair<Int, Int>) = Pair(pair.first + rowInc, pair.second + colInc)
+    operator fun plus(direction: Direction) = Pair(rowInc + direction.rowInc, colInc + direction.colInc)
 
     fun turnRight() = when (this) {
         North -> East
