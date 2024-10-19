@@ -89,9 +89,29 @@ class Day22(dataFile: DataFile) {
             .last() to direction
     }
 
+    private fun walkMap3d(point: Point, direction: Direction): Pair<Point, Direction> {
+        val size = 50
+        return when (Triple(direction, point.col / size, point.row / size)) {
+            Triple(Direction.North, 1, 0) -> Point(2 * size + point.col, 0) to Direction.East
+            Triple(Direction.West, 1, 0) -> Point(3 * size - 1 - point.row, 0) to Direction.East
+            Triple(Direction.North, 2, 0) -> Point(4 * size - 1, point.col - 2 * size) to Direction.North
+            Triple(Direction.East, 2, 0) -> Point(3 * size - 1 - point.row, 2 * size - 1) to Direction.West
+            Triple(Direction.South, 2, 0) -> Point(-size + point.col, 2 * size - 1) to Direction.West
+            Triple(Direction.East, 1, 1) -> Point(size - 1, size + point.row) to Direction.North
+            Triple(Direction.West, 1, 1) -> Point(size * 2, point.row - size) to Direction.South
+            Triple(Direction.North, 0, 2) -> Point(point.col + size, size) to Direction.East
+            Triple(Direction.West, 0, 2) -> Point(size * 3 - 1 - point.row, size) to Direction.East
+            Triple(Direction.East, 1, 2) -> Point(size * 3 - 1 - point.row, size * 3 - 1) to Direction.West
+            Triple(Direction.South, 1, 2) -> Point(2 * size + point.col, size - 1) to Direction.West
+            Triple(Direction.East, 0, 3) -> Point(size * 3 - 1, point.row - size * 2) to Direction.North
+            Triple(Direction.South, 0, 3) -> Point(0, point.col + size * 2) to Direction.South
+            Triple(Direction.West, 0, 3) -> Point(0, point.row - size * 2) to Direction.South
+            else -> throw Exception("Unknown argument Triple($direction, ${point.col / 50}, ${point.row / 50})")
+        }
+    }
 
     fun part1() = walk(::walkMap)
-    fun part2() = 0
+    fun part2() = walk(::walkMap3d)
 }
 
 fun day22() {
