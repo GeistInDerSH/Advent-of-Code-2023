@@ -24,10 +24,7 @@ class Day4(dataFile: DataFile) {
 
     fun part1(): Int = pairs.count { (r1, r2) -> r1.isFullyContained(r2) }
 
-    fun part2(): Int = pairs.count { (r1, r2) ->
-        println("$r1, $r2, ${r1.hasOverlap(r2)}")
-        r1.hasOverlap(r2)
-    }
+    fun part2(): Int = pairs.count { (r1, r2) -> r1.hasOverlap(r2) }
 }
 
 fun day4() {
