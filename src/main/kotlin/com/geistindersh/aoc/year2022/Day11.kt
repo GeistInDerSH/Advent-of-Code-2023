@@ -2,6 +2,7 @@ package com.geistindersh.aoc.year2022
 
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
+import com.geistindersh.aoc.helper.report
 import java.math.BigInteger
 
 class Day11(dataFile: DataFile) {
@@ -127,4 +128,5 @@ class Day11(dataFile: DataFile) {
 
 fun day11() {
     val day = Day11(DataFile.Part1)
+    report(2022, 11, day.part1(), day.part2())
 }

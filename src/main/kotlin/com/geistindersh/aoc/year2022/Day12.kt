@@ -2,6 +2,7 @@ package com.geistindersh.aoc.year2022
 
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.report
 import java.util.*
 
 class Day12(dataFile: DataFile) {
@@ -101,4 +102,5 @@ class Day12(dataFile: DataFile) {
 
 fun day12() {
     val day = Day12(DataFile.Part1)
+    report(2022, 12, day.part1(), day.part2())
 }

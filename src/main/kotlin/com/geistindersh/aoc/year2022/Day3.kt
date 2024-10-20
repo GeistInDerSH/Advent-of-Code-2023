@@ -35,5 +35,5 @@ class Day3(dataFile: DataFile) {
 
 fun day3() {
     val day = Day3(DataFile.Part1)
-    report(2022, 3, 0, 0)
+    report(2022, 3, day.part1(), day.part2())
 }

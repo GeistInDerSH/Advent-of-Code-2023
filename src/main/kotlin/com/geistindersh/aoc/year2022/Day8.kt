@@ -3,6 +3,7 @@ package com.geistindersh.aoc.year2022
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
+import com.geistindersh.aoc.helper.report
 
 class Day8(dataFile: DataFile) {
     private val rowMajor = fileToStream(2022, 8, dataFile)
@@ -73,5 +74,5 @@ class Day8(dataFile: DataFile) {
 
 fun day8() {
     val day = Day8(DataFile.Part1)
-
+    report(2022, 8, day.part1(), day.part2())
 }
