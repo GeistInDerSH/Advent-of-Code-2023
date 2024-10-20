@@ -35,7 +35,6 @@ class Day10(dataFile: DataFile) {
             xRegister += instruction.second
         }
 
-        println(cycle)
         return signals
     }
 
@@ -75,5 +74,5 @@ class Day10(dataFile: DataFile) {
 
 fun day10() {
     val day = Day10(DataFile.Part1)
-    report(2022, 10, 0, 0)
+    report(2022, 10, day.part1(), day.part2())
 }

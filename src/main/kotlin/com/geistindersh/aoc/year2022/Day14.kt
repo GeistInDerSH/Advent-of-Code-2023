@@ -3,6 +3,7 @@ package com.geistindersh.aoc.year2022
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
+import com.geistindersh.aoc.helper.report
 
 class Day14(dataFile: DataFile) {
     private val data = fileToStream(2022, 14, dataFile)
@@ -96,4 +97,5 @@ class Day14(dataFile: DataFile) {
 
 fun day14() {
     val day = Day14(DataFile.Part1)
+    report(2022, 14, day.part1(), day.part2())
 }

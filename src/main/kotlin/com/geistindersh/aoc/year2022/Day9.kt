@@ -2,6 +2,7 @@ package com.geistindersh.aoc.year2022
 
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.report
 import kotlin.math.absoluteValue
 
 class Day9(dataFile: DataFile) {
@@ -86,5 +87,6 @@ class Day9(dataFile: DataFile) {
 }
 
 fun day9() {
-
+    val day = Day9(DataFile.Part1)
+    report(2022, 9, day.part1(), day.part2())
 }
