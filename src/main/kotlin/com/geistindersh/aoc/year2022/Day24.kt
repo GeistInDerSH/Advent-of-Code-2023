@@ -43,9 +43,13 @@ class Day24(lines: List<String>) {
 
     private fun isInBounds(point: Point) = point.row in 1..<mapEnd.row && point.col in 1..<mapEnd.col
 
-    private fun navigate(): Int {
+    private fun navigate(
+        start: Point,
+        end: Point,
+        initialStorms: List<Pair<Point, Direction>>
+    ): Pair<Int, List<Pair<Point, Direction>>> {
         var minutes = 0
-        var storms = storms
+        var storms = initialStorms
         var locations = setOf(start)
 
         while (true) {
@@ -56,7 +60,7 @@ class Day24(lines: List<String>) {
                 for (location in locations) {
                     for (direction in Direction.entries) {
                         val move = location + direction
-                        if (move == end) return minutes
+                        if (move == end) return minutes to storms
                         if (move !in unsafeSpots && isInBounds(move)) add(move)
                     }
                     if (location !in unsafeSpots && isInBounds(location)) add(location)
@@ -66,9 +70,13 @@ class Day24(lines: List<String>) {
         }
     }
 
-
-    fun part1() = navigate()
-    fun part2() = 0
+    fun part1(): Int = navigate(start, end, storms).first
+    fun part2(): Int {
+        val (t1, s1) = navigate(start, end, storms)
+        val (t2, s2) = navigate(end, start, s1)
+        val t3 = navigate(start, end, s2).first
+        return t1 + t2 + t3
+    }
 }
 
 fun day24() {
