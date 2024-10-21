@@ -13,11 +13,10 @@ class Day4(dataFile: DataFile) {
         .digest((data + i.toString()).toByteArray())
         .joinToString("") { "%02x".format(it) }
 
-    private fun startsWithZeros(i: Int) = hashWithData(i).startsWith("00000")
+    fun part1() = generateSequence(0) { it + 1 }.first { hashWithData(it).startsWith("00000") }
 
-    fun part1() = generateSequence(0) { it + 1 }.first { startsWithZeros(it) }
+    fun part2() = generateSequence(0) { it + 1 }.first { hashWithData(it).startsWith("000000") }
 
-    fun part2() = 0
 }
 
 fun day4() {

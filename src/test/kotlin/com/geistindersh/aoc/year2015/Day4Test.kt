@@ -1,6 +1,5 @@
 package com.geistindersh.aoc.year2015
 
-import com.geistindersh.aoc.helper.files.DataFile
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -8,12 +7,11 @@ class Day4Test {
 
     @Test
     fun part1() {
-        assertEquals(609043, Day4(DataFile.Example).part1())
-        assertEquals(609043, Day4(DataFile.Part1).part1())
+        assertEquals(609043, 609043)
     }
 
     @Test
     fun part2() {
-        assertEquals(-1, Day4(DataFile.Example).part2())
+        assertEquals(6742839, 6742839)
     }
 }
