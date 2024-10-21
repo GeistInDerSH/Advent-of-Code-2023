@@ -84,13 +84,18 @@ class Day7(dataFile: DataFile) {
 
     fun part1(wire: String): UShort {
         val expressions = operations.associateBy { it.name }.toMutableMap()
-        return eval(expressions, expressions[wire]!!).value
+        return eval(expressions, wire).value
     }
 
-    fun part2() = 0
+    fun part2(wire: String): UShort {
+        val expressions = operations.associateBy { it.name }.toMutableMap()
+        val wireValue = eval(expressions, wire)
+        val updatedExpressions = operations.associateBy { it.name }.toMutableMap().apply { set("b", wireValue) }
+        return eval(updatedExpressions, wire).value
+    }
 }
 
 fun day7() {
     val day = Day7(DataFile.Part1)
-    report(2015, 7, day.part1("a"), day.part2())
+    report(2015, 7, day.part1("a"), day.part2("a"))
 }

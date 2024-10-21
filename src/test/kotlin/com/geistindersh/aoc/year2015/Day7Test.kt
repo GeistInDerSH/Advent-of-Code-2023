@@ -13,6 +13,6 @@ class Day7Test {
 
     @Test
     fun part2() {
-        assertEquals(-1, Day7(DataFile.Example).part2())
+        assertEquals(65079u, Day7(DataFile.Example).part2("i").toUInt())
     }
 }
