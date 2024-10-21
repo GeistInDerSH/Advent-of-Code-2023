@@ -15,8 +15,19 @@ class Day5(dataFile: DataFile) {
 
     private fun isNice(str: String) = countVowels(str) >= 3 && !containsBadSubstring(str) && containsDoubleLetter(str)
 
+    private fun containsNonTouchingDoubleLetter(str: String): Boolean {
+        val doubleLetters = str.windowed(2, 1).toList()
+        return doubleLetters
+            .mapIndexed { idx, pair -> idx to pair }
+            .any { (idx, pair) -> doubleLetters.drop(idx + 1).indexOf(pair) >= 1 }
+    }
+
+    private fun hasDoubleLetterWithCenter(str: String) = str
+        .windowed(3)
+        .any { it.first() == it.last() && it.first() != it[1] }
+
     fun part1() = data.count(::isNice)
-    fun part2() = 0
+    fun part2() = data.count { hasDoubleLetterWithCenter(it) && containsNonTouchingDoubleLetter(it) }
 }
 
 fun day5() {
