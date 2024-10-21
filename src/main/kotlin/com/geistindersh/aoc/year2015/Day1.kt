@@ -16,7 +16,14 @@ class Day1(dataFile: DataFile) {
         .toList()
 
     fun part1() = floors.sum()
-    fun part2() = 0
+    fun part2(): Int {
+        var floor = 0
+        floors.forEachIndexed { idx, value ->
+            floor += value
+            if (floor < 0) return idx + 1
+        }
+        return -1
+    }
 }
 
 fun day1() {
