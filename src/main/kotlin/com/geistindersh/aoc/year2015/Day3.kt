@@ -30,7 +30,6 @@ class Day3(dataFile: DataFile) {
             acc + (direction + pos)
         }
         .toSet()
-        .map { println(it); it }
         .count()
 }
 
