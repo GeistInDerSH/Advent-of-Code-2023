@@ -69,8 +69,37 @@ class Day6(dataFile: DataFile) {
         return enabledLights
     }
 
+    private fun followInstructionsBrightness(): Map<Point, Int> {
+        val enabledLights = mutableMapOf<Point, Int>()
+        for (rule in instructions) {
+            val lights = rule.generateLights()
+            when (rule) {
+                is Action.Toggle -> {
+                    for (light in lights) {
+                        val value = enabledLights.getOrDefault(light, 0) + 2
+                        enabledLights[light] = value
+                    }
+                }
+
+                is Action.Disable -> {
+                    for (light in lights) {
+                        val value = enabledLights.getOrDefault(light, 1)
+                        enabledLights[light] = (value - 1).coerceAtLeast(0)
+                    }
+                }
+
+                is Action.Enable -> {
+                    for (light in lights) {
+                        enabledLights[light] = enabledLights.getOrDefault(light, 0) + 1
+                    }
+                }
+            }
+        }
+        return enabledLights
+    }
+
     fun part1() = followInstructions().count()
-    fun part2() = 0
+    fun part2() = followInstructionsBrightness().values.sum()
 }
 
 fun day6() {
