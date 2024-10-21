@@ -17,13 +17,21 @@ class Day3(dataFile: DataFile) {
             }
         }
         .toList()
+    private val start = listOf(Pair(0, 0))
 
     fun part1() = data
-        .fold(listOf(Pair(0, 0))) { acc, direction -> acc + (direction + acc.last()) }
+        .fold(start) { acc, direction -> acc + (direction + acc.last()) }
         .toSet()
         .count()
 
-    fun part2() = 0
+    fun part2() = data
+        .foldIndexed(start) { index, acc, direction ->
+            val pos = if (index == 0) acc.last() else acc[acc.lastIndex - 1]
+            acc + (direction + pos)
+        }
+        .toSet()
+        .map { println(it); it }
+        .count()
 }
 
 fun day3() {
