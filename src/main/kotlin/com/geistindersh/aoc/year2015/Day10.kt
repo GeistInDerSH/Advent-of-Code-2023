@@ -19,12 +19,13 @@ class Day10(dataFile: DataFile) {
         }
         .joinToString("") { it.count().toString() + it.last().toString() }
 
-    fun part1(times: Int) = generateSequence(numbers) { seeSay(it) }.drop(times).take(1).first().length
+    private fun seeSayTimes(times: Int) = generateSequence(numbers) { seeSay(it) }.drop(times).take(1).first().length
 
-    fun part2() = 0
+    fun part1() = seeSayTimes(40)
+    fun part2() = seeSayTimes(50)
 }
 
 fun day10() {
     val day = Day10(DataFile.Part1)
-    report(2015, 10, day.part1(40), day.part2())
+    report(2015, 10, day.part1(), day.part2())
 }
