@@ -3,22 +3,21 @@ package com.geistindersh.aoc.helper.algorithms
 import java.util.*
 import kotlin.collections.ArrayDeque
 
-public class Graph<T : Comparable<T>>(nodes: Collection<Pair<Pair<T, T>, Int>>) {
+class Graph<T : Comparable<T>>(nodes: Collection<Pair<Pair<T, T>, Int>>) {
     private val weights = nodes.associate { it.first to it.second }
     private val nodes = nodes.flatMap { it.first.toList() }.toSet()
-    private val hasNegativeEdgeWeight = weights.values.any { it < 0 }
 
-    public fun neighbours(node: T) = weights.keys.filter { it.first == node }.map { it.second }
+    fun neighbours(node: T) = weights.keys.filter { it.first == node }.map { it.second }
 
     private fun getCost(from: T, to: T) = weights[from to to]!!
 
     private fun assertContains(node: T) {
         if (node !in nodes) {
-            throw GraphExceptions.InvalidNodeException("Node ${node.toString()} not found")
+            throw GraphExceptions.InvalidNodeException("Node $node not found")
         }
     }
 
-    public fun dfsOrNull(start: T, end: T) = try {
+    fun dfsOrNull(start: T, end: T) = try {
         dfs(start, end)
     } catch (ex: GraphExceptions.UnreachableNodeException) {
         null
@@ -26,7 +25,7 @@ public class Graph<T : Comparable<T>>(nodes: Collection<Pair<Pair<T, T>, Int>>) 
         null
     }
 
-    public fun dfs(start: T, end: T): Int {
+    fun dfs(start: T, end: T): Int {
         assertContains(start)
         assertContains(end)
 
@@ -40,10 +39,10 @@ public class Graph<T : Comparable<T>>(nodes: Collection<Pair<Pair<T, T>, Int>>) 
             visited.add(name)
             queue.addAll(neighbours(name).map { it to cost + getCost(name, it) })
         }
-        throw GraphExceptions.UnreachableNodeException("Cannot reach ${end.toString()} from ${start.toString()}")
+        throw GraphExceptions.UnreachableNodeException("Cannot reach $end from $start")
     }
 
-    public fun bfsOrNull(start: T, end: T) = try {
+    fun bfsOrNull(start: T, end: T) = try {
         bfs(start, end)
     } catch (ex: GraphExceptions.UnreachableNodeException) {
         null
@@ -51,7 +50,7 @@ public class Graph<T : Comparable<T>>(nodes: Collection<Pair<Pair<T, T>, Int>>) 
         null
     }
 
-    public fun bfs(start: T, end: T): Int {
+    fun bfs(start: T, end: T): Int {
         assertContains(start)
         assertContains(end)
 
@@ -66,10 +65,10 @@ public class Graph<T : Comparable<T>>(nodes: Collection<Pair<Pair<T, T>, Int>>) 
                 .map { it to cost + getCost(name, it) }
             queue.addAll(unvisited)
         }
-        throw GraphExceptions.UnreachableNodeException("Cannot reach ${end.toString()} from ${start.toString()}")
+        throw GraphExceptions.UnreachableNodeException("Cannot reach $end from $start")
     }
 
-    public fun dijkstras(start: T, end: T): Int {
+    fun dijkstras(start: T, end: T): Int {
         assertContains(start)
         assertContains(end)
 
@@ -90,7 +89,7 @@ public class Graph<T : Comparable<T>>(nodes: Collection<Pair<Pair<T, T>, Int>>) 
         return distances[end]!!
     }
 
-    public fun shortestPathOrNull(start: T, end: T) = try {
+    fun shortestPathOrNull(start: T, end: T) = try {
         shortestPath(start, end)
     } catch (ex: GraphExceptions.UnreachableNodeException) {
         null
@@ -98,10 +97,10 @@ public class Graph<T : Comparable<T>>(nodes: Collection<Pair<Pair<T, T>, Int>>) 
         null
     }
 
-    public fun shortestPath(start: T, end: T) = dijkstras(start, end)
+    fun shortestPath(start: T, end: T) = dijkstras(start, end)
 
-    public fun travelingSalesman() = travelingSalesman({ a, b -> a.coerceAtMost(b) })
-    public fun travelingSalesman(fn: (Int, Int) -> Int): Int {
+    fun travelingSalesman() = travelingSalesman { a, b -> a.coerceAtMost(b) }
+    fun travelingSalesman(fn: (Int, Int) -> Int): Int {
         val sortedNodes = nodes.sorted()
 
         fun adjacency(): Array<IntArray> {
@@ -149,23 +148,23 @@ sealed class GraphExceptions(message: String) : Exception(message) {
     class InvalidNodeException(message: String) : GraphExceptions(message)
 }
 
-public class GraphBuilder<T : Comparable<T>> {
+class GraphBuilder<T : Comparable<T>> {
     private val nodes = mutableSetOf<Pair<Pair<T, T>, Int>>()
-    public var isDirected = false
+    var isDirected = false
 
-    public fun add(start: T, end: T, weight: Int) {
+    fun add(start: T, end: T, weight: Int) {
         nodes.add(Pair(start, end) to weight)
         if (!isDirected) {
             nodes.add(Pair(end, start) to weight)
         }
     }
 
-    public fun add(start: T, end: T) = add(start, end, 0)
+    fun add(start: T, end: T) = add(start, end, 0)
 
-    public fun build() = Graph(nodes)
+    fun build() = Graph(nodes)
 }
 
-public fun <T : Comparable<T>> graphBuilder(init: GraphBuilder<T>.() -> Unit): Graph<T> {
+fun <T : Comparable<T>> graphBuilder(init: GraphBuilder<T>.() -> Unit): Graph<T> {
     val builder = GraphBuilder<T>()
     builder.init()
     return builder.build()
