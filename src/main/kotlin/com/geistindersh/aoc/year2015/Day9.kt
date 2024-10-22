@@ -15,7 +15,7 @@ class Day9(dataFile: DataFile) {
         .toGraph()
 
     fun part1() = routes.travelingSalesman()
-    fun part2() = 0
+    fun part2() = routes.travelingSalesman({ a, b -> a.coerceAtLeast(b) })
 }
 
 fun day9() {
