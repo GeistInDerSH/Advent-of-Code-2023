@@ -36,12 +36,42 @@ class GraphTest {
     }
 
     @Test
+    fun dfsOrNull() {
+        assertEquals(10 + 100, directedGraph.dfsOrNull("a", "d"))
+    }
+
+    @Test
     fun bfs() {
         assertEquals(10 + 100, directedGraph.bfs("a", "d"))
     }
 
     @Test
+    fun bfsOrNull() {
+        assertEquals(10 + 100, directedGraph.bfsOrNull("a", "d"))
+    }
+
+    @Test
     fun dijkstras() {
         assertEquals(6, directedGraph.dijkstras("a", "d"))
+    }
+
+    @Test
+    fun shortestPathOrNull() {
+        assertEquals(6, directedGraph.dijkstras("a", "d"))
+    }
+
+    @Test
+    fun shortestPath() {
+        assertEquals(6, directedGraph.dijkstras("a", "d"))
+    }
+
+    @Test
+    fun travelingSalesman() {
+        assertEquals(16, directedGraph.travelingSalesman())
+    }
+
+    @Test
+    fun testTravelingSalesman() {
+        assertEquals(115, directedGraph.travelingSalesman { a, b -> a.coerceAtLeast(b) })
     }
 }
