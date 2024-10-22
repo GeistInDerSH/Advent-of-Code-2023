@@ -34,19 +34,21 @@ class Day14(dataFile: DataFile) {
 		}
 	}
 
-	private fun fly(duration: Int) = generateSequence(Round(0, data, data.associate { it.name to 0 })) {
-		it.next()
-	}
-		.drop(duration)
-		.first()
-		.distances
-		.maxOf { it.value }
+	private fun fly() = generateSequence(Round(1, data, data.associate { it.name to it.speed })) { it.next() }
 
-	fun part1(seconds: Int) = fly(seconds)
-	fun part2() = 0
+	fun part1(seconds: Int) = fly().drop(seconds - 1).first().distances.maxOf { it.value }
+	fun part2(seconds: Int) = fly()
+		.take(seconds)
+		.flatMap { round ->
+			val max = round.distances.maxBy { it.value }.value
+			round.distances.filter { it.value == max }.toList()
+		}
+		.groupingBy { it.first }
+		.eachCount()
+		.maxOf { it.value }
 }
 
 fun day14() {
 	val day = Day14(DataFile.Part1)
-	report(2015, 14, day.part1(2503), day.part2())
+	report(2015, 14, day.part1(2503), day.part2(2503))
 }
