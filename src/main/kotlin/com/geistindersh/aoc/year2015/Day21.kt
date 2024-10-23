@@ -69,7 +69,7 @@ class Day21(dataFile: DataFile) {
 		val isAlive = hp > 0
 
 		fun hit(other: Character) =
-			Character(other.hp - (dmg - other.amr).coerceAtLeast(0), other.dmg, other.amr, other.cost)
+			Character(other.hp - (dmg - other.amr).coerceAtLeast(1), other.dmg, other.amr, other.cost)
 	}
 
 	private fun isWinner(player: Character): Boolean {
