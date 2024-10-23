@@ -47,6 +47,7 @@ class Day22(dataFile: DataFile) {
 	private data class Game(
 		val player: Player,
 		val boss: Boss,
+		val isHardMode: Boolean,
 		var manaSpent: Int = 0,
 		val spellsInEffect: MutableList<Spell> = mutableListOf(),
 	) {
@@ -85,6 +86,8 @@ class Day22(dataFile: DataFile) {
 
 		private fun next(spell: Spell): Game? {
 			// Play Player's Turn
+			if (isHardMode) player.hp -= 1
+			if (!player.isAlive()) return this
 			applySpells()
 			if (!boss.isAlive()) return this
 			if (player.mp < spell.cost) return null
@@ -105,18 +108,21 @@ class Day22(dataFile: DataFile) {
 		fun playerWins() = player.isAlive() && !boss.isAlive()
 		fun bossWins() = boss.isAlive() && !player.isAlive()
 
-		fun copy() = Game(player.copy(), boss.copy(), manaSpent, spellsInEffect.toMutableList())
+		fun copy() = Game(player.copy(), boss.copy(), isHardMode, manaSpent, spellsInEffect.toMutableList())
 	}
 
-	fun part1(hp: Int, mp: Int) = Game(Player(hp, mp), boss)
+	fun part1(hp: Int, mp: Int) = Game(Player(hp, mp), boss, false)
 		.bestOrNull()
 		?.manaSpent
 		?: throw Exception("No solution")
 
-	fun part2() = 0
+	fun part2(hp: Int, mp: Int) = Game(Player(hp, mp), boss, true)
+		.bestOrNull()
+		?.manaSpent
+		?: throw Exception("No solution")
 }
 
 fun day22() {
 	val day = Day22(DataFile.Part1)
-	report(2015, 22, day.part1(50, 500), day.part2())
+	report(2015, 22, day.part1(50, 500), day.part2(50, 500))
 }
