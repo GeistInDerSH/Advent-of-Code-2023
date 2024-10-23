@@ -89,10 +89,13 @@ class Day21(dataFile: DataFile) {
 		.minBy { it.cost }
 		.cost
 
-	fun part2() = 0
+	fun part2(hp: Int) = generateCharacters(hp)
+		.filterNot(::isWinner)
+		.maxBy { it.cost }
+		.cost
 }
 
 fun day21() {
 	val day = Day21(DataFile.Part1)
-	report(2015, 21, day.part1(100), day.part2())
+	report(2015, 21, day.part1(100), day.part2(100))
 }
