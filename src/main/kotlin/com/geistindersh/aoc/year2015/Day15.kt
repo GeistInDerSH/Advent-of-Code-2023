@@ -31,6 +31,8 @@ class Day15(dataFile: DataFile) {
 			}
 			.map { if (it < 0) 0 else it } // ensure no negative numbers
 			.reduce(Int::times)
+
+		fun calories() = recipe.entries.sumOf { (ingredient, count) -> ingredient.cal * count }
 	}
 
 	private fun combinations() = combinations(ingredients.size, 100)
@@ -60,7 +62,7 @@ class Day15(dataFile: DataFile) {
 
 	fun part1() = getCookies().maxOf { it.score() }
 
-	fun part2() = 0
+	fun part2() = getCookies().filter { it.calories() == 500 }.maxOf { it.score() }
 }
 
 fun day15() {
