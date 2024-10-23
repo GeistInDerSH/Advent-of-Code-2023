@@ -13,6 +13,6 @@ class Day19Test {
 
 	@Test
 	fun part2() {
-		assertEquals(-1, Day19(DataFile.Example).part2())
+		assertEquals(3, Day19(DataFile.Example).part2())
 	}
 }
