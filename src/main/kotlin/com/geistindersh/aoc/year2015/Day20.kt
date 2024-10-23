@@ -9,7 +9,7 @@ import kotlin.math.sqrt
 class Day20(dataFile: DataFile) {
 	private val presentsCount = fileToString(2015, 20, dataFile).toInt()
 
-	private fun deliverPresents() = sequence {
+	private fun deliverPresentsInfinite() = sequence {
 		for (house in 1..<Int.MAX_VALUE) {
 			var presents = house + 1
 			val upperBound = sqrt(house.toDouble()).toInt()
@@ -22,12 +22,22 @@ class Day20(dataFile: DataFile) {
 		}
 	}
 
-	fun part1() = deliverPresents()
+	private fun deliverPresentsLimit50() = sequence {
+		for (house in 1..<Int.MAX_VALUE) {
+			val presents = (0..50).reduce { presents, elf -> presents + if (house % elf == 0) house / elf else 0 }
+			yield(Pair(house, presents * 11))
+		}
+	}
+
+	fun part1() = deliverPresentsInfinite()
 		.takeWhileInclusive { it.second < presentsCount }
 		.last()
 		.first
 
-	fun part2() = 0
+	fun part2() = deliverPresentsLimit50()
+		.takeWhileInclusive { it.second < presentsCount }
+		.last()
+		.first
 }
 
 fun day20() {
