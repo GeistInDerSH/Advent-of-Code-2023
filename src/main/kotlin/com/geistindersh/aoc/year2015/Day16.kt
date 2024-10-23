@@ -26,10 +26,6 @@ class Day16(dataFile: DataFile) {
 		"perfumes" to 1,
 	)
 
-	init {
-		aunts.forEach(::println)
-	}
-
 	fun part1() = aunts
 		.filter { (_, v) ->
 			knownInfo.all { (entry, value) -> v.getOrDefault(entry, value) == value }
@@ -37,7 +33,21 @@ class Day16(dataFile: DataFile) {
 		.keys
 		.first()
 
-	fun part2() = 0
+	fun part2() = aunts
+		.filter { (_, v) ->
+			knownInfo.all { (entry, value) ->
+				val amount = v.getOrDefault(entry, null)
+				when {
+					amount == null -> true
+					entry in setOf("cats", "trees") -> amount > value
+					entry in setOf("pomeranians", "goldfish") -> amount < value
+					amount == value -> true
+					else -> false
+				}
+			}
+		}
+		.keys
+		.first()
 }
 
 fun day16() {
