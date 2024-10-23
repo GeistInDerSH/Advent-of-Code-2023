@@ -12,7 +12,11 @@ class Day18(dataFile: DataFile) {
 			line.mapIndexedNotNull { col, c -> Point(row, col) to c }
 		}
 		.toMap()
-
+	private val stuckOn = points.let { map ->
+		val rowMax = map.keys.maxOf { it.row }
+		val colMax = map.keys.maxOf { it.col }
+		setOf(Point(0, 0), Point(rowMax, 0), Point(0, colMax), Point(rowMax, colMax))
+	}
 	private val directions = listOf(
 		Direction.North.pair(),
 		Direction.East.pair(),
@@ -26,11 +30,13 @@ class Day18(dataFile: DataFile) {
 
 	private fun Point.neighbors() = directions.map { this + it }
 
-	private fun Map<Point, Char>.gameOfLife() = generateSequence(this) { currentMap ->
+	private fun Map<Point, Char>.gameOfLife() = this.gameOfLife(emptySet())
+	private fun Map<Point, Char>.gameOfLife(stuckOn: Set<Point>) = generateSequence(this) { currentMap ->
 		currentMap.entries.associate { (k, v) ->
 			val enabledNeighbors = k.neighbors().mapNotNull { currentMap[it] }.count { it == '#' }
 
 			when {
+				k in stuckOn -> k to '#'
 				v == '#' && enabledNeighbors == 2 -> k to '#'
 				v == '#' && enabledNeighbors == 3 -> k to '#'
 				v == '.' && enabledNeighbors == 3 -> k to '#'
@@ -57,10 +63,20 @@ class Day18(dataFile: DataFile) {
 		.first()
 		.count { it.value == '#' }
 
-	fun part2() = 0
+	fun part2(steps: Int) = points
+		.toMutableMap()
+		.also {
+			stuckOn.forEach { point ->
+				it[point] = '#'
+			}
+		}
+		.gameOfLife(stuckOn)
+		.drop(steps)
+		.first()
+		.count { it.value == '#' }
 }
 
 fun day18() {
 	val day = Day18(DataFile.Part1)
-	report(2015, 18, day.part1(100), day.part2())
+	report(2015, 18, day.part1(100), day.part2(100))
 }
