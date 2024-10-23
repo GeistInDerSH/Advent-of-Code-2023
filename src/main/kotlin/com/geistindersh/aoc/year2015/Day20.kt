@@ -11,14 +11,15 @@ class Day20(dataFile: DataFile) {
 
 	private fun deliverPresentsInfinite() = sequence {
 		for (house in 1..<Int.MAX_VALUE) {
-			var presents = house + 1
 			val upperBound = sqrt(house.toDouble()).toInt()
-			for (elf in 2..upperBound) {
-				presents += if (house % elf == 0) elf + house / elf else 0
-			}
-			presents -= if (upperBound * upperBound == house) upperBound else 0
+			val presents = (2..upperBound)
+				.fold(house + 1) { presents, elf ->
+					presents + if (house % elf == 0) elf + house / elf else 0
+				}.let {
+					10 * if (upperBound * upperBound == house) it - upperBound else it
+				}
 
-			yield(Pair(house, presents * 10))
+			yield(Pair(house, presents))
 		}
 	}
 
