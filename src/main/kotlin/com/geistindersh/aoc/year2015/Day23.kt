@@ -30,8 +30,7 @@ class Day23(dataFile: DataFile) {
 		data class JumpIfOne(val register: String, val offset: Int) : Instruction()
 	}
 
-	private fun List<Instruction>.run(): Map<String, Int> {
-		val registers = mutableMapOf("a" to 0, "b" to 0)
+	private fun List<Instruction>.run(registers: MutableMap<String, Int>): Map<String, Int> {
 		var rip = 0
 
 		while (rip < size) {
@@ -50,11 +49,11 @@ class Day23(dataFile: DataFile) {
 		return registers
 	}
 
-	fun part1(register: String) = instructions.run()[register]
-	fun part2() = 0
+	fun part1(register: String) = instructions.run(mutableMapOf("a" to 0, "b" to 0))[register]
+	fun part2(register: String) = instructions.run(mutableMapOf("a" to 1, "b" to 0))[register]
 }
 
 fun day23() {
 	val day = Day23(DataFile.Part1)
-	report(2015, 23, day.part1("b"), day.part2())
+	report(2015, 23, day.part1("b"), day.part2("b"))
 }
