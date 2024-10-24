@@ -6,7 +6,6 @@ import com.geistindersh.aoc.helper.report
 
 class Day24(dataFile: DataFile) {
 	private val weights = fileToStream(2015, 24, dataFile).map(String::toInt).toList()
-	private val target = weights.sum() / 3
 
 	private data class Group(val weights: Set<Int>) : Comparable<Group> {
 		fun quantumEntanglement() = weights.fold(1L, Long::times)
@@ -33,7 +32,8 @@ class Day24(dataFile: DataFile) {
 		}
 	}
 
-	private fun findGroupOrNull(): Group? {
+	private fun findGroupOrNull(size: Int): Group? {
+		val target = weights.sum() / size
 		val groups = weights
 			.subsetSum(target)
 			.map { Group(it.toSet()) }
@@ -43,7 +43,7 @@ class Day24(dataFile: DataFile) {
 		groups.forEach { bestGroup ->
 			val isEvenlyGrouped = groups
 				.filter { group -> !bestGroup.hasOverlap(group) }
-				.canPartitionBy(2)
+				.canPartitionBy(size - 1)
 			if (isEvenlyGrouped) return bestGroup
 		}
 		return null
@@ -60,9 +60,9 @@ class Day24(dataFile: DataFile) {
 		}
 	}
 
-	fun part1() = findGroupOrNull()?.quantumEntanglement() ?: throw Exception("No solution")
+	fun part1() = findGroupOrNull(3)?.quantumEntanglement() ?: throw Exception("No solution")
 
-	fun part2() = 0
+	fun part2() = findGroupOrNull(4)?.quantumEntanglement() ?: throw Exception("No solution")
 }
 
 fun day24() {
