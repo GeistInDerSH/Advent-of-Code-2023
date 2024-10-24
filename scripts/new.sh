@@ -67,7 +67,7 @@ class Day${DAY}Test {
     @Test
     fun part2() {
         assertEquals(-1, Day${DAY}(DataFile.Example).part2())
-        assertEquals(-1, Day${DAY}(DataFile.Part1).part1())
+        assertEquals(-1, Day${DAY}(DataFile.Part1).part2())
     }
 }
 EOL
