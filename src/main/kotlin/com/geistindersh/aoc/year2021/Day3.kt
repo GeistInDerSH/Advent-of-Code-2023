@@ -34,10 +34,8 @@ class Day3(dataFile: DataFile) {
 
 	private fun List<List<Char>>.filterByCommonBit(index: Int, bit: Char, maximize: Boolean): String {
 		return if (this.size == 2 && index + 1 == this[0].size) {
-			println(this[1])
 			this[1].joinToString("")
 		} else if (this.size == 1 || index + 1 == this[0].size) {
-			println(this[0])
 			this[0].joinToString("")
 		} else {
 			val filter = this.filter { it[index] == bit }
