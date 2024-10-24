@@ -43,3 +43,18 @@ fun <T> Collection<T>.permutations() = sequence {
 		yield(lst)
 	}
 }
+
+fun List<Int>.subsetSum(target: Int): Sequence<List<Int>> = sequence {
+	if (target == 0) {
+		yield(emptyList())
+		return@sequence
+	}
+	val options = this@subsetSum
+	options.forEachIndexed { index, option ->
+		if (option <= target) {
+			this@subsetSum.subList(index + 1, options.size)
+				.subsetSum(target - option)
+				.forEach { yield(listOf(option) + it) }
+		}
+	}
+}

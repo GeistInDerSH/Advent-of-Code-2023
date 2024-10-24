@@ -2,6 +2,7 @@ package com.geistindersh.aoc.year2015
 
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.math.combinations
 import com.geistindersh.aoc.helper.report
 
 class Day15(dataFile: DataFile) {
@@ -35,26 +36,7 @@ class Day15(dataFile: DataFile) {
 		fun calories() = recipe.entries.sumOf { (ingredient, count) -> ingredient.cal * count }
 	}
 
-	private fun combinations() = combinations(ingredients.size, 100)
-	private fun combinations(options: Int, limit: Int): Set<IntArray> {
-		val array = IntArray(options) { 0 }
-
-		fun MutableSet<IntArray>.populate(array: IntArray, n: Int) {
-			if (n == array.size - 1) {
-				this.add(array.apply { this[size - 1] = limit - (0..<n).sumOf { this[it] } })
-			} else {
-				val remain = limit - (0..<n).sumOf { array[it] }
-				(remain downTo 0).forEach {
-					array[n] = it
-					this.populate(array.copyOf(), n + 1)
-				}
-			}
-		}
-
-		return mutableSetOf<IntArray>().apply { this.populate(array, 0) }
-	}
-
-	private fun getCookies() = combinations()
+	private fun getCookies() = combinations(ingredients.size, 100)
 		.asSequence()
 		.map { it.toList() }
 		.map { ingredients.zip(it).toMap() }
