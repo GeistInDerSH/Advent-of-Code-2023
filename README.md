@@ -1,5 +1,10 @@
 # Advent of Code Solutions
 
+## 2015
+
+Advancing knowledge of Kotlin, and focusing on using Sequences where possible
+for efficiently generating answers.
+
 ## 2022
 
 I originally started AoC 2022 in Clojure, and ported it
