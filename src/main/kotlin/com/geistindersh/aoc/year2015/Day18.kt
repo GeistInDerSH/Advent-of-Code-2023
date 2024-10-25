@@ -1,6 +1,5 @@
 package com.geistindersh.aoc.year2015
 
-import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
@@ -17,23 +16,11 @@ class Day18(dataFile: DataFile) {
 		val colMax = map.keys.maxOf { it.col }
 		setOf(Point(0, 0), Point(rowMax, 0), Point(0, colMax), Point(rowMax, colMax))
 	}
-	private val directions = listOf(
-		Direction.North.pair(),
-		Direction.East.pair(),
-		Direction.South.pair(),
-		Direction.West.pair(),
-		Direction.North + Direction.East,
-		Direction.North + Direction.West,
-		Direction.South + Direction.East,
-		Direction.South + Direction.West,
-	)
-
-	private fun Point.neighbors() = directions.map { this + it }
 
 	private fun Map<Point, Char>.gameOfLife() = this.gameOfLife(emptySet())
 	private fun Map<Point, Char>.gameOfLife(stuckOn: Set<Point>) = generateSequence(this) { currentMap ->
 		currentMap.entries.associate { (k, v) ->
-			val enabledNeighbors = k.neighbors().mapNotNull { currentMap[it] }.count { it == '#' }
+			val enabledNeighbors = k.neighborsAll().mapNotNull { currentMap[it] }.count { it == '#' }
 
 			when {
 				k in stuckOn -> k to '#'
