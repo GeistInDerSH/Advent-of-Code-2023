@@ -12,16 +12,16 @@ class Day15(dataFile: DataFile) {
 			line.mapIndexed { col, value -> Point(row, col) to value.digitToInt() }
 		}
 		.toMap()
-	private val start = Point(0, 0)
-	private val end = graph.let { g ->
-		val rowMax = g.maxOf { it.key.row }
-		val colMax = g.maxOf { it.key.col }
-		Point(rowMax, colMax)
-	}
 
 	private data class Path(val current: Point, val risk: Int, val steps: Set<Point>)
 
-	private fun getPathCost(): Int {
+	private fun Map<Point, Int>.getPathCost(): Int {
+		val start = Point(0, 0)
+		val end = this.let { g ->
+			val rowMax = g.maxOf { it.key.row }
+			val colMax = g.maxOf { it.key.col }
+			Point(rowMax, colMax)
+		}
 		val queue: PriorityQueue<Path> = PriorityQueue<Path>(compareBy { it.risk })
 			.apply { add(Path(start, 0, setOf(start))) }
 		val seen = mutableSetOf<Point>()
@@ -35,15 +35,39 @@ class Day15(dataFile: DataFile) {
 			val next = head
 				.current
 				.neighbors()
-				.filter { it in graph && it !in head.steps }
-				.map { Path(it, head.risk + graph[it]!!, head.steps + listOf(it)) }
+				.filter { it in this && it !in head.steps }
+				.map { Path(it, head.risk + this[it]!!, head.steps + listOf(it)) }
 			queue.addAll(next)
 		}
 		return -1
 	}
 
-	fun part1() = getPathCost()
-	fun part2() = 0
+	private fun Map<Point, Int>.scale(): Map<Point, Int> {
+		val maxRow = this.keys.maxOf { it.row } + 1
+		val maxCol = this.keys.maxOf { it.col } + 1
+
+		val mut = this.toMutableMap()
+		for (row in 0..<maxRow) {
+			for (col in maxCol..<5 * maxCol) {
+				val risk = mut[Point(row, col - maxCol)]!!
+				val newRisk = ((risk + 1) % 10).coerceAtLeast(1)
+				val newPoint = Point(row, col)
+				mut[newPoint] = newRisk
+			}
+		}
+		for (row in maxRow..<5 * maxRow) {
+			for (col in 0..<5 * maxCol) {
+				val risk = mut[Point(row - maxRow, col)]!!
+				val newRisk = ((risk + 1) % 10).coerceAtLeast(1)
+				val newPoint = Point(row, col)
+				mut[newPoint] = newRisk
+			}
+		}
+		return mut
+	}
+
+	fun part1() = graph.getPathCost()
+	fun part2() = graph.scale().getPathCost()
 }
 
 fun day15() {
