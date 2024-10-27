@@ -39,6 +39,8 @@ class Day17(dataFile: DataFile) {
 			.takeWhileInclusive { (0..it).sum() <= colRange.first }
 			.last()
 
+		fun possibleRowVelocityRange() = minRowVelocity..colRange.last
+
 		fun maxHeightLandingInBoundsOrNull(point: Point, colVelocity: Int) =
 			maxHeightLandingInBoundsOrNull(point, minRowVelocity, colVelocity)
 
@@ -67,7 +69,18 @@ class Day17(dataFile: DataFile) {
 
 	fun part1() = findShotLandingInTargetArea()
 
-	fun part2() = 0
+	fun part2(): Int {
+		val landingInBounds = mutableSetOf<Throw>()
+
+		for (rowVelocity in targetArea.possibleRowVelocityRange()) {
+			for (colVelocity in targetArea.rowRange.first..targetArea.colRange.last * 2) {
+				targetArea.maxHeightLandingInBoundsOrNull(start, rowVelocity, colVelocity) ?: continue
+				landingInBounds.add(Throw(rowVelocity, colVelocity, start))
+			}
+		}
+
+		return landingInBounds.size
+	}
 }
 
 fun day17() {
