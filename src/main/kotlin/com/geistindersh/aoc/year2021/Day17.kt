@@ -57,30 +57,17 @@ class Day17(dataFile: DataFile) {
 		}
 	}
 
+	fun part1() = (0..targetArea.colRange.last * 2)
+		.mapNotNull { targetArea.maxHeightLandingInBoundsOrNull(start, colVelocity = it) }
+		.maxOf { it }
 
-	private fun findShotLandingInTargetArea(): Int {
-		var max = Int.MIN_VALUE
-		for (colVelocity in 0..targetArea.colRange.last * 2) {
-			val height = targetArea.maxHeightLandingInBoundsOrNull(start, colVelocity) ?: continue
-			max = maxOf(max, height)
+	fun part2() = targetArea
+		.possibleRowVelocityRange()
+		.flatMap { vRow ->
+			(targetArea.rowRange.first..targetArea.colRange.last * 2)
+				.mapNotNull { vCol -> targetArea.maxHeightLandingInBoundsOrNull(start, vRow, vCol) }
 		}
-		return max
-	}
-
-	fun part1() = findShotLandingInTargetArea()
-
-	fun part2(): Int {
-		val landingInBounds = mutableSetOf<Throw>()
-
-		for (rowVelocity in targetArea.possibleRowVelocityRange()) {
-			for (colVelocity in targetArea.rowRange.first..targetArea.colRange.last * 2) {
-				targetArea.maxHeightLandingInBoundsOrNull(start, rowVelocity, colVelocity) ?: continue
-				landingInBounds.add(Throw(rowVelocity, colVelocity, start))
-			}
-		}
-
-		return landingInBounds.size
-	}
+		.count()
 }
 
 fun day17() {
