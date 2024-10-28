@@ -12,55 +12,72 @@ class Day21(dataFile: DataFile) {
 		}
 		.toList()
 		.sortedBy { it.index }
-		.let { Game(it) }
+		.let { (p1, p2) -> Game(p1, p2) }
 
 	private data class Player(val index: Int, val position: Int, val score: Int) {
-		fun next(rolls: List<Int>): Player {
-			val position = (position + rolls.sum()) % 10
-			val score = score + if (position == 0) 10 else position
-			return this.copy(position = if (position == 0) 10 else position, score = score)
+		fun next(moves: Int): Player {
+			val position = (position + moves - 1) % 10 + 1
+			return this.copy(position = position, score = score + position)
 		}
 	}
 
-	private data class Game(val players: List<Player>, val dieState: Int = 1, val rollCount: Long = 0) {
-		fun next(): Game {
-			val updatedPlayers = mutableListOf<Player>()
-			var state = dieState
-			var count = 0L
-			var foundWinner = false
-			for (player in players) {
-				if (foundWinner) {
-					updatedPlayers.add(player)
-					continue
+	private data class Game(
+		val player1: Player,
+		val player2: Player,
+		val scoreLimit: Int = 1000,
+		val isPlayer1Turn: Boolean = true,
+	) {
+		fun next(moves: Int) = this.copy(
+			player1 = if (isPlayer1Turn) player1.next(moves) else player1,
+			player2 = if (!isPlayer1Turn) player2.next(moves) else player2,
+			isPlayer1Turn = !isPlayer1Turn
+		)
+
+		fun winner() = when {
+			player1.score >= scoreLimit -> player1
+			player2.score >= scoreLimit -> player2
+			else -> null
+		}
+	}
+
+	private class Die(private var rolls: Int = 0, private var value: Int = 0) {
+		fun totalRolls() = rolls
+		fun next(): Int {
+			rolls += 3
+			value += 3
+			return 3 * value - 3
+		}
+	}
+
+	fun part1(): Int {
+		val die = Die()
+		val end = generateSequence(game) { it.next(die.next()) }
+			.dropWhile { it.winner() == null }
+			.take(1)
+			.first()
+		val loser = if (end.player1.score >= end.scoreLimit) end.player2 else end.player1
+		return loser.score * die.totalRolls()
+	}
+
+	fun part2(): Long {
+		val frequency = mapOf(3 to 1, 4 to 3, 5 to 6, 6 to 7, 7 to 6, 8 to 3, 9 to 1)
+		val history = mutableMapOf<Game, Pair<Long, Long>>()
+
+		fun play(game: Game): Pair<Long, Long> {
+			val winner = game.winner()
+			if (winner != null) return if (winner.index == 1) Pair(1, 0) else Pair(0, 1)
+			if (game in history) return history[game]!!
+			return frequency
+				.map { (die, freq) ->
+					val (winsP1, winsP2) = play(game.next(die))
+					Pair(winsP1 * freq, winsP2 * freq)
 				}
-
-				val rolls = generateSequence(state) { ((it + 1) % 101).coerceAtLeast(1) }
-					.take(3)
-					.toList()
-				count += 3
-				state = ((rolls.last() + 1) % 101).coerceAtLeast(1)
-				val nextPlayerState = player.next(rolls)
-				updatedPlayers.add(nextPlayerState)
-				foundWinner = nextPlayerState.score >= 1000
-			}
-
-			return Game(updatedPlayers, dieState = state, rollCount = count + rollCount)
+				.reduce { (wins1, wins2), (score1, score2) -> (wins1 + score1) to (wins2 + score2) }
+				.also { history[game] = it }
 		}
 
-		fun winner() = players.firstOrNull { it.score >= 1000 }
+		return play(game.copy(scoreLimit = 21)).toList().maxOf { it }
 	}
-
-	private fun play() = generateSequence(game) { it.next() }
-		.dropWhile { it.winner() == null }
-		.take(1)
-		.first()
-
-	fun part1() = play().let {
-		val loser = it.players.first { p -> p.score < 1000 }
-		loser.score * it.rollCount
-	}
-
-	fun part2() = 0
 }
 
 fun day21() {
