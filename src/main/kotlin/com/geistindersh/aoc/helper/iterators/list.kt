@@ -16,6 +16,18 @@ fun <T> List<T>.pairCombinations() = sequence {
 	}
 }
 
+fun <T> List<T>.pairCombinationsNonInvertible() = sequence {
+	val seen = mutableSetOf<Pair<T, T>>()
+	for (i in this@pairCombinationsNonInvertible) {
+		for (j in this@pairCombinationsNonInvertible) {
+			if (i == j) continue
+			val p = Pair(i, j)
+			if (p !in seen) yield(p)
+			seen.add(p)
+		}
+	}
+}
+
 fun <T> List<T>.cycle() = sequence {
 	var i = 0
 	while (true) {
