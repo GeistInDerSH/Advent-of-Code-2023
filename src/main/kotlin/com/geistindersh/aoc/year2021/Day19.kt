@@ -2,7 +2,9 @@ package com.geistindersh.aoc.year2021
 
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
+import com.geistindersh.aoc.helper.iterators.pairCombinations
 import com.geistindersh.aoc.helper.report
+import kotlin.math.absoluteValue
 
 class Day19(dataFile: DataFile) {
 	private val scanners = fileToString(2021, 19, dataFile)
@@ -19,7 +21,7 @@ class Day19(dataFile: DataFile) {
 		.toList()
 
 	private data class Scanner(val beacons: Set<Beacon>) {
-		fun transformationIntersection(other: Scanner): Scanner? {
+		fun transformationIntersection(other: Scanner): Pair<Scanner, Beacon>? {
 			for (facing in 0..<6) {
 				for (rotation in 0..<4) {
 					val rotated = other.beacons.map { it.face(facing).rotate(rotation) }.toSet()
@@ -30,7 +32,7 @@ class Day19(dataFile: DataFile) {
 							if (adjusted.intersect(beacons).size < 12) {
 								continue
 							}
-							return Scanner(adjusted)
+							return Scanner(adjusted) to diff
 						}
 					}
 				}
@@ -42,6 +44,9 @@ class Day19(dataFile: DataFile) {
 	private data class Beacon(val x: Int, val y: Int, val z: Int) {
 		operator fun plus(other: Beacon) = Beacon(x + other.x, y + other.y, z + other.z)
 		operator fun minus(other: Beacon) = Beacon(x - other.x, y - other.y, z - other.z)
+
+		fun distanceTo(other: Beacon) =
+			(x - other.x).absoluteValue + (y - other.y).absoluteValue + (z - other.z).absoluteValue
 
 		fun face(dir: Int): Beacon {
 			return when (dir) {
@@ -70,22 +75,31 @@ class Day19(dataFile: DataFile) {
 		}
 	}
 
-	fun part1(): Int {
+	private fun getScannerPositions(): Pair<Scanner, Set<Beacon>> {
 		var start = scanners.first()
+		val foundScannerPoints = mutableSetOf<Beacon>()
 		val unmappedScanners = ArrayDeque<Scanner>().apply { addAll(scanners.drop(1)) }
 		while (unmappedScanners.isNotEmpty()) {
 			val toMap = unmappedScanners.removeFirst()
-			val scanner = start.transformationIntersection(toMap)
-			if (scanner == null) {
+			val pair = start.transformationIntersection(toMap)
+			if (pair == null) {
 				unmappedScanners.add(toMap)
 			} else {
+				val (scanner, node) = pair
 				start = Scanner(start.beacons + scanner.beacons)
+				foundScannerPoints.add(node)
 			}
 		}
-		return start.beacons.size
+		return start to foundScannerPoints
 	}
 
-	fun part2() = 0
+	fun part1() = getScannerPositions().first.beacons.size
+
+	fun part2() = getScannerPositions()
+		.second
+		.toList()
+		.pairCombinations()
+		.maxOf { (a, b) -> a.distanceTo(b) }
 }
 
 fun day19() {
