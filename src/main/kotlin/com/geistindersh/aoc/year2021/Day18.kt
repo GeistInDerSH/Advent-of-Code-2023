@@ -2,13 +2,14 @@ package com.geistindersh.aoc.year2021
 
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.iterators.pairCombinationsNonInvertible
 import com.geistindersh.aoc.helper.report
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.floor
 
 class Day18(dataFile: DataFile) {
-	private val data = fileToStream(2021, 18, dataFile).map(::parseLine).map { Sailfish.from(it) }.toList()
+	private val rawLines = fileToStream(2021, 18, dataFile).toList()
 
 	private fun parseLine(line: String): List<Any> {
 		val stack = Stack<MutableList<Any>>().apply { push(mutableListOf()) }
@@ -161,12 +162,17 @@ class Day18(dataFile: DataFile) {
 		}
 	}
 
-	fun part1() = data
+	fun part1() = rawLines
+		.map(::parseLine)
+		.map { Sailfish.from(it) }
 		.reduce { acc, sailfish -> Sailfish.Group(acc, sailfish).reduce() }
 		.magnitude()
 
 
-	fun part2() = 0
+	fun part2() = rawLines
+		.pairCombinationsNonInvertible()
+		.map { pair -> pair.toList().map(::parseLine).map { Sailfish.from(it) } }
+		.maxOf { (l, r) -> Sailfish.Group(l, r).reduce().magnitude() }
 }
 
 fun day18() {
