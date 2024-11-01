@@ -24,7 +24,6 @@ class Day24(dataFile: DataFile) {
 		}
 		relevant
 	}
-	private val alu = Alu(instructions, decidingInstructions)
 
 	private sealed class Instruction {
 		data class Inp(val a: String) : Instruction()
@@ -50,82 +49,88 @@ class Day24(dataFile: DataFile) {
 		}
 	}
 
-	private data class Alu(
-		private val instructions: List<Instruction>,
-		private val relevant: List<Triple<Int, Int, Int>>,
-	) {
+	private fun getModelNumber(maximize: Boolean): Long {
+		val defaultValue = if (maximize) 9 else 1
 
-		fun getModelNumber(): Long {
-			val digits = IntArray(14) { 0 }
-			val queue = ArrayDeque<Triple<Int, Int, Int>>()
-			for (entry in relevant) {
-				if (entry.second >= 10) {
-					queue.addFirst(entry)
-					continue
-				}
+		val digits = IntArray(14) { 0 }
+		val queue = ArrayDeque<Triple<Int, Int, Int>>()
+		for (entry in decidingInstructions) {
+			if (entry.second >= 10) {
+				queue.addFirst(entry)
+				continue
+			}
 
-				val (cIndex, cX, _) = entry.also { println(it) }
-				val (pIndex, _, pY) = queue.removeFirst().also { println(it) }
-				println()
-				val value = pY + cX
+			val (cIndex, cX, _) = entry
+			val (pIndex, _, pY) = queue.removeFirst()
+			val value = pY + cX
+
+			if (maximize) {
 				if (value >= 0) {
-					digits[cIndex] = 9
-					digits[pIndex] = 9 - value
+					digits[cIndex] = defaultValue
+					digits[pIndex] = defaultValue - value
 				} else {
-					digits[pIndex] = 9
-					digits[cIndex] = 9 + value
+					digits[pIndex] = defaultValue
+					digits[cIndex] = defaultValue + value
+				}
+			} else {
+				if (value >= 0) {
+					digits[pIndex] = defaultValue
+					digits[cIndex] = defaultValue + value
+				} else {
+					digits[cIndex] = defaultValue
+					digits[pIndex] = defaultValue - value
 				}
 			}
-
-			if (!isValid(digits)) {
-				throw Exception("Invalid Model Number: ${digits.joinToString { it.toString() }}")
-			}
-			return digits.fold(0L) { acc, d -> acc * 10 + d }
 		}
 
-		private fun isValid(modelNumber: IntArray): Boolean {
-			val registers = mutableMapOf("w" to 0, "x" to 0, "y" to 0, "z" to 0)
-			var i = 0
-			for (instruction in instructions) {
-				when (instruction) {
-					is Instruction.Inp -> {
-						registers[instruction.a] = modelNumber[i]
-						i += 1
-					}
-
-					is Instruction.Add -> {
-						val value = instruction.b.toIntOrNull() ?: registers[instruction.b]!!
-						registers[instruction.a] = registers[instruction.a]!! + value
-					}
-
-					is Instruction.Div -> {
-						val value = instruction.b.toIntOrNull() ?: registers[instruction.b]!!
-						registers[instruction.a] = registers[instruction.a]!! / value
-					}
-
-					is Instruction.Eql -> {
-						val value = instruction.b.toIntOrNull() ?: registers[instruction.b]!!
-						registers[instruction.a] = if (registers[instruction.a]!! == value) 1 else 0
-					}
-
-					is Instruction.Mod -> {
-						val value = instruction.b.toIntOrNull() ?: registers[instruction.b]!!
-						registers[instruction.a] = registers[instruction.a]!! % value
-					}
-
-					is Instruction.Mul -> {
-						val value = instruction.b.toIntOrNull() ?: registers[instruction.b]!!
-						registers[instruction.a] = registers[instruction.a]!! * value
-					}
-				}
-			}
-
-			return registers["z"]!! == 0
+		if (!isValid(digits)) {
+			throw Exception("Invalid Model Number: ${digits.joinToString { it.toString() }}")
 		}
+		return digits.fold(0L) { acc, d -> acc * 10 + d }
 	}
 
-	fun part1() = alu.getModelNumber()
-	fun part2() = 0
+	private fun isValid(modelNumber: IntArray): Boolean {
+		val registers = mutableMapOf("w" to 0, "x" to 0, "y" to 0, "z" to 0)
+		var i = 0
+		for (instruction in instructions) {
+			when (instruction) {
+				is Instruction.Inp -> {
+					registers[instruction.a] = modelNumber[i]
+					i += 1
+				}
+
+				is Instruction.Add -> {
+					val value = instruction.b.toIntOrNull() ?: registers[instruction.b]!!
+					registers[instruction.a] = registers[instruction.a]!! + value
+				}
+
+				is Instruction.Div -> {
+					val value = instruction.b.toIntOrNull() ?: registers[instruction.b]!!
+					registers[instruction.a] = registers[instruction.a]!! / value
+				}
+
+				is Instruction.Eql -> {
+					val value = instruction.b.toIntOrNull() ?: registers[instruction.b]!!
+					registers[instruction.a] = if (registers[instruction.a]!! == value) 1 else 0
+				}
+
+				is Instruction.Mod -> {
+					val value = instruction.b.toIntOrNull() ?: registers[instruction.b]!!
+					registers[instruction.a] = registers[instruction.a]!! % value
+				}
+
+				is Instruction.Mul -> {
+					val value = instruction.b.toIntOrNull() ?: registers[instruction.b]!!
+					registers[instruction.a] = registers[instruction.a]!! * value
+				}
+			}
+		}
+
+		return registers["z"]!! == 0
+	}
+
+	fun part1() = getModelNumber(true)
+	fun part2() = getModelNumber(false)
 }
 
 fun day24() {
