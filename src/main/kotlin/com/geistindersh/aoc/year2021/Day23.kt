@@ -7,18 +7,16 @@ import java.util.*
 import kotlin.math.absoluteValue
 
 class Day23(dataFile: DataFile) {
-	private val diagram = fileToStream(2021, 23, dataFile)
+	private val rawInput = fileToStream(2021, 23, dataFile)
 		.drop(1)
 		.map { it.drop(1).dropLast(1) }
 		.toList()
 		.dropLast(1)
-		.let { lines ->
-			val roomLines = lines.drop(1)
-			val a = Room.from(Amphipods.Amber, roomLines)
-			val b = Room.from(Amphipods.Bronze, roomLines)
-			val c = Room.from(Amphipods.Copper, roomLines)
-			val d = Room.from(Amphipods.Desert, roomLines)
-			Diagram(lines[0].map { Amphipods.from(it) }, listOf(a, b, c, d).associateBy { it.roomFor })
+	private val diagram = Diagram.from(rawInput)
+	private val diagramTwo = rawInput
+		.let {
+			val lines = it.take(2) + listOf(" #D#C#B#A", " #D#B#A#C") + it.drop(2)
+			Diagram.from(lines)
 		}
 
 	private enum class Amphipods(val cost: Int, val index: Int) {
@@ -98,6 +96,17 @@ class Day23(dataFile: DataFile) {
 			val (actStart, actEnd) = if (start > end) end to start - 1 else start + 1 to end
 			return (actStart..actEnd).all { hallway[it] == Amphipods.Empty }
 		}
+
+		companion object {
+			fun from(lines: List<String>): Diagram {
+				val roomLines = lines.drop(1)
+				val a = Room.from(Amphipods.Amber, roomLines)
+				val b = Room.from(Amphipods.Bronze, roomLines)
+				val c = Room.from(Amphipods.Copper, roomLines)
+				val d = Room.from(Amphipods.Desert, roomLines)
+				return Diagram(lines[0].map { Amphipods.from(it) }, listOf(a, b, c, d).associateBy { it.roomFor })
+			}
+		}
 	}
 
 
@@ -126,7 +135,7 @@ class Day23(dataFile: DataFile) {
 	}
 
 	fun part1() = organize(diagram)
-	fun part2() = 0
+	fun part2() = organize(diagramTwo)
 }
 
 fun day23() {
