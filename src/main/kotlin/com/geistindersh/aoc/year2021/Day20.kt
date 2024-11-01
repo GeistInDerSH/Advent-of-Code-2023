@@ -16,7 +16,6 @@ class Day20(dataFile: DataFile) {
 				line.mapIndexed { col, char -> Point(row, col) to if (char == '#') 1 else 0 }
 			}
 			.toMap()
-		// val defaultValue = if (lookupTable.first() == '#' && lookupTable.last() == '.') 1 else 0
 		Image(points, lookupTable, 0)
 	}
 
@@ -63,10 +62,6 @@ class Day20(dataFile: DataFile) {
 		.points
 		.values
 		.sum()
-
-	init {
-		println(startingImage.points.values.count { it == 1 })
-	}
 
 	fun part1() = pixelsLitAfterSteps(2)
 	fun part2() = pixelsLitAfterSteps(50)
