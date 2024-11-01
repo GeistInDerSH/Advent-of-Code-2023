@@ -1,6 +1,5 @@
 package com.geistindersh.aoc.year2021
 
-import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
@@ -12,14 +11,6 @@ class Day9(dataFile: DataFile) {
 			s.mapIndexed { col, c -> Point(row, col) to c.digitToInt() }
 		}
 		.toMap()
-	private val directions = listOf(
-		Direction.North,
-		Direction.South,
-		Direction.East,
-		Direction.West,
-	)
-
-	private fun Point.neighbors() = directions.map { this + it }
 
 	private fun findLowPoints() = heightMap
 		.entries
