@@ -41,15 +41,32 @@ class Day5(dataFile: DataFile) {
             return Point(rowRange.first, colRange.first)
         }
 
-        fun getScore(): Int {
-            val (row, col) = getSeatPosition()
-            return row * 8 + col
-        }
+        fun getScore() = getScore(getSeatPosition())
 
+        companion object {
+            fun getScore(point: Point) = point.row * 8 + point.col
+        }
     }
 
     fun part1() = searches.maxOf { it.getScore() }
-    fun part2() = 0
+    fun part2(): Int {
+        val seatingChart: MutableMap<Point, Int?> = (0..127)
+            .flatMap { row -> (0..7).map { Point(row, it) to null } }
+            .toMap()
+            .toMutableMap()
+
+        for (search in searches) {
+            seatingChart[search.getSeatPosition()] = search.getScore()
+        }
+
+        return seatingChart
+            .toSortedMap(compareBy<Point> { it.row }.thenBy { it.col })
+            .entries
+            .dropWhile { it.value == null } // Skip rows that DNE
+            .first { it.value == null } // Our seat is the first with no value
+            .key
+            .let { Zone.getScore(it) }
+    }
 }
 
 fun day5() {
