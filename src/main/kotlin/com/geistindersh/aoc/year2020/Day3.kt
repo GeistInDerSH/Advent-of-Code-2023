@@ -13,20 +13,23 @@ class Day3(dataFile: DataFile) {
     private val maxRow = data.keys.maxOf { it.row }
     private val maxCol = data.keys.maxOf { it.col }
 
-    private fun descend() = generateSequence(Point(0, 0)) { it + Point(1, 3) }
+    private fun descend(inc: Point) = generateSequence(Point(0, 0)) { it + inc }
         .map {
             if (it in data) {
                 it
-            } else {
+            } else if (it.col > maxCol) {
                 it.copy(col = it.col % (maxCol + 1))
+            } else {
+                it.copy(col = maxCol)
             }
         }
         .takeWhileInclusive { it.row != maxRow }
-        .map { println("$it -- ${data[it]!!}"); it }
         .count { data[it]!! == '#' }
 
-    fun part1() = descend()
-    fun part2() = 0
+    fun part1() = descend(Point(1, 3))
+    fun part2() = listOf(Point(1, 1), Point(1, 3), Point(1, 5), Point(1, 7), Point(2, 1))
+        .map { descend(it) }
+        .fold(1, Long::times)
 }
 
 fun day3() {
