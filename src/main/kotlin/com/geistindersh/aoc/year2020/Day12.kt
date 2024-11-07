@@ -8,9 +8,10 @@ import com.geistindersh.aoc.helper.report
 import kotlin.math.absoluteValue
 
 class Day12(dataFile: DataFile) {
-    private val actions = fileToStream(2020, 12, dataFile)
+    private val ship = fileToStream(2020, 12, dataFile)
         .map { Action.from(it) }
         .toList()
+        .let { Ship(it) }
 
     private sealed class Action(open val value: Int) {
         data class North(override val value: Int) : Action(value)
@@ -45,12 +46,10 @@ class Day12(dataFile: DataFile) {
     }
 
     private class Ship(private val actions: List<Action>) {
-        private var direction = Direction.East
-        private var position = Point(0, 0)
+        fun navigate(): Int {
+            var direction = Direction.East
+            var position = Point(0, 0)
 
-        fun distance() = position.row.absoluteValue + position.col.absoluteValue
-
-        fun navigate() {
             for (action in actions) {
                 when (action) {
                     is Action.Forward -> {
@@ -77,15 +76,48 @@ class Day12(dataFile: DataFile) {
                     is Action.West -> position = position.copy(col = position.col - action.value)
                 }
             }
+
+            return position.row.absoluteValue + position.col.absoluteValue
+        }
+
+        fun navigateWithWaypoint(): Int {
+            var position = Point(0, 0)
+            var waypoint = Point(-1, 10)
+
+            for (action in actions) {
+                when (action) {
+                    is Action.Forward -> {
+                        for (i in 0..<action.value) {
+                            position += waypoint
+                        }
+                    }
+
+                    is Action.Left -> {
+                        for (i in 0..<action.turns) {
+                            waypoint = Point(-1 * waypoint.col, waypoint.row)
+                        }
+                    }
+
+                    is Action.Right -> {
+                        for (i in 0..<action.turns) {
+                            waypoint = Point(waypoint.col, -1 * waypoint.row)
+                        }
+                    }
+
+                    is Action.North -> waypoint = waypoint.copy(row = waypoint.row - action.value)
+                    is Action.South -> waypoint = waypoint.copy(row = waypoint.row + action.value)
+                    is Action.East -> waypoint = waypoint.copy(col = waypoint.col + action.value)
+                    is Action.West -> waypoint = waypoint.copy(col = waypoint.col - action.value)
+                }
+            }
+
+            return position.row.absoluteValue + position.col.absoluteValue
         }
     }
 
-    fun part1() = Ship(actions).let {
-        it.navigate()
-        it.distance()
-    }
+    fun part1() = ship.navigate()
 
-    fun part2() = 0
+    fun part2() = ship.navigateWithWaypoint()
 }
 
 fun day12() {
