@@ -75,20 +75,18 @@ class Day14(dataFile: DataFile) {
         }
     }
 
-    private fun List<Program>.run(): Long {
-        var mask: Program.Mask = this.first { it is Program.Mask } as Program.Mask
+    fun part1(): Long {
+        var mask: Program.Mask = instructions.first { it is Program.Mask } as Program.Mask
         val memory = mutableMapOf<Long, Long>()
-        for (instruction in this) {
+        for (instruction in instructions) {
             when (instruction) {
                 is Program.Memory -> memory[instruction.position] = mask.applyTo(instruction.value)
-
                 is Program.Mask -> mask = instruction
             }
         }
         return memory.values.sum()
     }
 
-    fun part1() = instructions.run()
     fun part2(): Long {
         var mask: Program.Mask = instructions.first { it is Program.Mask } as Program.Mask
         val memory = mutableMapOf<Long, Long>()
