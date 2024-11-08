@@ -5,20 +5,54 @@ import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day13(dataFile: DataFile) {
-    private val data = "[0-9]+".toRegex()
-        .findAll(fileToString(2020, 13, dataFile))
-        .map { it.value.toInt() }
+    private val numbers = fileToString(2020, 13, dataFile)
+        .replace("\n", ",")
+        .split(",")
+        .map { it.toLongOrNull() }
         .toList()
-    private val departTimestamp = data[0]
-    private val times = data.drop(1)
+    private val departTimestamp = numbers[0]!!
+    private val times = numbers.drop(1)
+    private val validTimes = times.filterNotNull()
 
-    fun part1() = times
+    private data class Bus(val id: Long, val offset: Long) {
+        constructor(id: Long, offset: Int) : this(id, offset.toLong())
+
+        fun meetsSchedule(time: Long) = (time + offset) % id == 0L
+    }
+
+    fun part1() = validTimes
         .map { it to it - (departTimestamp % it) }
         .minBy { it.second }
         .toList()
-        .reduce(Int::times)
+        .reduce(Long::times)
 
-    fun part2() = 0
+    fun part2(): Long {
+        val slowestBus = validTimes
+            .maxBy { it }
+            .let { Bus(it, times.indexOf(it)) }
+        val secondSlowestBus = validTimes
+            .filter { it != slowestBus.id }
+            .maxBy { it }
+            .let { Bus(it, times.indexOf(it)) }
+
+        // Only need to check the second bus, because the first will always meet the schedule
+        var timestamp = slowestBus.id - slowestBus.offset
+        while (!secondSlowestBus.meetsSchedule(timestamp)) {
+            timestamp += slowestBus.id
+        }
+
+        val remainingBuses = validTimes
+            .map { Bus(it, times.indexOf(it)) }
+            .filter { it != slowestBus || it != secondSlowestBus }
+            .toList()
+
+        val increment = slowestBus.id * secondSlowestBus.id
+        while (!remainingBuses.all { it.meetsSchedule(timestamp) }) {
+            timestamp += increment
+        }
+
+        return timestamp
+    }
 }
 
 fun day13() {
