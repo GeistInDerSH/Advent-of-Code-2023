@@ -13,6 +13,11 @@ class Day14(dataFile: DataFile) {
     private sealed class Program {
 
         data class Mask(val mask: List<Pair<Int, Long>>) : Program() {
+            private val floatingBitPositions = mask
+                .map { it.first }
+                .toSet()
+                .let { (0..35).filter { pos -> pos !in it } }
+
             override fun toString(): String = StringBuilder().let {
                 it.append("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
                 for ((idx, value) in mask) {
@@ -27,6 +32,21 @@ class Day14(dataFile: DataFile) {
                     number = number.setBit(idx, bit)
                 }
                 return number
+            }
+
+            fun addresses(address: Long): List<Long> {
+                var addr = address
+                mask.filter { it.second == 1L } // 0 won't change the value so we can skip it
+                    .forEach { (idx, bit) -> addr = addr.setBit(idx, bit) }
+
+                val permutations = mutableListOf(addr)
+                floatingBitPositions.forEach { index ->
+                    val toAdd = permutations
+                        .flatMap { listOf(it.setBit(index, 1), it.setBit(index, 0)) }
+                    permutations.addAll(toAdd)
+                }
+
+                return permutations
             }
         }
 
@@ -69,7 +89,21 @@ class Day14(dataFile: DataFile) {
     }
 
     fun part1() = instructions.run()
-    fun part2() = 0
+    fun part2(): Long {
+        var mask: Program.Mask = instructions.first { it is Program.Mask } as Program.Mask
+        val memory = mutableMapOf<Long, Long>()
+        for (instruction in instructions) {
+            when (instruction) {
+                is Program.Mask -> mask = instruction
+                is Program.Memory -> {
+                    for (addr in mask.addresses(instruction.position)) {
+                        memory[addr] = instruction.value
+                    }
+                }
+            }
+        }
+        return memory.values.sum()
+    }
 }
 
 fun day14() {
