@@ -2,7 +2,6 @@ package com.geistindersh.aoc.year2020
 
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
-import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
 
 class Day15(dataFile: DataFile) {
@@ -11,29 +10,31 @@ class Day15(dataFile: DataFile) {
         .findAll(fileToString(2020, 15, dataFile))
         .map { it.value.toInt() }
         .toList()
-        .let { Game(it.size, it) }
 
-    private data class Game(val turn: Int, val history: List<Int>) {
-        val latest = history.last()
-        fun next(): Game {
-            val nextValue = if (history.count { it == latest } == 1) {
-                0
-            } else {
-                val lastIndex = history.size - 1
-                val priorToLast = history.dropLast(1).lastIndexOf(latest)
-                lastIndex - priorToLast
-            }
+    private fun List<Int>.valueAtTurn(targetTurn: Int): Int {
+        val history = this.associateWith { n -> this.indexOf(n) + 1 }.toMutableMap()
+        var currentTurn = this.size
+        var latest = this.last()
 
-            return Game(turn + 1, history + nextValue)
+        while (currentTurn != targetTurn) {
+            val prevLatest = latest
+            latest = history[latest]
+                ?.let {
+                    when (it) {
+                        currentTurn -> 0 // We just saw this number
+                        else -> currentTurn - it // Diff between now and last time we saw the num
+                    }
+                }
+                ?: 0 // We haven't seen this number before
+            history[prevLatest] = currentTurn
+
+            currentTurn += 1
         }
+        return latest
     }
 
-    fun part1() = generateSequence(numbers) { it.next() }
-        .takeWhileInclusive { it.turn != 2020 }
-        .last()
-        .latest
-
-    fun part2() = 0
+    fun part1() = numbers.valueAtTurn(2020)
+    fun part2() = numbers.valueAtTurn(30000000)
 }
 
 fun day15() {
