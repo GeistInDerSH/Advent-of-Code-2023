@@ -13,31 +13,35 @@ class Day19(dataFile: DataFile) {
 
     private data class Message(val rules: Map<Int, Grammar>, val input: List<String>) {
         private fun String.hasMatch(): Boolean {
-            val (hasMatch, skip) = this.hasMatch(rules[0]!!)
-            if (skip != this.length) return false
-            return hasMatch
+            val strings = this.hasMatch(rules[0]!!)
+            return strings.any { it.isEmpty() }
         }
 
-        private fun String.hasMatch(gram: Grammar): Pair<Boolean, Int> {
+        private fun String.hasMatch(gram: Grammar): List<String> {
+            if (this.isEmpty()) return emptyList()
+
             return when (gram) {
-                is Grammar.Constant -> (this.first() == gram.value.first()) to gram.value.length
+                is Grammar.Constant -> if (this.first() == gram.value.first()) {
+                    listOf(this.drop(1))
+                } else {
+                    emptyList()
+                }
+
                 is Grammar.OptionalRule -> {
-                    val (lhsHasMatch, lhsSkip) = this.hasMatch(gram.lhs)
-                    if (lhsHasMatch) return true to lhsSkip
-                    val (rhsHasMatch, rhsSkip) = this.hasMatch(gram.rhs)
-                    if (rhsHasMatch) return true to rhsSkip
-                    false to 0
+                    val lhs = this.hasMatch(gram.lhs)
+                    val rhs = this.hasMatch(gram.rhs)
+                    lhs + rhs
                 }
 
                 is Grammar.Rule -> {
-                    var i = 0
+                    var found = listOf(this)
                     for (ruleNumber in gram.rules) {
                         val rule = rules[ruleNumber]!!
-                        val (isMatch, skip) = this.drop(i).hasMatch(rule)
-                        if (!isMatch) return false to i
-                        i += skip
+                        val new = found.flatMap { it.hasMatch(rule) }
+                        if (new.isEmpty()) return emptyList()
+                        found = new
                     }
-                    true to i
+                    found
                 }
             }
         }
@@ -71,7 +75,17 @@ class Day19(dataFile: DataFile) {
     }
 
     fun part1() = grammar.matchCount()
-    fun part2() = 0
+    fun part2() = grammar
+        .copy(rules = grammar
+            .rules
+            .toMutableMap()
+            .apply {
+                set(8, Grammar.OptionalRule(Grammar.Rule(listOf(42)), Grammar.Rule(listOf(42, 8))))
+                set(11, Grammar.OptionalRule(Grammar.Rule(listOf(42, 31)), Grammar.Rule(listOf(42, 11, 31))))
+
+            }
+        )
+        .matchCount()
 }
 
 fun day19() {
