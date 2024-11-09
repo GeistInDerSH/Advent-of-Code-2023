@@ -1,6 +1,6 @@
 package com.geistindersh.aoc.year2020
 
-import com.geistindersh.aoc.helper.enums.Point
+import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -9,7 +9,7 @@ class Day5(dataFile: DataFile) {
     private val searches = fileToStream(2020, 5, dataFile).map { Zone(it) }.toList()
 
     private data class Zone(val instruction: String) {
-        fun getSeatPosition(): Point {
+        fun getSeatPosition(): Point2D {
             var rowRange = 0..127
             var colRange = 0..7
             for (c in instruction) {
@@ -38,20 +38,20 @@ class Day5(dataFile: DataFile) {
                 }
             }
 
-            return Point(rowRange.first, colRange.first)
+            return Point2D(rowRange.first, colRange.first)
         }
 
         fun getScore() = getScore(getSeatPosition())
 
         companion object {
-            fun getScore(point: Point) = point.row * 8 + point.col
+            fun getScore(point: Point2D) = point.row * 8 + point.col
         }
     }
 
     fun part1() = searches.maxOf { it.getScore() }
     fun part2(): Int {
-        val seatingChart: MutableMap<Point, Int?> = (0..127)
-            .flatMap { row -> (0..7).map { Point(row, it) to null } }
+        val seatingChart: MutableMap<Point2D, Int?> = (0..127)
+            .flatMap { row -> (0..7).map { Point2D(row, it) to null } }
             .toMap()
             .toMutableMap()
 
@@ -60,7 +60,7 @@ class Day5(dataFile: DataFile) {
         }
 
         return seatingChart
-            .toSortedMap(compareBy<Point> { it.row }.thenBy { it.col })
+            .toSortedMap(compareBy<Point2D> { it.row }.thenBy { it.col })
             .entries
             .dropWhile { it.value == null } // Skip rows that DNE
             .first { it.value == null } // Our seat is the first with no value

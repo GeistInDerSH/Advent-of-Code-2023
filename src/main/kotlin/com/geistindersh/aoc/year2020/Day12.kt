@@ -1,7 +1,7 @@
 package com.geistindersh.aoc.year2020
 
 import com.geistindersh.aoc.helper.enums.Direction
-import com.geistindersh.aoc.helper.enums.Point
+import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -48,7 +48,7 @@ class Day12(dataFile: DataFile) {
     private class Ship(private val actions: List<Action>) {
         fun navigate(): Int {
             var direction = Direction.East
-            var position = Point(0, 0)
+            var position = Point2D(0, 0)
 
             for (action in actions) {
                 when (action) {
@@ -81,8 +81,8 @@ class Day12(dataFile: DataFile) {
         }
 
         fun navigateWithWaypoint(): Int {
-            var position = Point(0, 0)
-            var waypoint = Point(-1, 10)
+            var position = Point2D(0, 0)
+            var waypoint = Point2D(-1, 10)
 
             for (action in actions) {
                 when (action) {
@@ -94,13 +94,13 @@ class Day12(dataFile: DataFile) {
 
                     is Action.Left -> {
                         for (i in 0..<action.turns) {
-                            waypoint = Point(-1 * waypoint.col, waypoint.row)
+                            waypoint = Point2D(-1 * waypoint.col, waypoint.row)
                         }
                     }
 
                     is Action.Right -> {
                         for (i in 0..<action.turns) {
-                            waypoint = Point(waypoint.col, -1 * waypoint.row)
+                            waypoint = Point2D(waypoint.col, -1 * waypoint.row)
                         }
                     }
 

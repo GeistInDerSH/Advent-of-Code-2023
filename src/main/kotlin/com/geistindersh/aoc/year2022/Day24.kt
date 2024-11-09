@@ -1,7 +1,7 @@
 package com.geistindersh.aoc.year2022
 
 import com.geistindersh.aoc.helper.enums.Direction
-import com.geistindersh.aoc.helper.enums.Point
+import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -12,7 +12,7 @@ class Day24(lines: List<String>) {
     private val storms = lines
         .flatMapIndexed { row, line ->
             line.mapIndexedNotNull { col, value ->
-                val point = Point(row, col)
+                val point = Point2D(row, col)
                 when (value) {
                     '^' -> point to Direction.North
                     '>' -> point to Direction.East
@@ -22,32 +22,32 @@ class Day24(lines: List<String>) {
                 }
             }
         }
-    private val start = Point(0, lines.first().indexOf('.'))
-    private val end = Point(lines.lastIndex, lines.last().indexOf('.'))
-    private val mapEnd = Point(lines.lastIndex, lines.last().lastIndex)
+    private val start = Point2D(0, lines.first().indexOf('.'))
+    private val end = Point2D(lines.lastIndex, lines.last().indexOf('.'))
+    private val mapEnd = Point2D(lines.lastIndex, lines.last().lastIndex)
 
-    private fun moveStorms(storms: List<Pair<Point, Direction>>): List<Pair<Point, Direction>> {
+    private fun moveStorms(storms: List<Pair<Point2D, Direction>>): List<Pair<Point2D, Direction>> {
         return storms
             .map { (point, dir) ->
                 val newPoint = point + dir
                 val pos = when {
-                    newPoint.row == 0 -> Point(mapEnd.row - 1, newPoint.col)
-                    newPoint.col == 0 -> Point(newPoint.row, mapEnd.col - 1)
-                    newPoint.row == mapEnd.row -> Point(1, newPoint.col)
-                    newPoint.col == mapEnd.col -> Point(newPoint.row, 1)
+                    newPoint.row == 0 -> Point2D(mapEnd.row - 1, newPoint.col)
+                    newPoint.col == 0 -> Point2D(newPoint.row, mapEnd.col - 1)
+                    newPoint.row == mapEnd.row -> Point2D(1, newPoint.col)
+                    newPoint.col == mapEnd.col -> Point2D(newPoint.row, 1)
                     else -> newPoint
                 }
                 pos to dir
             }
     }
 
-    private fun isInBounds(point: Point) = point.row in 1..<mapEnd.row && point.col in 1..<mapEnd.col
+    private fun isInBounds(point: Point2D) = point.row in 1..<mapEnd.row && point.col in 1..<mapEnd.col
 
     private fun navigate(
-        start: Point,
-        end: Point,
-        initialStorms: List<Pair<Point, Direction>>
-    ): Pair<Int, List<Pair<Point, Direction>>> {
+        start: Point2D,
+        end: Point2D,
+        initialStorms: List<Pair<Point2D, Direction>>
+    ): Pair<Int, List<Pair<Point2D, Direction>>> {
         var minutes = 0
         var storms = initialStorms
         var locations = setOf(start)
