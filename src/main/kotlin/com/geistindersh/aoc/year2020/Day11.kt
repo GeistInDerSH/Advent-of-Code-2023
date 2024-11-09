@@ -1,7 +1,7 @@
 package com.geistindersh.aoc.year2020
 
 import com.geistindersh.aoc.helper.enums.Direction
-import com.geistindersh.aoc.helper.enums.Point
+import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
@@ -12,8 +12,8 @@ class Day11(dataFile: DataFile) {
         .flatMapIndexed { row, line ->
             line.mapIndexedNotNull { col, c ->
                 when (c) {
-                    '#' -> Point(row, col) to true
-                    'L' -> Point(row, col) to false
+                    '#' -> Point2D(row, col) to true
+                    'L' -> Point2D(row, col) to false
                     else -> null
                 }
             }
@@ -24,7 +24,7 @@ class Day11(dataFile: DataFile) {
             SeatingChart(chart, visibility)
         }
 
-    private fun generateVisibilityMap(chart: Map<Point, Boolean>): Map<Point, List<Point>> {
+    private fun generateVisibilityMap(chart: Map<Point2D, Boolean>): Map<Point2D, List<Point2D>> {
         // Use the "raw" directions as opposed to Point::neighborsAll so we can repeatedly
         // add the current direction until we find a visible point
         val directions = listOf(
@@ -38,13 +38,13 @@ class Day11(dataFile: DataFile) {
             Direction.South + Direction.West,
         )
 
-        val visibility = mutableMapOf<Point, List<Point>>()
+        val visibility = mutableMapOf<Point2D, List<Point2D>>()
         val maxRow = chart.keys.maxOf { it.row } + 1
         val maxCol = chart.keys.maxOf { it.col } + 1
         for (row in 0..maxRow) {
             for (col in 0..maxCol) {
-                val canSee = mutableListOf<Point>()
-                val point = Point(row, col)
+                val canSee = mutableListOf<Point2D>()
+                val point = Point2D(row, col)
                 for (dir in directions) {
                     var neighbor = point + dir
                     while (true) {
@@ -64,8 +64,8 @@ class Day11(dataFile: DataFile) {
     }
 
     private data class SeatingChart(
-        val chart: Map<Point, Boolean>,
-        val visibility: Map<Point, List<Point>>,
+        val chart: Map<Point2D, Boolean>,
+        val visibility: Map<Point2D, List<Point2D>>,
         val changed: Int = 0,
         val neighborThreshold: Int = 3,
     ) {
@@ -122,7 +122,7 @@ class Day11(dataFile: DataFile) {
 
             for (row in 0..maxRow) {
                 for (col in 0..maxCol) {
-                    val p = Point(row, col)
+                    val p = Point2D(row, col)
                     val isFilled = chart[p] ?: continue
                     arr[row][col] = if (isFilled) '#' else 'L'
                 }

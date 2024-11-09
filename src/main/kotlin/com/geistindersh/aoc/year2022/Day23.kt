@@ -1,7 +1,7 @@
 package com.geistindersh.aoc.year2022
 
 import com.geistindersh.aoc.helper.enums.Direction
-import com.geistindersh.aoc.helper.enums.Point
+import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.cycle
@@ -11,7 +11,7 @@ class Day23(dataFile: DataFile) {
     private val elves = fileToStream(2022, 23, dataFile)
         .flatMapIndexed { row, line ->
             line.mapIndexedNotNull { col, value ->
-                if (value == '#') Point(row, col)
+                if (value == '#') Point2D(row, col)
                 else null
             }
         }
@@ -49,7 +49,7 @@ class Day23(dataFile: DataFile) {
 
         var round = 0
         while (true) {
-            val proposedMoves = mutableMapOf<Point, Point>()
+            val proposedMoves = mutableMapOf<Point2D, Point2D>()
             val order = searchOrder.drop(round).take(4).toList()
 
             for (elf in elves) {

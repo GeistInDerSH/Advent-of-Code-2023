@@ -1,6 +1,6 @@
 package com.geistindersh.aoc.year2015
 
-import com.geistindersh.aoc.helper.enums.Point
+import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -8,38 +8,38 @@ import com.geistindersh.aoc.helper.report
 class Day6(dataFile: DataFile) {
     private val instructions = fileToStream(2015, 6, dataFile).map { Action.from(it) }.toList()
 
-    private sealed class Action(val start: Point, val end: Point) {
-        class Toggle(start: Point, end: Point) : Action(start, end)
-        class Enable(start: Point, end: Point) : Action(start, end)
-        class Disable(start: Point, end: Point) : Action(start, end)
+    private sealed class Action(val start: Point2D, val end: Point2D) {
+        class Toggle(start: Point2D, end: Point2D) : Action(start, end)
+        class Enable(start: Point2D, end: Point2D) : Action(start, end)
+        class Disable(start: Point2D, end: Point2D) : Action(start, end)
 
         fun generateLights() = (start.row..end.row)
             .flatMap { row ->
-                (start.col..end.col).map { col -> Point(row, col) }
+                (start.col..end.col).map { col -> Point2D(row, col) }
             }.toSet()
 
         companion object {
             fun from(line: String): Action {
                 val words = line.split(' ')
                 return if (words[0] == "toggle") {
-                    val start = words[1].split(',').map(String::toInt).let { Point(it[0], it[1]) }
-                    val end = words[3].split(',').map(String::toInt).let { Point(it[0], it[1]) }
+                    val start = words[1].split(',').map(String::toInt).let { Point2D(it[0], it[1]) }
+                    val end = words[3].split(',').map(String::toInt).let { Point2D(it[0], it[1]) }
                     Toggle(start, end)
                 } else if (words[1] == "on") {
-                    val start = words[2].split(',').map(String::toInt).let { Point(it[0], it[1]) }
-                    val end = words[4].split(',').map(String::toInt).let { Point(it[0], it[1]) }
+                    val start = words[2].split(',').map(String::toInt).let { Point2D(it[0], it[1]) }
+                    val end = words[4].split(',').map(String::toInt).let { Point2D(it[0], it[1]) }
                     Enable(start, end)
                 } else {
-                    val start = words[2].split(',').map(String::toInt).let { Point(it[0], it[1]) }
-                    val end = words[4].split(',').map(String::toInt).let { Point(it[0], it[1]) }
+                    val start = words[2].split(',').map(String::toInt).let { Point2D(it[0], it[1]) }
+                    val end = words[4].split(',').map(String::toInt).let { Point2D(it[0], it[1]) }
                     Disable(start, end)
                 }
             }
         }
     }
 
-    private fun followInstructions(): Set<Point> {
-        val enabledLights = mutableSetOf<Point>()
+    private fun followInstructions(): Set<Point2D> {
+        val enabledLights = mutableSetOf<Point2D>()
         for (rule in instructions) {
             val lights = rule.generateLights()
             when (rule) {
@@ -69,8 +69,8 @@ class Day6(dataFile: DataFile) {
         return enabledLights
     }
 
-    private fun followInstructionsBrightness(): Map<Point, Int> {
-        val enabledLights = mutableMapOf<Point, Int>()
+    private fun followInstructionsBrightness(): Map<Point2D, Int> {
+        val enabledLights = mutableMapOf<Point2D, Int>()
         for (rule in instructions) {
             val lights = rule.generateLights()
             when (rule) {
