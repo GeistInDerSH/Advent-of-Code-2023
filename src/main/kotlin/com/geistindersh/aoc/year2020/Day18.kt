@@ -12,76 +12,81 @@ class Day18(dataFile: DataFile) {
         .toList()
 
     private data class Equation(val tokens: List<Token>) {
+        private fun Stack<Token>.reduceAll() = this.reduce(setOf(Token.Add(), Token.Multiply()))
+        private fun Stack<Token>.reduceAdditions() = this.reduce(setOf(Token.Add()))
+
+        /**
+         * Reduce the values on the stack when a given [Call] operation from
+         * [operations] can be preformed.
+         *
+         * @param operations The operations that we can perform to reduce the stack
+         */
+        private fun Stack<Token>.reduce(operations: Set<Call>) {
+            val stack = this
+            while (true) {
+                if (stack.isEmpty()) break
+                val head = stack.pop()
+                if (stack.isEmpty() || head !is Token.Number) {
+                    stack.push(head)
+                    break
+                }
+                val next = stack.peek()
+                stack.push(head)
+
+                if (next !is Call) break
+                if (next !in operations) break
+                stack.pop()
+                val op = stack.pop() as Call
+                val n2 = stack.pop() as Token.Number
+                val new = op.eval(head, n2)
+                stack.push(new)
+            }
+        }
+
+
+        private fun Stack<Token>.reduceWhileInParentheses() {
+            val stack = this
+            while (true) {
+                val num = stack.pop()
+                when (val op = stack.peek()) {
+                    is Token.Add, is Token.Multiply -> {
+                        stack.push(num)
+                        stack.reduceAll()
+                    }
+
+                    is Token.OpenParentheses -> {
+                        stack.pop()
+                        stack.push(num)
+                        break
+                    }
+
+                    else -> throw IllegalArgumentException(op.toString())
+                }
+            }
+        }
+
         fun eval(): Long {
             val stack = Stack<Token>()
             for (token in tokens) {
                 when {
                     stack.isEmpty() -> stack.push(token)
-                    token is Token.Multiply -> stack.push(token)
-                    token is Token.Add -> stack.push(token)
-                    token is Token.OpenParentheses -> stack.push(token)
-                    token is Token.ClosedParentheses -> {
-                        while (true) {
-                            val num = stack.pop()
-                            when (val op = stack.peek()) {
-                                is Token.Add, is Token.Multiply -> {
-                                    stack.pop()
-                                    val n2 = stack.pop() as Token.Number
-                                    val new = (op as Call).eval(num as Token.Number, n2)
-                                    stack.push(new)
-                                }
-
-                                is Token.OpenParentheses -> {
-                                    stack.pop()
-                                    stack.push(num)
-                                    break
-                                }
-
-                                else -> throw IllegalArgumentException(op.toString())
-                            }
-                        }
-                    }
-
+                    token is Token.ClosedParentheses -> stack.reduceWhileInParentheses()
                     token is Token.Number -> {
-                        when (val head = stack.peek()) {
+                        val head = stack.peek()
+                        stack.push(token)
+                        when (head) {
                             is Token.ClosedParentheses -> throw IllegalStateException(") NUM")
                             is Token.Number -> throw IllegalStateException("NUM NUM")
-                            is Token.OpenParentheses -> stack.push(token)
-                            is Token.Multiply, is Token.Add -> {
-                                stack.pop()
-                                val n2 = stack.pop() as Token.Number
-                                val reduced = (head as Call).eval(token, n2)
-                                stack.push(reduced)
-                            }
+                            is Token.Multiply, is Token.Add -> stack.reduceAll()
+                            else -> continue
                         }
                     }
+
+                    else -> stack.push(token)
                 }
 
                 // Reduce existing stack
-                while (true) {
-                    if (stack.isEmpty()) break
-                    val head = stack.pop()
-                    if (stack.isEmpty() || head !is Token.Number) {
-                        stack.push(head)
-                        break
-                    }
-                    val next = stack.peek()
-                    stack.push(head)
-
-                    when (next) {
-                        is Token.Add, is Token.Multiply -> {
-                            stack.pop()
-                            val op = stack.pop() as Call
-                            val n2 = stack.pop() as Token.Number
-                            val new = op.eval(head, n2)
-                            stack.push(new)
-                        }
-
-                        is Token.ClosedParentheses -> break
-                        is Token.OpenParentheses -> break
-                        is Token.Number -> break
-                    }
-                }
+                stack.reduceAll()
             }
             val head = stack.pop()
             if (head !is Token.Number) throw IllegalStateException("Expected NUMBER")
@@ -93,97 +98,27 @@ class Day18(dataFile: DataFile) {
             for (token in tokens) {
                 when {
                     stack.isEmpty() -> stack.push(token)
-                    token is Token.Multiply -> stack.push(token)
-                    token is Token.Add -> stack.push(token)
-                    token is Token.OpenParentheses -> stack.push(token)
-                    token is Token.ClosedParentheses -> {
-                        while (true) {
-                            val num = stack.pop()
-                            when (val op = stack.peek()) {
-                                is Token.Add, is Token.Multiply -> {
-                                    stack.pop()
-                                    val n2 = stack.pop() as Token.Number
-                                    val new = (op as Call).eval(num as Token.Number, n2)
-                                    stack.push(new)
-                                }
-
-                                is Token.OpenParentheses -> {
-                                    stack.pop()
-                                    stack.push(num)
-                                    break
-                                }
-
-                                else -> throw IllegalArgumentException(op.toString())
-                            }
-                        }
-                    }
-
+                    token is Token.ClosedParentheses -> stack.reduceWhileInParentheses()
                     token is Token.Number -> {
-                        when (val head = stack.peek()) {
+                        val head = stack.peek()
+                        stack.push(token)
+                        when (head) {
                             is Token.ClosedParentheses -> throw IllegalStateException(") NUM")
                             is Token.Number -> throw IllegalStateException("NUM NUM")
-                            is Token.OpenParentheses -> stack.push(token)
-                            is Token.Multiply -> stack.push(token)
-                            is Token.Add -> {
-                                stack.pop()
-                                val n2 = stack.pop() as Token.Number
-                                val reduced = (head as Call).eval(token, n2)
-                                stack.push(reduced)
-                            }
+                            is Token.Add -> stack.reduceAdditions()
+                            else -> continue
                         }
                     }
+
+                    else -> stack.push(token)
                 }
 
                 // Reduce existing stack, but only additions
-                while (true) {
-                    if (stack.isEmpty()) break
-                    val head = stack.pop()
-                    if (stack.isEmpty() || head !is Token.Number) {
-                        stack.push(head)
-                        break
-                    }
-                    val next = stack.peek()
-                    stack.push(head)
-
-                    when (next) {
-                        is Token.Add -> {
-                            stack.pop()
-                            val op = stack.pop() as Call
-                            val n2 = stack.pop() as Token.Number
-                            val new = op.eval(head, n2)
-                            stack.push(new)
-                        }
-
-                        else -> break
-                    }
-                }
+                stack.reduceAdditions()
             }
 
             // One last reduction of the stack
-            while (true) {
-                if (stack.isEmpty()) break
-                val head = stack.pop()
-                if (stack.isEmpty() || head !is Token.Number) {
-                    stack.push(head)
-                    break
-                }
-                val next = stack.peek()
-                stack.push(head)
-
-                when (next) {
-                    is Token.Add, is Token.Multiply -> {
-                        stack.pop()
-                        val op = stack.pop() as Call
-                        val n2 = stack.pop() as Token.Number
-                        val new = op.eval(head, n2)
-                        stack.push(new)
-                    }
-
-                    is Token.ClosedParentheses -> break
-                    is Token.OpenParentheses -> break
-                    is Token.Number -> break
-                }
-            }
+            stack.reduceAll()
             val head = stack.pop()
             if (head !is Token.Number) throw IllegalStateException("Expected NUMBER")
             return head.value
@@ -215,7 +150,7 @@ class Day18(dataFile: DataFile) {
                 while (i < raw.length) {
                     val char = raw[i]
                     if (char.isDigit()) {
-                        if (num == null) {
+                        if (num == null) { // Start of number
                             num = 0
                         }
 
@@ -224,6 +159,7 @@ class Day18(dataFile: DataFile) {
                         i += 1
                         continue
                     } else if (num != null) {
+                        // Next token is not a number, and we have one saved
                         tokens.add(Number(num))
                         num = null
                         continue
@@ -243,7 +179,7 @@ class Day18(dataFile: DataFile) {
                     tokens.add(tkn)
                     i += 1
                 }
-                if (num != null) {
+                if (num != null) { // We have a number saved, but not pushed back
                     tokens.add(Number(num))
                 }
 
