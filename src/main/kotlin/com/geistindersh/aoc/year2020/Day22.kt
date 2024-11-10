@@ -19,6 +19,9 @@ class Day22(dataFile: DataFile) {
             .withIndex()
             .fold(0L) { acc, card -> acc + card.value * (card.index + 1) }
 
+        fun hasRecursiveState() = hasCards && (topCard() <= deck.size - 1)
+        fun makeRecursive() = this.copy(deck = deck.drop(1).take(topCard()))
+
         companion object {
             val NUMBER_REGEX = "[0-9]+".toRegex()
 
@@ -49,8 +52,43 @@ class Day22(dataFile: DataFile) {
         return if (p1.hasCards) p1 else p2
     }
 
+    private fun List<Player>.playRecursive(): Player {
+        var p1 = this.first()
+        var p2 = this.last()
+        val seen = mutableSetOf<List<Int>>()
+
+        while (p1.hasCards && p2.hasCards) {
+            if (p1.deck in seen) return p1
+            if (p2.deck in seen) return p1
+            seen.add(p1.deck)
+            seen.add(p2.deck)
+
+            val p1Top = p1.topCard()
+            val p2Top = p2.topCard()
+            val winner = when {
+                p1.hasRecursiveState() && p2.hasRecursiveState() -> {
+                    listOf(p1.makeRecursive(), p2.makeRecursive())
+                        .playRecursive()
+                        .id
+                }
+
+                p1Top > p2Top -> p1.id
+                else -> p2.id
+            }
+
+            if (winner == p1.id) {
+                p1 = p1.copy(deck = p1.deck.drop(1) + p1Top + p2Top)
+                p2 = p2.copy(deck = p2.deck.drop(1))
+            } else {
+                p1 = p1.copy(deck = p1.deck.drop(1))
+                p2 = p2.copy(deck = p2.deck.drop(1) + p2Top + p1Top)
+            }
+        }
+        return if (p1.hasCards) p1 else p2
+    }
+
     fun part1() = players.play().score()
-    fun part2() = 0
+    fun part2() = players.playRecursive().score()
 }
 
 fun day22() {
