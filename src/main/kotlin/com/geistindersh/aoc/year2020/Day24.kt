@@ -17,7 +17,7 @@ class Day24(dataFile: DataFile) {
 
         companion object {
             private val DIRECTION_REGEX = "[ns]?[ew]".toRegex()
-            private val LOOKUP_TABLE = mapOf(
+            val LOOKUP_TABLE = mapOf(
                 "e" to Point3D(1, -1, 0),
                 "w" to Point3D(-1, 1, 0),
                 "ne" to Point3D(1, 0, -1),
@@ -28,13 +28,33 @@ class Day24(dataFile: DataFile) {
         }
     }
 
-    fun part1() = lines
+    private fun List<Line>.flipTiles() = this
         .map { it.finalPoint }
         .groupingBy { it }
         .eachCount()
-        .count { it.value % 2 == 1 }
+        .filter { it.value == 1 }
+        .keys
 
-    fun part2() = 0
+    private fun Point3D.lineNeighbors() = Line.LOOKUP_TABLE.values.map { it + this }
+
+    private fun Set<Point3D>.next() = (this + this.flatMap { it.lineNeighbors() })
+        .filter { point ->
+            val adjacentPoints = point.lineNeighbors().count { it in this }
+            val isBlack = point in this
+            when {
+                isBlack && (adjacentPoints == 0 || adjacentPoints > 2) -> false
+                !isBlack && adjacentPoints == 2 -> true
+                else -> isBlack
+            }
+        }
+        .toSet()
+
+    fun part1() = lines.flipTiles().size
+
+    fun part2() = generateSequence(lines.flipTiles()) { it.next() }
+        .drop(100)
+        .first()
+        .size
 }
 
 fun day24() {
