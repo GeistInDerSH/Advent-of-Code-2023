@@ -48,9 +48,25 @@ class Day23(dataFile: DataFile) {
             return (after + before).fold(0L) { acc, value -> (acc * 10) + value }
         }
 
+        fun makePart2(): Cups {
+            val max = numbers.maxOf { it }
+            val toAdd = (max + 1..1_000_000)
+            val newNums = numbers.toMutableList()
+            newNums.addAll(toAdd)
+            return Cups(newNums)
+        }
+
         companion object {
             fun from(string: String) = Cups(string.map { it.digitToInt() })
         }
+    }
+
+    private class Cup(val value: Int) {
+        lateinit var next: Cup
+
+        fun nextCount(n: Int) = (1..n)
+            .runningFold(this) { cur, _ -> cur.next }
+            .drop(1)
     }
 
     fun part1() = generateSequence(cups) { it.next() }
@@ -58,7 +74,45 @@ class Day23(dataFile: DataFile) {
         .last()
         .score()
 
-    fun part2() = 0
+    fun part2(): Long {
+        val allCups = List(1_000_001) { Cup(it) }
+
+        cups.makePart2()
+            .numbers
+            .map { allCups[it] }
+            .fold(allCups[cups.numbers.last()]) { prev, curr ->
+                curr.also { prev.next = curr }
+            }
+        allCups.last().next = allCups[cups.numbers.first()]
+
+        var current = allCups[cups.numbers.first()]
+        repeat(10_000_000) {
+            val holding = current.nextCount(3)
+
+            // Find where to place the cups being held
+            val destination = (current.value - 1).let { start ->
+                val holdValue = holding.map { it.value }.toSet()
+                var dest = start
+                while (dest in holdValue || dest == 0) {
+                    dest = if (dest == 0) allCups.size - 1 else dest - 1
+                }
+                allCups[dest]
+            }
+
+            // Move the cups being held into position
+            val prev = destination.next
+            current.next = holding.last().next
+            destination.next = holding.first()
+            holding.last().next = prev
+
+            current = current.next
+        }
+
+        return allCups[1]
+            .nextCount(2)
+            .map { it.value.toLong() }
+            .reduce(Long::times)
+    }
 }
 
 fun day23() {
