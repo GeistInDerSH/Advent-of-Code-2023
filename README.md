@@ -1,9 +1,17 @@
 # Advent of Code Solutions
 
+Order solved:
+2023 -> 2022 -> 2015 -> 2020
+
 ## 2015
 
 Advancing knowledge of Kotlin, and focusing on using Sequences where possible
 for efficiently generating answers.
+
+## 2020
+
+Less of a focus on pure immutability, but still using it plenty.
+Flesh out support code for reuse in other years & challenges.
 
 ## 2021
 
