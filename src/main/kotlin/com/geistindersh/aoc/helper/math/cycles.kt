@@ -2,7 +2,6 @@ package com.geistindersh.aoc.helper.math
 
 import kotlin.math.max
 
-
 /**
  * @param a The first value
  * @param b The second value

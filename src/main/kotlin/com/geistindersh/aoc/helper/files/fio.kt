@@ -10,7 +10,6 @@ enum class DataFile(private val fileName: String) {
     fun filePath(year: Int, day: Int) = "src/main/resources/${year}/${day}/${fileName}"
 }
 
-
 /**
  * Read the contents of the file into a string
  *
@@ -45,9 +44,7 @@ fun fileToStream(year: Int, day: Int, fileType: DataFile) = fileToStream(fileTyp
  * @param fileName The file to read
  * @return An iterable sequence of strings
  */
-fun fileToStream(fileName: String): Sequence<String> {
-    return File(fileName)
-        .inputStream()
-        .bufferedReader()
-        .lineSequence()
-}
+fun fileToStream(fileName: String) = File(fileName)
+    .inputStream()
+    .bufferedReader()
+    .lineSequence()
