@@ -28,10 +28,10 @@ class Day11(dataFile: DataFile) {
         // Use the "raw" directions as opposed to Point::neighborsAll so we can repeatedly
         // add the current direction until we find a visible point
         val directions = listOf(
-            Direction.North.pair(),
-            Direction.East.pair(),
-            Direction.South.pair(),
-            Direction.West.pair(),
+            Direction.North.toPair(),
+            Direction.East.toPair(),
+            Direction.South.toPair(),
+            Direction.West.toPair(),
             Direction.North + Direction.East,
             Direction.North + Direction.West,
             Direction.South + Direction.East,

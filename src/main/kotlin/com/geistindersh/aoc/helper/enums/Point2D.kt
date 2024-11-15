@@ -7,10 +7,10 @@ data class Point2D(val row: Int, val col: Int) {
 
     fun neighbors() = listOf(Direction.North, Direction.East, Direction.South, Direction.West).map { this + it }
     fun neighborsAll() = listOf(
-        Direction.North.pair(),
-        Direction.East.pair(),
-        Direction.South.pair(),
-        Direction.West.pair(),
+        Direction.North.toPair(),
+        Direction.East.toPair(),
+        Direction.South.toPair(),
+        Direction.West.toPair(),
         Direction.North + Direction.East,
         Direction.North + Direction.West,
         Direction.South + Direction.East,

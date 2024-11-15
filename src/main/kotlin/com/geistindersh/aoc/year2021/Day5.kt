@@ -26,8 +26,8 @@ class Day5(dataFile: DataFile) {
             val ewDirection = if (start.col < end.col) Direction.East else Direction.West
 
             val direction = when {
-                start.row == end.row -> ewDirection.pair()
-                start.col == end.col -> nsDirection.pair()
+                start.row == end.row -> ewDirection.toPair()
+                start.col == end.col -> nsDirection.toPair()
                 else -> nsDirection + ewDirection
             }
             generateSequence(start) { it + direction }

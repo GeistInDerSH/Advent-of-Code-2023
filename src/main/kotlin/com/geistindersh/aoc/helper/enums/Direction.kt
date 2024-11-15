@@ -6,7 +6,7 @@ enum class Direction(val rowInc: Int, val colInc: Int) {
     East(0, 1),
     West(0, -1);
 
-    fun pair() = rowInc to colInc
+    fun toPair() = rowInc to colInc
 
     operator fun plus(pair: Pair<Int, Int>) = Pair(pair.first + rowInc, pair.second + colInc)
     operator fun plus(direction: Direction) = Pair(rowInc + direction.rowInc, colInc + direction.colInc)

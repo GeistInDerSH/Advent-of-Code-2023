@@ -27,13 +27,13 @@ class Day20(dataFile: DataFile) {
 
         private fun orderedNeighbors() = listOf(
             Direction.North + Direction.West,
-            Direction.North.pair(),
+            Direction.North.toPair(),
             Direction.North + Direction.East,
-            Direction.West.pair(),
+            Direction.West.toPair(),
             Pair(0, 0),
-            Direction.East.pair(),
+            Direction.East.toPair(),
             Direction.South + Direction.West,
-            Direction.South.pair(),
+            Direction.South.toPair(),
             Direction.South + Direction.East,
         )
 

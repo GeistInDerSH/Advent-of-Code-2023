@@ -18,7 +18,7 @@ data class DigPlan(private val digLocations: List<DigLocation>) {
         var area = 1.0
         for (dig in digLocations) {
             // Offsets that will be used to generate the ending position of the range
-            val (row, col) = dig.direction.pair()
+            val (row, col) = dig.direction.toPair()
             // ending column position for the current location
             colPosition += col * dig.distance
             // The area added by the current location
