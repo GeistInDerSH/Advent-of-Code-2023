@@ -6,21 +6,26 @@ import com.geistindersh.aoc.helper.ranges.hasOverlap
 import com.geistindersh.aoc.helper.ranges.isFullyContained
 import com.geistindersh.aoc.helper.report
 
-class Day4(dataFile: DataFile) {
-    private val pairs = fileToStream(2022, 4, dataFile)
-        .map { line ->
-            val pairs = line.split(',')
-                .map {
-                    val range = it.split("-", limit = 2).map(String::toInt)
-                    range[0]..range[1]
-                }.toList()
+class Day4(
+    dataFile: DataFile,
+) {
+    private val pairs =
+        fileToStream(2022, 4, dataFile)
+            .map { line ->
+                val pairs =
+                    line
+                        .split(',')
+                        .map {
+                            val range = it.split("-", limit = 2).map(String::toInt)
+                            range[0]..range[1]
+                        }.toList()
 
-            if (pairs[0].count() > pairs[1].count()) {
-                Pair(pairs[0], pairs[1])
-            } else {
-                Pair(pairs[1], pairs[0])
-            }
-        }.toList()
+                if (pairs[0].count() > pairs[1].count()) {
+                    Pair(pairs[0], pairs[1])
+                } else {
+                    Pair(pairs[1], pairs[0])
+                }
+            }.toList()
 
     fun part1(): Int = pairs.count { (r1, r2) -> r1.isFullyContained(r2) }
 

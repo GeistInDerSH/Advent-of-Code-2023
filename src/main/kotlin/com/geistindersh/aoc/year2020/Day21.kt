@@ -4,20 +4,27 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 import com.geistindersh.aoc.helper.strings.removeAll
-import java.util.*
+import java.util.PriorityQueue
 
-class Day21(dataFile: DataFile) {
-    private val food = fileToStream(2020, 21, dataFile)
-        .map { Food.from(it) }
-        .toList()
+class Day21(
+    dataFile: DataFile,
+) {
+    private val food =
+        fileToStream(2020, 21, dataFile)
+            .map { Food.from(it) }
+            .toList()
 
-    private data class Food(val ingredients: Set<String>, val allergen: Set<String>) {
+    private data class Food(
+        val ingredients: Set<String>,
+        val allergen: Set<String>,
+    ) {
         companion object {
             fun from(line: String): Food {
-                val (ingredients, allergen) = line
-                    .removeAll("(),")
-                    .split(" contains ")
-                    .map { it.split(" ").toSet() }
+                val (ingredients, allergen) =
+                    line
+                        .removeAll("(),")
+                        .split(" contains ")
+                        .map { it.split(" ").toSet() }
                 return Food(ingredients, allergen)
             }
         }
@@ -25,8 +32,9 @@ class Day21(dataFile: DataFile) {
 
     private fun List<Food>.determineAllergens(): Map<String, String> {
         val known = mutableMapOf<String, String>()
-        val queue = PriorityQueue<Food>(compareBy { it.allergen.size })
-            .apply { addAll(this@determineAllergens) }
+        val queue =
+            PriorityQueue<Food>(compareBy { it.allergen.size })
+                .apply { addAll(this@determineAllergens) }
 
         while (queue.isNotEmpty()) {
             val head = queue.poll()
@@ -46,13 +54,19 @@ class Day21(dataFile: DataFile) {
         return known
     }
 
-    fun part1() = food
-        .determineAllergens()
-        .let { known ->
-            food.sumOf { f -> f.ingredients.count { it !in known.values } }
-        }
+    fun part1() =
+        food
+            .determineAllergens()
+            .let { known ->
+                food.sumOf { f -> f.ingredients.count { it !in known.values } }
+            }
 
-    fun part2() = food.determineAllergens().toSortedMap().map { it.value }.joinToString(",")
+    fun part2() =
+        food
+            .determineAllergens()
+            .toSortedMap()
+            .map { it.value }
+            .joinToString(",")
 }
 
 fun day21() {

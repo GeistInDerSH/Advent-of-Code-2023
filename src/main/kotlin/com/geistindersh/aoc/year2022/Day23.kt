@@ -7,78 +7,87 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.cycle
 import com.geistindersh.aoc.helper.report
 
-class Day23(dataFile: DataFile) {
-    private val elves = fileToStream(2022, 23, dataFile)
-        .flatMapIndexed { row, line ->
-            line.mapIndexedNotNull { col, value ->
-                if (value == '#') Point2D(row, col)
-                else null
-            }
+class Day23(
+    dataFile: DataFile,
+) {
+    private val elves =
+        fileToStream(2022, 23, dataFile)
+            .flatMapIndexed { row, line ->
+                line.mapIndexedNotNull { col, value ->
+                    if (value == '#') {
+                        Point2D(row, col)
+                    } else {
+                        null
+                    }
+                }
+            }.toSet()
+
+    private fun getAdjacency(direction: Direction) =
+        when (direction) {
+            Direction.North, Direction.South ->
+                listOf(
+                    direction.toPair(),
+                    direction + Direction.East,
+                    direction + Direction.West,
+                )
+
+            Direction.East, Direction.West ->
+                listOf(
+                    direction.toPair(),
+                    direction + Direction.North,
+                    direction + Direction.South,
+                )
         }
-        .toSet()
 
-    private fun getAdjacency(direction: Direction) = when (direction) {
-        Direction.North, Direction.South -> listOf(
-            direction.toPair(),
-            direction + Direction.East,
-            direction + Direction.West,
+    private fun getAllNeighbours() =
+        listOf(
+            Direction.North.toPair(),
+            Direction.North + Direction.East,
+            Direction.North + Direction.West,
+            Direction.South.toPair(),
+            Direction.South + Direction.East,
+            Direction.South + Direction.West,
+            Direction.East.toPair(),
+            Direction.West.toPair(),
         )
 
-        Direction.East, Direction.West -> listOf(
-            direction.toPair(),
-            direction + Direction.North,
-            direction + Direction.South,
-        )
-    }
+    private fun rounds() =
+        sequence {
+            val searchOrder = listOf(Direction.North, Direction.South, Direction.West, Direction.East).cycle()
+            var elves = this@Day23.elves
+            yield(elves)
 
-    private fun getAllNeighbours() = listOf(
-        Direction.North.toPair(),
-        Direction.North + Direction.East,
-        Direction.North + Direction.West,
-        Direction.South.toPair(),
-        Direction.South + Direction.East,
-        Direction.South + Direction.West,
-        Direction.East.toPair(),
-        Direction.West.toPair(),
-    )
+            var round = 0
+            while (true) {
+                val proposedMoves = mutableMapOf<Point2D, Point2D>()
+                val order = searchOrder.drop(round).take(4).toList()
 
-    private fun rounds() = sequence {
-        val searchOrder = listOf(Direction.North, Direction.South, Direction.West, Direction.East).cycle()
-        var elves = this@Day23.elves
-        yield(elves)
+                for (elf in elves) {
+                    if (getAllNeighbours().map { elf + it }.all { it !in elves }) {
+                        proposedMoves[elf] = elf
+                        continue
+                    }
 
-        var round = 0
-        while (true) {
-            val proposedMoves = mutableMapOf<Point2D, Point2D>()
-            val order = searchOrder.drop(round).take(4).toList()
-
-            for (elf in elves) {
-                if (getAllNeighbours().map { elf + it }.all { it !in elves }) {
-                    proposedMoves[elf] = elf
-                    continue
+                    proposedMoves[elf] = order
+                        .firstOrNull { dir ->
+                            getAdjacency(dir).map { elf + it }.all { it !in elves }
+                        }?.let { elf + it }
+                        ?: elf
                 }
 
-                proposedMoves[elf] = order
-                    .firstOrNull { dir ->
-                        getAdjacency(dir).map { elf + it }.all { it !in elves }
-                    }
-                    ?.let { elf + it }
-                    ?: elf
+                for ((elf, move) in proposedMoves) {
+                    val movedToSame = proposedMoves.filter { (k, v) -> k != elf && v == move }.keys
+                    if (movedToSame.isEmpty()) continue
+
+                    proposedMoves[elf] = elf
+                    movedToSame.forEach { proposedMoves[it] = it }
+                }
+
+                elves = proposedMoves.values.toSet()
+                yield(elves)
+                round += 1
             }
-
-            for ((elf, move) in proposedMoves) {
-                val movedToSame = proposedMoves.filter { (k, v) -> k != elf && v == move }.keys
-                if (movedToSame.isEmpty()) continue
-
-                proposedMoves[elf] = elf
-                movedToSame.forEach { proposedMoves[it] = it }
-            }
-
-            elves = proposedMoves.values.toSet()
-            yield(elves)
-            round += 1
         }
-    }
 
     fun part1(): Int {
         val elves = rounds().elementAt(10)
@@ -88,10 +97,11 @@ class Day23(dataFile: DataFile) {
     }
 
     // Efficient? No! Functional? Yes!
-    fun part2() = rounds()
-        .zipWithNext()
-        .takeWhile { (prev, curr) -> prev != curr }
-        .count() + 1
+    fun part2() =
+        rounds()
+            .zipWithNext()
+            .takeWhile { (prev, curr) -> prev != curr }
+            .count() + 1
 }
 
 fun day23() {

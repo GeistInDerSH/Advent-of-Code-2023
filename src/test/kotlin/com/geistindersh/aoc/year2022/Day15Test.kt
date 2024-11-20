@@ -7,12 +7,10 @@ import org.junit.jupiter.api.Timeout
 import java.util.concurrent.TimeUnit
 
 class Day15Test {
-
     @Test
     fun part1() {
         assertEquals(26, Day15(DataFile.Example).part1(10))
     }
-
 
     @Test
     @Timeout(value = 2, unit = TimeUnit.MINUTES)

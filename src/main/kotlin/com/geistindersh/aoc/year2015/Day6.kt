@@ -5,18 +5,35 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day6(dataFile: DataFile) {
+class Day6(
+    dataFile: DataFile,
+) {
     private val instructions = fileToStream(2015, 6, dataFile).map { Action.from(it) }.toList()
 
-    private sealed class Action(val start: Point2D, val end: Point2D) {
-        class Toggle(start: Point2D, end: Point2D) : Action(start, end)
-        class Enable(start: Point2D, end: Point2D) : Action(start, end)
-        class Disable(start: Point2D, end: Point2D) : Action(start, end)
+    private sealed class Action(
+        val start: Point2D,
+        val end: Point2D,
+    ) {
+        class Toggle(
+            start: Point2D,
+            end: Point2D,
+        ) : Action(start, end)
 
-        fun generateLights() = (start.row..end.row)
-            .flatMap { row ->
-                (start.col..end.col).map { col -> Point2D(row, col) }
-            }.toSet()
+        class Enable(
+            start: Point2D,
+            end: Point2D,
+        ) : Action(start, end)
+
+        class Disable(
+            start: Point2D,
+            end: Point2D,
+        ) : Action(start, end)
+
+        fun generateLights() =
+            (start.row..end.row)
+                .flatMap { row ->
+                    (start.col..end.col).map { col -> Point2D(row, col) }
+                }.toSet()
 
         companion object {
             fun from(line: String): Action {
@@ -99,6 +116,7 @@ class Day6(dataFile: DataFile) {
     }
 
     fun part1() = followInstructions().count()
+
     fun part2() = followInstructionsBrightness().values.sum()
 }
 

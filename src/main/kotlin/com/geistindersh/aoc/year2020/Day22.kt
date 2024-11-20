@@ -4,22 +4,31 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day22(dataFile: DataFile) {
-    private val players = fileToString(2020, 22, dataFile)
-        .split("\n\n")
-        .map { Player.from(it.split("\n")) }
-        .toList()
+class Day22(
+    dataFile: DataFile,
+) {
+    private val players =
+        fileToString(2020, 22, dataFile)
+            .split("\n\n")
+            .map { Player.from(it.split("\n")) }
+            .toList()
 
-    private data class Player(val id: Int, val deck: List<Int>) {
+    private data class Player(
+        val id: Int,
+        val deck: List<Int>,
+    ) {
         val hasCards = deck.isNotEmpty()
 
         fun topCard() = deck.first()
-        fun score() = deck
-            .reversed()
-            .withIndex()
-            .fold(0L) { acc, card -> acc + card.value * (card.index + 1) }
+
+        fun score() =
+            deck
+                .reversed()
+                .withIndex()
+                .fold(0L) { acc, card -> acc + card.value * (card.index + 1) }
 
         fun hasRecursiveState() = hasCards && (topCard() <= deck.size - 1)
+
         fun makeRecursive() = this.copy(deck = deck.drop(1).take(topCard()))
 
         companion object {
@@ -65,16 +74,17 @@ class Day22(dataFile: DataFile) {
 
             val p1Top = p1.topCard()
             val p2Top = p2.topCard()
-            val winner = when {
-                p1.hasRecursiveState() && p2.hasRecursiveState() -> {
-                    listOf(p1.makeRecursive(), p2.makeRecursive())
-                        .playRecursive()
-                        .id
-                }
+            val winner =
+                when {
+                    p1.hasRecursiveState() && p2.hasRecursiveState() -> {
+                        listOf(p1.makeRecursive(), p2.makeRecursive())
+                            .playRecursive()
+                            .id
+                    }
 
-                p1Top > p2Top -> p1.id
-                else -> p2.id
-            }
+                    p1Top > p2Top -> p1.id
+                    else -> p2.id
+                }
 
             if (winner == p1.id) {
                 p1 = p1.copy(deck = p1.deck.drop(1) + p1Top + p2Top)
@@ -88,6 +98,7 @@ class Day22(dataFile: DataFile) {
     }
 
     fun part1() = players.play().score()
+
     fun part2() = players.playRecursive().score()
 }
 

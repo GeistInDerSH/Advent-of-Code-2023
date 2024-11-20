@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day8(dataFile: DataFile) {
+class Day8(
+    dataFile: DataFile,
+) {
     private val lines = fileToStream(2015, 8, dataFile).toList()
 
     private fun String.inMemoryLength(): Int {
@@ -45,6 +47,7 @@ class Day8(dataFile: DataFile) {
     }
 
     fun part1() = lines.sumOf { it.literalLength() - it.inMemoryLength() }
+
     fun part2() = lines.sumOf { it.encodeLength() - it.literalLength() }
 }
 

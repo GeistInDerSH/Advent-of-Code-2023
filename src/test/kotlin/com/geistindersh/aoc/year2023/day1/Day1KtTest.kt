@@ -6,10 +6,11 @@ import org.junit.jupiter.api.Test
 
 class Day1KtTest {
     private val numericOnly = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
-    private val nameAndNumeric = listOf(
-        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-        "1", "2", "3", "4", "5", "6", "7", "8", "9"
-    )
+    private val nameAndNumeric =
+        listOf(
+            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+            "1", "2", "3", "4", "5", "6", "7", "8", "9",
+        )
 
     @Test
     fun part1() {
@@ -18,18 +19,19 @@ class Day1KtTest {
 
     @Test
     fun wordStringToNumeric() {
-        val mapping = mapOf(
-            "one" to 1,
-            "two" to 2,
-            "three" to 3,
-            "four" to 4,
-            "five" to 5,
-            "six" to 6,
-            "seven" to 7,
-            "eight" to 8,
-            "nine" to 9,
-            "9" to 9,
-        )
+        val mapping =
+            mapOf(
+                "one" to 1,
+                "two" to 2,
+                "three" to 3,
+                "four" to 4,
+                "five" to 5,
+                "six" to 6,
+                "seven" to 7,
+                "eight" to 8,
+                "nine" to 9,
+                "9" to 9,
+            )
 
         mapping.forEach { (input, expected) ->
             assertEquals(input.wordStringToInt(), expected)

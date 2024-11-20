@@ -5,21 +5,24 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day9(dataFile: DataFile) {
-    private val heightMap = fileToStream(2021, 9, dataFile)
-        .flatMapIndexed { row, s ->
-            s.mapIndexed { col, c -> Point2D(row, col) to c.digitToInt() }
-        }
-        .toMap()
+class Day9(
+    dataFile: DataFile,
+) {
+    private val heightMap =
+        fileToStream(2021, 9, dataFile)
+            .flatMapIndexed { row, s ->
+                s.mapIndexed { col, c -> Point2D(row, col) to c.digitToInt() }
+            }.toMap()
 
-    private fun findLowPoints() = heightMap
-        .entries
-        .filter { (point, value) ->
-            point
-                .neighbors()
-                .mapNotNull { heightMap[it] }
-                .minBy { it } > value
-        }
+    private fun findLowPoints() =
+        heightMap
+            .entries
+            .filter { (point, value) ->
+                point
+                    .neighbors()
+                    .mapNotNull { heightMap[it] }
+                    .minBy { it } > value
+            }
 
     fun part1() = findLowPoints().sumOf { it.value + 1 }
 
@@ -37,11 +40,13 @@ class Day9(dataFile: DataFile) {
 
                 val currentHeight = heightMap[point]!!
                 if (currentHeight == 8) continue
-                val toAdd = point.neighbors()
-                    .mapNotNull { if (it in heightMap) it to heightMap[it]!! else null }
-                    .filter { (_, height) -> height - 2 <= currentHeight && height != 9 }
-                    .map { it.first }
-                    .filter { it !in basin }
+                val toAdd =
+                    point
+                        .neighbors()
+                        .mapNotNull { if (it in heightMap) it to heightMap[it]!! else null }
+                        .filter { (_, height) -> height - 2 <= currentHeight && height != 9 }
+                        .map { it.first }
+                        .filter { it !in basin }
                 queue.addAll(toAdd)
             }
 

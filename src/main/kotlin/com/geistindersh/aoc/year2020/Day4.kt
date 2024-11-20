@@ -4,14 +4,20 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day4(dataFile: DataFile) {
-    private val passports = fileToString(2020, 4, dataFile)
-        .split("\n\n")
-        .map { Passport.from(it) }
-        .toList()
+class Day4(
+    dataFile: DataFile,
+) {
+    private val passports =
+        fileToString(2020, 4, dataFile)
+            .split("\n\n")
+            .map { Passport.from(it) }
+            .toList()
 
-    private data class Passport(val fields: Map<String, String>) {
+    private data class Passport(
+        val fields: Map<String, String>,
+    ) {
         fun hasRequiredFields() = REQUIRED_FIELDS.all { it in fields }
+
         fun isValid(): Boolean {
             if (!hasRequiredFields()) return false
 
@@ -39,29 +45,32 @@ class Day4(dataFile: DataFile) {
             private val HCL_REGEX = "#[0-9a-f]{6}".toRegex()
             private val PID_REGEX = "[0-9]{9}".toRegex()
             private val EYE_COLORS = setOf("amb", "blu", "brn", "gry", "grn", "hzl", "oth")
-            private val REQUIRED_FIELDS = listOf(
-                "byr",
-                "iyr",
-                "eyr",
-                "hgt",
-                "hcl",
-                "ecl",
-                "pid",
-            )
+            private val REQUIRED_FIELDS =
+                listOf(
+                    "byr",
+                    "iyr",
+                    "eyr",
+                    "hgt",
+                    "hcl",
+                    "ecl",
+                    "pid",
+                )
 
             fun from(str: String): Passport {
-                val fields = str
-                    .replace("\n", " ")
-                    .replace(":", " ")
-                    .split(" ")
-                    .windowed(2, 2) { it.first() to it.last() }
-                    .toMap()
+                val fields =
+                    str
+                        .replace("\n", " ")
+                        .replace(":", " ")
+                        .split(" ")
+                        .windowed(2, 2) { it.first() to it.last() }
+                        .toMap()
                 return Passport(fields)
             }
         }
     }
 
     fun part1() = passports.count { it.hasRequiredFields() }
+
     fun part2() = passports.count { it.isValid() }
 }
 

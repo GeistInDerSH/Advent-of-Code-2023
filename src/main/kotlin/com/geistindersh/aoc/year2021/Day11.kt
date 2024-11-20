@@ -5,15 +5,17 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day11(dataFile: DataFile) {
-    private val octopuses = fileToStream(2021, 11, dataFile)
-        .flatMapIndexed { row, line ->
-            line.mapIndexed { col, power -> Point2D(row, col) to power.digitToInt() }
-        }
-        .toMap()
-        .let {
-            Octopuses(0, it)
-        }
+class Day11(
+    dataFile: DataFile,
+) {
+    private val octopuses =
+        fileToStream(2021, 11, dataFile)
+            .flatMapIndexed { row, line ->
+                line.mapIndexed { col, power -> Point2D(row, col) to power.digitToInt() }
+            }.toMap()
+            .let {
+                Octopuses(0, it)
+            }
 
     private data class Octopuses(
         val round: Int,
@@ -25,15 +27,20 @@ class Day11(dataFile: DataFile) {
             val octopuses = octopuses.entries.associate { (point, value) -> point to value + 1 }.toMutableMap()
             val flashed = mutableSetOf<Point2D>()
 
-            val queue = ArrayDeque<Point2D>()
-                .apply { addAll(octopuses.entries.filter { it.value > 9 }.map { it.key }) }
+            val queue =
+                ArrayDeque<Point2D>()
+                    .apply { addAll(octopuses.entries.filter { it.value > 9 }.map { it.key }) }
             while (queue.isNotEmpty()) {
                 val current = queue.removeFirst()
                 if (current in flashed) continue
                 flashed.add(current)
 
                 current.neighborsAll().filter { it in octopuses }.forEach { octopuses[it] = octopuses[it]!! + 1 }
-                val newFlash = octopuses.entries.filter { it.value > 9 }.filter { it.key !in flashed }.map { it.key }
+                val newFlash =
+                    octopuses.entries
+                        .filter { it.value > 9 }
+                        .filter { it.key !in flashed }
+                        .map { it.key }
                 queue.addAll(newFlash)
             }
 
@@ -42,15 +49,17 @@ class Day11(dataFile: DataFile) {
         }
     }
 
-    fun part1() = generateSequence(octopuses) { it.next() }
-        .drop(100)
-        .first()
-        .totalFlashes
+    fun part1() =
+        generateSequence(octopuses) { it.next() }
+            .drop(100)
+            .first()
+            .totalFlashes
 
-    fun part2() = generateSequence(octopuses) { it.next() }
-        .dropWhile { it.newFlashes != it.octopuses.size }
-        .first()
-        .round
+    fun part2() =
+        generateSequence(octopuses) { it.next() }
+            .dropWhile { it.newFlashes != it.octopuses.size }
+            .first()
+            .round
 }
 
 fun day11() {

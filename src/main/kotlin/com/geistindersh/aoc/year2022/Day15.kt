@@ -6,29 +6,44 @@ import com.geistindersh.aoc.helper.iterators.pairCombinations
 import com.geistindersh.aoc.helper.report
 import kotlin.math.absoluteValue
 
-class Day15(dataFile: DataFile) {
+class Day15(
+    dataFile: DataFile,
+) {
     private val sensors: List<Pair<Pair<Int, Int>, Int>>
     private val beacons: Set<Pair<Int, Int>>
 
     init {
         val matcher = "-?\\d+".toRegex()
-        val data = fileToStream(2022, 15, dataFile)
-            .map { line ->
-                val (start, end) = line.split(":", limit = 2)
-                val sensor = matcher.findAll(start).map { it.value.toInt() }.toList().let { Pair(it[0], it[1]) }
-                val beacon = matcher.findAll(end).map { it.value.toInt() }.toList().let { Pair(it[0], it[1]) }
-                val dist = (sensor.first - beacon.first).absoluteValue +
-                        (sensor.second - beacon.second).absoluteValue
+        val data =
+            fileToStream(2022, 15, dataFile)
+                .map { line ->
+                    val (start, end) = line.split(":", limit = 2)
+                    val sensor =
+                        matcher
+                            .findAll(start)
+                            .map { it.value.toInt() }
+                            .toList()
+                            .let { Pair(it[0], it[1]) }
+                    val beacon =
+                        matcher
+                            .findAll(end)
+                            .map { it.value.toInt() }
+                            .toList()
+                            .let { Pair(it[0], it[1]) }
+                    val dist =
+                        (sensor.first - beacon.first).absoluteValue +
+                            (sensor.second - beacon.second).absoluteValue
 
-
-                Pair(Pair(sensor, dist), beacon)
-            }
-            .toList()
+                    Pair(Pair(sensor, dist), beacon)
+                }.toList()
         sensors = data.map { it.first }
         beacons = data.map { it.second }.toSet()
     }
 
-    private fun rowCoverageCount(rowNumber: Int, sensors: Pair<Pair<Int, Int>, Int>) = sequence {
+    private fun rowCoverageCount(
+        rowNumber: Int,
+        sensors: Pair<Pair<Int, Int>, Int>,
+    ) = sequence {
         val (x, y) = sensors.first
         val dist = sensors.second
         val verticalDist = (rowNumber - y).absoluteValue
@@ -37,34 +52,34 @@ class Day15(dataFile: DataFile) {
         for (it in range) yield(Pair(it, rowNumber))
     }
 
-    private fun boundsAdd(x: Int, y: Int): Pair<Int, Int>? {
-        return if (x in 0..4000000 && y in 0..4000000) {
+    private fun boundsAdd(
+        x: Int,
+        y: Int,
+    ): Pair<Int, Int>? =
+        if (x in 0..4000000 && y in 0..4000000) {
             Pair(x, y)
         } else {
             null
         }
-    }
 
-    private fun generateCoverageMap(): Map<Pair<Int, Int>, Set<Pair<Int, Int>>> {
-        return sensors
+    private fun generateCoverageMap(): Map<Pair<Int, Int>, Set<Pair<Int, Int>>> =
+        sensors
             .parallelStream()
             .map { (sensor, dist) ->
                 val (x, y) = sensor
-                val values = (0..<dist + 2)
-                    .flatMap {
-                        val px = x - dist - 1 + it
-                        val py = y + it
-                        val nx = x + dist + 1 - it
-                        val ny = y - it
-                        setOf(boundsAdd(px, ny), boundsAdd(nx, ny), boundsAdd(px, py), boundsAdd(nx, py))
-                    }
-                    .mapNotNull { it }
-                    .toSet()
+                val values =
+                    (0..<dist + 2)
+                        .flatMap {
+                            val px = x - dist - 1 + it
+                            val py = y + it
+                            val nx = x + dist + 1 - it
+                            val ny = y - it
+                            setOf(boundsAdd(px, ny), boundsAdd(nx, ny), boundsAdd(px, py), boundsAdd(nx, py))
+                        }.mapNotNull { it }
+                        .toSet()
                 sensor to values
-            }
-            .toList()
+            }.toList()
             .toMap()
-    }
 
     private fun getIntersections(): Sequence<Set<Pair<Int, Int>>> {
         val radius = generateCoverageMap()
@@ -76,8 +91,7 @@ class Day15(dataFile: DataFile) {
                 val p1 = radius.getOrDefault(s1, emptySet())
                 val p2 = radius.getOrDefault(s2, emptySet())
                 p1.intersect(p2)
-            }
-            .filter { it.isNotEmpty() }
+            }.filter { it.isNotEmpty() }
     }
 
     private fun getIntersectionCount(): Map<Pair<Int, Int>, Int> {
@@ -91,32 +105,30 @@ class Day15(dataFile: DataFile) {
         return values
     }
 
-    private fun isInside(point: Pair<Int, Int>): Boolean {
-        return sensors
+    private fun isInside(point: Pair<Int, Int>): Boolean =
+        sensors
             .any { (sensor, dist) ->
-                val pointDistance = (sensor.first - point.first).absoluteValue +
+                val pointDistance =
+                    (sensor.first - point.first).absoluteValue +
                         (sensor.second - point.second).absoluteValue
                 pointDistance < dist
             }
-    }
 
-    fun part1(rowNumber: Int): Int {
-        return sensors
+    fun part1(rowNumber: Int): Int =
+        sensors
             .asSequence()
             .flatMap { rowCoverageCount(rowNumber, it) }
             .toSet()
             .count { it !in beacons }
-    }
 
-    fun part2(): Long {
-        return getIntersectionCount()
+    fun part2(): Long =
+        getIntersectionCount()
             .filterValues { it >= 4 }
             .filterKeys { !isInside(it) }
             .map { it.key }
             .reversed()
             .first()
             .let { (x, y) -> x * 4000000L + y }
-    }
 }
 
 fun day15() {

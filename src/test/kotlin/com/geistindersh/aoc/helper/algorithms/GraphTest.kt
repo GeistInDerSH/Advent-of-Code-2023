@@ -4,20 +4,22 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class GraphTest {
-    private val directedGraph = graphBuilder {
-        isDirected = true
-        add("a", "b", 10)
-        add("a", "c", 5)
-        add("c", "d", 1)
-        add("b", "d", 100)
-    }
-    private val undirectedGraph = graphBuilder {
-        isDirected = false
-        add("a", "b", 10)
-        add("a", "c", 5)
-        add("c", "d", 1)
-        add("b", "d", 100)
-    }
+    private val directedGraph =
+        graphBuilder {
+            isDirected = true
+            add("a", "b", 10)
+            add("a", "c", 5)
+            add("c", "d", 1)
+            add("b", "d", 100)
+        }
+    private val undirectedGraph =
+        graphBuilder {
+            isDirected = false
+            add("a", "b", 10)
+            add("a", "c", 5)
+            add("c", "d", 1)
+            add("b", "d", 100)
+        }
 
     @Test
     fun neighbours() {

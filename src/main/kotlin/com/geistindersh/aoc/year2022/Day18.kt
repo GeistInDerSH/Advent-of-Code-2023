@@ -3,20 +3,22 @@ package com.geistindersh.aoc.year2022
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
-import java.util.*
+import java.util.ArrayDeque
 import kotlin.math.max
 import kotlin.math.min
 
-class Day18(dataFile: DataFile) {
-    private val allCubes = fileToStream(2022, 18, dataFile)
-        .map {
-            val (x, y, z) = it.split(",")
-            Triple(x.toInt(), y.toInt(), z.toInt())
-        }
-        .toSet()
+class Day18(
+    dataFile: DataFile,
+) {
+    private val allCubes =
+        fileToStream(2022, 18, dataFile)
+            .map {
+                val (x, y, z) = it.split(",")
+                Triple(x.toInt(), y.toInt(), z.toInt())
+            }.toSet()
 
-    private fun neighbors(triple: Triple<Int, Int, Int>): List<Triple<Int, Int, Int>> {
-        return listOf(
+    private fun neighbors(triple: Triple<Int, Int, Int>): List<Triple<Int, Int, Int>> =
+        listOf(
             Triple(triple.first - 1, triple.second, triple.third),
             Triple(triple.first + 1, triple.second, triple.third),
             Triple(triple.first, triple.second - 1, triple.third),
@@ -24,14 +26,14 @@ class Day18(dataFile: DataFile) {
             Triple(triple.first, triple.second, triple.third - 1),
             Triple(triple.first, triple.second, triple.third + 1),
         )
-    }
 
     private fun calculateSurfaceAreaOfCubes(cubes: Collection<Triple<Int, Int, Int>>): Int {
         var surfaceArea = 0
         for (cube in cubes) {
-            surfaceArea += neighbors(cube)
-                .filterNot { it in cubes }
-                .count()
+            surfaceArea +=
+                neighbors(cube)
+                    .filterNot { it in cubes }
+                    .count()
         }
         return surfaceArea
     }
@@ -56,9 +58,10 @@ class Day18(dataFile: DataFile) {
 
     private fun getWaterPockets(ranges: Triple<IntRange, IntRange, IntRange>): Set<Triple<Int, Int, Int>> {
         val (xRange, yRange, zRange) = ranges
-        val queue = ArrayDeque<Triple<Int, Int, Int>>().apply {
-            add(Triple(xRange.first, yRange.first, zRange.first))
-        }
+        val queue =
+            ArrayDeque<Triple<Int, Int, Int>>().apply {
+                add(Triple(xRange.first, yRange.first, zRange.first))
+            }
         val water = mutableSetOf<Triple<Int, Int, Int>>()
 
         while (queue.isNotEmpty()) {
@@ -66,12 +69,12 @@ class Day18(dataFile: DataFile) {
             if (head in water) continue
             water.add(head)
 
-            val toAdd = neighbors(head)
-                .filter {
-                    val (x, y, z) = it
-                    x in xRange && y in yRange && z in zRange && it !in allCubes
-                }
-                .toList()
+            val toAdd =
+                neighbors(head)
+                    .filter {
+                        val (x, y, z) = it
+                        x in xRange && y in yRange && z in zRange && it !in allCubes
+                    }.toList()
             queue.addAll(toAdd)
         }
         return water
@@ -79,7 +82,7 @@ class Day18(dataFile: DataFile) {
 
     private fun getLavaPockets(
         waterPockets: Set<Triple<Int, Int, Int>>,
-        ranges: Triple<IntRange, IntRange, IntRange>
+        ranges: Triple<IntRange, IntRange, IntRange>,
     ): Set<Triple<Int, Int, Int>> {
         val pockets = mutableSetOf<Triple<Int, Int, Int>>()
         for (x in ranges.first) {
@@ -94,6 +97,7 @@ class Day18(dataFile: DataFile) {
     }
 
     fun part1() = calculateSurfaceAreaOfCubes(allCubes)
+
     fun part2(): Int {
         val ranges = getRanges()
         val waterPockets = getWaterPockets(ranges)

@@ -4,26 +4,34 @@ import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
-import java.util.*
+import java.util.PriorityQueue
 
-class Day15(dataFile: DataFile) {
-    private val graph = fileToStream(2021, 15, dataFile)
-        .flatMapIndexed { row, line ->
-            line.mapIndexed { col, value -> Point2D(row, col) to value.digitToInt() }
-        }
-        .toMap()
+class Day15(
+    dataFile: DataFile,
+) {
+    private val graph =
+        fileToStream(2021, 15, dataFile)
+            .flatMapIndexed { row, line ->
+                line.mapIndexed { col, value -> Point2D(row, col) to value.digitToInt() }
+            }.toMap()
 
-    private data class Path(val current: Point2D, val risk: Int, val steps: Set<Point2D>)
+    private data class Path(
+        val current: Point2D,
+        val risk: Int,
+        val steps: Set<Point2D>,
+    )
 
     private fun Map<Point2D, Int>.getPathCost(): Int {
         val start = Point2D(0, 0)
-        val end = this.let { g ->
-            val rowMax = g.maxOf { it.key.row }
-            val colMax = g.maxOf { it.key.col }
-            Point2D(rowMax, colMax)
-        }
-        val queue: PriorityQueue<Path> = PriorityQueue<Path>(compareBy { it.risk })
-            .apply { add(Path(start, 0, setOf(start))) }
+        val end =
+            this.let { g ->
+                val rowMax = g.maxOf { it.key.row }
+                val colMax = g.maxOf { it.key.col }
+                Point2D(rowMax, colMax)
+            }
+        val queue: PriorityQueue<Path> =
+            PriorityQueue<Path>(compareBy { it.risk })
+                .apply { add(Path(start, 0, setOf(start))) }
         val seen = mutableSetOf<Point2D>()
 
         while (queue.isNotEmpty()) {
@@ -32,11 +40,12 @@ class Day15(dataFile: DataFile) {
             if (head.current == end) return head.risk
             seen.add(head.current)
 
-            val next = head
-                .current
-                .neighbors()
-                .filter { it in this && it !in head.steps }
-                .map { Path(it, head.risk + this[it]!!, head.steps + listOf(it)) }
+            val next =
+                head
+                    .current
+                    .neighbors()
+                    .filter { it in this && it !in head.steps }
+                    .map { Path(it, head.risk + this[it]!!, head.steps + listOf(it)) }
             queue.addAll(next)
         }
         return -1
@@ -67,6 +76,7 @@ class Day15(dataFile: DataFile) {
     }
 
     fun part1() = graph.getPathCost()
+
     fun part2() = graph.scale().getPathCost()
 }
 

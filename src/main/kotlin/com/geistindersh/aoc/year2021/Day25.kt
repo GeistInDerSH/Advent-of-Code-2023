@@ -6,21 +6,27 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day25(dataFile: DataFile) {
-    private val valley = fileToStream(2021, 25, dataFile)
-        .flatMapIndexed { row, s ->
-            s.mapIndexed { col, c ->
-                when (c) {
-                    '>' -> Point2D(row, col) to Direction.East
-                    'v' -> Point2D(row, col) to Direction.South
-                    else -> Point2D(row, col) to null
-                }
-            }
-        }
-        .toMap()
-        .let { Valley(it) }
+class Day25(
+    dataFile: DataFile,
+) {
+    private val valley =
+        fileToStream(2021, 25, dataFile)
+            .flatMapIndexed { row, s ->
+                s.mapIndexed { col, c ->
+                    when (c) {
+                        '>' -> Point2D(row, col) to Direction.East
 
-    private data class Valley(val valley: Map<Point2D, Direction?>, val moved: Int = -1) {
+                        'v' -> Point2D(row, col) to Direction.South
+                        else -> Point2D(row, col) to null
+                    }
+                }
+            }.toMap()
+            .let { Valley(it) }
+
+    private data class Valley(
+        val valley: Map<Point2D, Direction?>,
+        val moved: Int = -1,
+    ) {
         private val rowMax = valley.keys.maxOf { it.row }
         private val colMax = valley.keys.maxOf { it.col }
 
@@ -77,9 +83,10 @@ class Day25(dataFile: DataFile) {
         }
     }
 
-    fun part1() = generateSequence(valley) { it.next() }
-        .takeWhile { it.moved != 0 }
-        .count()
+    fun part1() =
+        generateSequence(valley) { it.next() }
+            .takeWhile { it.moved != 0 }
+            .count()
 
     fun part2() = "Start the sleigh!"
 }

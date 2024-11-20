@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class Day12Test {
-
     @Test
     fun part1() {
         assertEquals(31, Day12(DataFile.Example).part1())

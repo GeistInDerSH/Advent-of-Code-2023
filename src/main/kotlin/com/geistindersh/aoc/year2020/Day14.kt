@@ -5,26 +5,32 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day14(dataFile: DataFile) {
-    private val instructions = fileToStream(2020, 14, dataFile)
-        .map { Program.from(it) }
-        .toList()
+class Day14(
+    dataFile: DataFile,
+) {
+    private val instructions =
+        fileToStream(2020, 14, dataFile)
+            .map { Program.from(it) }
+            .toList()
 
     private sealed class Program {
+        data class Mask(
+            val mask: List<Pair<Int, Long>>,
+        ) : Program() {
+            private val floatingBitPositions =
+                mask
+                    .map { it.first }
+                    .toSet()
+                    .let { (0..35).filter { pos -> pos !in it } }
 
-        data class Mask(val mask: List<Pair<Int, Long>>) : Program() {
-            private val floatingBitPositions = mask
-                .map { it.first }
-                .toSet()
-                .let { (0..35).filter { pos -> pos !in it } }
-
-            override fun toString(): String = StringBuilder().let {
-                it.append("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-                for ((idx, value) in mask) {
-                    it[idx] = value.toInt().digitToChar()
+            override fun toString(): String =
+                StringBuilder().let {
+                    it.append("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+                    for ((idx, value) in mask) {
+                        it[idx] = value.toInt().digitToChar()
+                    }
+                    it.toString().reversed()
                 }
-                it.toString().reversed()
-            }
 
             fun applyTo(value: Long): Long {
                 var number = value
@@ -36,13 +42,15 @@ class Day14(dataFile: DataFile) {
 
             fun addresses(address: Long): List<Long> {
                 var addr = address
-                mask.filter { it.second == 1L } // 0 won't change the value so we can skip it
+                mask
+                    .filter { it.second == 1L } // 0 won't change the value so we can skip it
                     .forEach { (idx, bit) -> addr = addr.setBit(idx, bit) }
 
                 val permutations = mutableListOf(addr)
                 floatingBitPositions.forEach { index ->
-                    val toAdd = permutations
-                        .flatMap { listOf(it.setBit(index, 1), it.setBit(index, 0)) }
+                    val toAdd =
+                        permutations
+                            .flatMap { listOf(it.setBit(index, 1), it.setBit(index, 0)) }
                     permutations.addAll(toAdd)
                 }
 
@@ -50,28 +58,32 @@ class Day14(dataFile: DataFile) {
             }
         }
 
-        data class Memory(val position: Long, val value: Long) : Program()
+        data class Memory(
+            val position: Long,
+            val value: Long,
+        ) : Program()
 
         companion object {
             private val NUMBER_REGEX = "[0-9]+".toRegex()
 
-            fun from(line: String): Program {
-                return if (line.startsWith("mask = ")) {
-                    val bitSetLocation = line
-                        .substringAfter("mask = ")
-                        .reversed() // Ensure the index sets the LSB first
-                        .withIndex()
-                        .filter { it.value.isDigit() }
-                        .map { it.index to it.value.digitToInt().toLong() }
+            fun from(line: String): Program =
+                if (line.startsWith("mask = ")) {
+                    val bitSetLocation =
+                        line
+                            .substringAfter("mask = ")
+                            .reversed() // Ensure the index sets the LSB first
+                            .withIndex()
+                            .filter { it.value.isDigit() }
+                            .map { it.index to it.value.digitToInt().toLong() }
                     Mask(bitSetLocation)
                 } else {
-                    val (position, value) = NUMBER_REGEX
-                        .findAll(line)
-                        .map { it.value.toLong() }
-                        .toList()
+                    val (position, value) =
+                        NUMBER_REGEX
+                            .findAll(line)
+                            .map { it.value.toLong() }
+                            .toList()
                     Memory(position, value)
                 }
-            }
         }
     }
 

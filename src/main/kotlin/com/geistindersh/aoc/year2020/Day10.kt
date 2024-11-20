@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day10(dataFile: DataFile) {
+class Day10(
+    dataFile: DataFile,
+) {
     private val jolts = fileToStream(2020, 10, dataFile).map(String::toInt).toList()
     private val joltsSet = jolts.toSet()
 

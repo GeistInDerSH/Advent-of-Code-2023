@@ -5,27 +5,32 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 import kotlin.math.max
 
-class Day16(dataFile: DataFile) {
-    private val lines = fileToStream(2022, 16, dataFile)
-        .map { "[\\s=;,]+".toRegex().split(it) }
-        .toList()
+class Day16(
+    dataFile: DataFile,
+) {
+    private val lines =
+        fileToStream(2022, 16, dataFile)
+            .map { "[\\s=;,]+".toRegex().split(it) }
+            .toList()
     private val graph = lines.associate { it[1] to it.drop(10).toSet() }
-    private val pipeFlowMap = lines
-        .filter { it[5].toInt() != 0 }
-        .associate { it[1] to it[5].toInt() }
-    private val pipeOffsetMap = pipeFlowMap
-        .keys
-        .mapIndexed { index, entry -> entry to (1 shl index).toLong() }
-        .toMap()
-    private val distances = graph
-        .keys
-        .associateWith { x ->
-            graph
-                .keys
-                .associateWith { if (graph[x]?.contains(it) == true) 1 else 9999999999 }
-                .toMutableMap()
-        }
-        .toMutableMap()
+    private val pipeFlowMap =
+        lines
+            .filter { it[5].toInt() != 0 }
+            .associate { it[1] to it[5].toInt() }
+    private val pipeOffsetMap =
+        pipeFlowMap
+            .keys
+            .mapIndexed { index, entry -> entry to (1 shl index).toLong() }
+            .toMap()
+    private val distances =
+        graph
+            .keys
+            .associateWith { x ->
+                graph
+                    .keys
+                    .associateWith { if (graph[x]?.contains(it) == true) 1 else 9999999999 }
+                    .toMutableMap()
+            }.toMutableMap()
 
     init {
         for (k in distances.keys) {
@@ -44,7 +49,7 @@ class Day16(dataFile: DataFile) {
         budget: Long,
         state: Long,
         flow: Long,
-        visited: Map<Long, Long>
+        visited: Map<Long, Long>,
     ): Map<Long, Long> {
         var localVisited = visited.toMutableMap()
         localVisited[state] = max(visited.getOrDefault(state, 0), flow)
@@ -64,6 +69,7 @@ class Day16(dataFile: DataFile) {
     }
 
     fun part1() = visit("AA", 30, 0, 0, mutableMapOf()).values.max()
+
     fun part2(): Long {
         val visited = visit("AA", 26, 0, 0, mutableMapOf())
         return visited.maxOf { (k1, v1) ->
