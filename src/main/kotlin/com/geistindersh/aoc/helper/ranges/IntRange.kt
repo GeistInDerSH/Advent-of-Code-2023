@@ -22,9 +22,7 @@ fun IntRange.intersect(other: IntRange): IntRange {
  * @return If there is an overlap between the two ranges of numbers
  */
 @Suppress("unused")
-fun IntRange.hasOverlap(other: IntRange): Boolean {
-    return hasOverlap(this.first, other.last, this.last, other.first)
-}
+fun IntRange.hasOverlap(other: IntRange): Boolean = hasOverlap(this.first, other.last, this.last, other.first)
 
 /**
  * Check to see if the given coordinates overlap
@@ -40,13 +38,9 @@ fun hasOverlap(
     end1: Int,
     start2: Int,
     end2: Int,
-): Boolean {
-    return start1 <= end1 && end2 <= start2
-}
+): Boolean = start1 <= end1 && end2 <= start2
 
-fun IntRange.isFullyContained(other: IntRange): Boolean {
-    return this.toSet().containsAll(other.toSet())
-}
+fun IntRange.isFullyContained(other: IntRange): Boolean = this.toSet().containsAll(other.toSet())
 
 /**
  * Generate a new range of two ranges that already have an overlap in their bounds.

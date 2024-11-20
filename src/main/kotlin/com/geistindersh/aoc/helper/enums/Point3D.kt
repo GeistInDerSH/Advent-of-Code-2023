@@ -1,6 +1,10 @@
 package com.geistindersh.aoc.helper.enums
 
-data class Point3D(val x: Int, val y: Int, val z: Int) {
+data class Point3D(
+    val x: Int,
+    val y: Int,
+    val z: Int,
+) {
     operator fun plus(other: Point3D) = Point3D(x + other.x, y + other.y, z + other.z)
 
     fun neighbors() =

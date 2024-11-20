@@ -11,8 +11,7 @@ fun <T> Sequence<T>.takeWhileInclusive(predicate: (T) -> Boolean) =
         }
     }
 
-fun <T> Iterable<T>.takeWhileInclusive(predicate: (T) -> Boolean): Sequence<T> {
-    return this
+fun <T> Iterable<T>.takeWhileInclusive(predicate: (T) -> Boolean): Sequence<T> =
+    this
         .asSequence()
         .takeWhileInclusive(predicate)
-}

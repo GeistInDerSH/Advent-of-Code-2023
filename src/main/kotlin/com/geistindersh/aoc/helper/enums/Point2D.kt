@@ -1,6 +1,9 @@
 package com.geistindersh.aoc.helper.enums
 
-data class Point2D(val row: Int, val col: Int) {
+data class Point2D(
+    val row: Int,
+    val col: Int,
+) {
     operator fun plus(other: Point2D) = Point2D(row + other.row, col + other.col)
 
     operator fun plus(other: Direction) = Point2D(row + other.rowInc, col + other.colInc)

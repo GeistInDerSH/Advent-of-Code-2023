@@ -38,4 +38,5 @@ fun Long.setBit(
  * @param position The position to get the bit value
  * @return 0 or 1
  */
+@Suppress("unused")
 fun Long.bitAt(position: Int): Long = (this shr position) and 1L

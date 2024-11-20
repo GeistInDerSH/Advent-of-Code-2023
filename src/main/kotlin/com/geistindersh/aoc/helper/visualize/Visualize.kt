@@ -8,6 +8,7 @@ import com.geistindersh.aoc.helper.enums.Point2D
  *
  * @param fn A function that takes a point, and returns a printable character
  */
+@Suppress("unused")
 fun <T> Map<Point2D, T>.print(fn: (Point2D) -> Char) {
     val data = this@print.keys.toList().sortedWith(compareBy<Point2D> { it.row }.thenBy { it.col })
     var row = data[0].row

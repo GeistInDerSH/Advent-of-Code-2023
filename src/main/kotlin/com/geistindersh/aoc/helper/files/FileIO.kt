@@ -2,7 +2,9 @@ package com.geistindersh.aoc.helper.files
 
 import java.io.File
 
-enum class DataFile(private val fileName: String) {
+enum class DataFile(
+    private val fileName: String,
+) {
     Example("example.txt"),
     Example2("example_2.txt"),
     Part1("part_1.problem.txt"),
@@ -56,9 +58,8 @@ fun fileToStream(
  * @param fileName The file to read
  * @return An iterable sequence of strings
  */
-fun fileToStream(fileName: String): Sequence<String> {
-    return File(fileName)
+fun fileToStream(fileName: String): Sequence<String> =
+    File(fileName)
         .inputStream()
         .bufferedReader()
         .lineSequence()
-}

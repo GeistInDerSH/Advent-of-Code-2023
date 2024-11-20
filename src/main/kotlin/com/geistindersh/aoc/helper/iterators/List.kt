@@ -71,7 +71,8 @@ fun List<Int>.subsetSum(target: Int): Sequence<List<Int>> =
         val options = this@subsetSum
         options.forEachIndexed { index, option ->
             if (option <= target) {
-                this@subsetSum.subList(index + 1, options.size)
+                this@subsetSum
+                    .subList(index + 1, options.size)
                     .subsetSum(target - option)
                     .forEach { yield(listOf(option) + it) }
             }
@@ -88,6 +89,7 @@ fun <T> List<T>.rotateLeft(n: Int): List<T> {
     return new
 }
 
+@Suppress("unused")
 fun IntArray.rotateLeft(n: Int): IntArray {
     val new = this.clone()
     this.indices.forEach { i ->
@@ -104,6 +106,7 @@ fun LongArray.rotateLeft(n: Int): LongArray {
     return new
 }
 
+@Suppress("unused")
 fun <T> List<T>.rotateRight(n: Int): List<T> {
     val new = this.toMutableList()
 
@@ -115,6 +118,7 @@ fun <T> List<T>.rotateRight(n: Int): List<T> {
     return new
 }
 
+@Suppress("unused")
 fun IntArray.rotateRight(n: Int): IntArray {
     val new = this.clone()
     this.indices.forEach { i ->
@@ -124,6 +128,7 @@ fun IntArray.rotateRight(n: Int): IntArray {
     return new
 }
 
+@Suppress("unused")
 fun LongArray.rotateRight(n: Int): LongArray {
     val new = this.clone()
     this.indices.forEach { i ->
