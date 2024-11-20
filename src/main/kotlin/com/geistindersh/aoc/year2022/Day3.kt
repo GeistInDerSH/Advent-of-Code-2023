@@ -6,9 +6,10 @@ import com.geistindersh.aoc.helper.report
 
 class Day3(dataFile: DataFile) {
     private val lines = fileToStream(2022, 3, dataFile).toList()
-    private val scores = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        .mapIndexed { index, c -> Pair(c, index + 1) }
-        .toMap()
+    private val scores =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            .mapIndexed { index, c -> Pair(c, index + 1) }
+            .toMap()
 
     fun part1(): Int {
         return lines

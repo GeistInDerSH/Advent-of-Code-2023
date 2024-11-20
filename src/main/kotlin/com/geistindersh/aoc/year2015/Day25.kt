@@ -7,12 +7,13 @@ import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
 
 class Day25(dataFile: DataFile) {
-    private val targetPoint = fileToString(2015, 25, dataFile)
-        .replace(".", "")
-        .replace(",", "")
-        .split(" ")
-        .mapNotNull(String::toIntOrNull)
-        .let { Point2D(it[0], it[1]) }
+    private val targetPoint =
+        fileToString(2015, 25, dataFile)
+            .replace(".", "")
+            .replace(",", "")
+            .split(" ")
+            .mapNotNull(String::toIntOrNull)
+            .let { Point2D(it[0], it[1]) }
 
     private data class Code(val point: Point2D, val code: Long) {
         fun next(): Code {
@@ -23,10 +24,11 @@ class Day25(dataFile: DataFile) {
         }
     }
 
-    fun part1() = generateSequence(Code(Point2D(1, 1), 20151125)) { it.next() }
-        .takeWhileInclusive { it.point != targetPoint }
-        .last()
-        .code
+    fun part1() =
+        generateSequence(Code(Point2D(1, 1), 20151125)) { it.next() }
+            .takeWhileInclusive { it.point != targetPoint }
+            .last()
+            .code
 
     fun part2() = "Push the button!"
 }

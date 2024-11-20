@@ -5,15 +5,16 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 fun parseInput(fileType: DataFile): Map<Long, Long> {
-    val (times, distance) = fileToStream(2023, 6, fileType)
-        .map { line ->
-            line.substringAfter(':')
-                .trim()
-                .split(' ')
-                .filter { it.isNotBlank() }
-                .map { it.toLong() }
-        }
-        .toList()
+    val (times, distance) =
+        fileToStream(2023, 6, fileType)
+            .map { line ->
+                line.substringAfter(':')
+                    .trim()
+                    .split(' ')
+                    .filter { it.isNotBlank() }
+                    .map { it.toLong() }
+            }
+            .toList()
     return times.zip(distance).associate { it.first to it.second }
 }
 
@@ -24,7 +25,10 @@ fun parseInput(fileType: DataFile): Map<Long, Long> {
  * @param recordDistance The distance to beat
  * @return The number of winning plays to make
  */
-fun getPossibleWinCount(raceTime: Long, recordDistance: Long): Long {
+fun getPossibleWinCount(
+    raceTime: Long,
+    recordDistance: Long,
+): Long {
     return (0..raceTime)
         .count { (it * (raceTime - it)) > recordDistance }
         .toLong()

@@ -5,25 +5,28 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 data class Pull(val red: Int, val blue: Int, val green: Int)
+
 data class Game(val id: Int, val pulls: List<Pull>)
 
 fun parseInput(fileType: DataFile): List<Game> {
     return fileToStream(2023, 2, fileType).mapIndexed { index, s ->
-        val pulls = s.substringAfter(':').split(";").map { sections ->
-            // Map the name to the count, so we can do a lookup later
-            val cubes = sections.split(",").map { it.trim() }.map {
-                val parts = it.split(" ")
-                val name = parts.last()
-                val count = parts.first().toInt()
-                name to count
-            }
+        val pulls =
+            s.substringAfter(':').split(";").map { sections ->
+                // Map the name to the count, so we can do a lookup later
+                val cubes =
+                    sections.split(",").map { it.trim() }.map {
+                        val parts = it.split(" ")
+                        val name = parts.last()
+                        val count = parts.first().toInt()
+                        name to count
+                    }
 
-            Pull(
-                red = cubes.singleOrNull { it.first == "red" }?.second ?: 0,
-                blue = cubes.singleOrNull { it.first == "blue" }?.second ?: 0,
-                green = cubes.singleOrNull { it.first == "green" }?.second ?: 0,
-            )
-        }
+                Pull(
+                    red = cubes.singleOrNull { it.first == "red" }?.second ?: 0,
+                    blue = cubes.singleOrNull { it.first == "blue" }?.second ?: 0,
+                    green = cubes.singleOrNull { it.first == "green" }?.second ?: 0,
+                )
+            }
 
         Game(index + 1, pulls)
     }.toList()
@@ -36,7 +39,10 @@ fun parseInput(fileType: DataFile): List<Game> {
  * @param cubeCounts A [Pull] that contains the maximum values for each of the cube types
  * @return The sum of the IDs
  */
-fun part1(games: List<Game>, cubeCounts: Pull): Int {
+fun part1(
+    games: List<Game>,
+    cubeCounts: Pull,
+): Int {
     return games
         .filter { game ->
             game.pulls.all { cubeCounts.red >= it.red && cubeCounts.blue >= it.blue && cubeCounts.green >= it.green }
@@ -73,6 +79,6 @@ fun day2() {
         year = 2023,
         dayNumber = 2,
         part1 = part1(input, cubeCounts),
-        part2 = part2(input)
+        part2 = part2(input),
     )
 }

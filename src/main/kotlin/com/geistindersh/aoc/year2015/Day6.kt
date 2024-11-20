@@ -10,13 +10,16 @@ class Day6(dataFile: DataFile) {
 
     private sealed class Action(val start: Point2D, val end: Point2D) {
         class Toggle(start: Point2D, end: Point2D) : Action(start, end)
+
         class Enable(start: Point2D, end: Point2D) : Action(start, end)
+
         class Disable(start: Point2D, end: Point2D) : Action(start, end)
 
-        fun generateLights() = (start.row..end.row)
-            .flatMap { row ->
-                (start.col..end.col).map { col -> Point2D(row, col) }
-            }.toSet()
+        fun generateLights() =
+            (start.row..end.row)
+                .flatMap { row ->
+                    (start.col..end.col).map { col -> Point2D(row, col) }
+                }.toSet()
 
         companion object {
             fun from(line: String): Action {
@@ -99,6 +102,7 @@ class Day6(dataFile: DataFile) {
     }
 
     fun part1() = followInstructions().count()
+
     fun part2() = followInstructionsBrightness().values.sum()
 }
 

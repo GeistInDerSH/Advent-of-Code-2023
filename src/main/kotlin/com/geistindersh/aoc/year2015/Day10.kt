@@ -7,21 +7,23 @@ import com.geistindersh.aoc.helper.report
 class Day10(dataFile: DataFile) {
     private val numbers = fileToString(2015, 10, dataFile)
 
-    private fun seeSay(nums: String) = nums
-        .map { it.digitToInt() }
-        .fold(mutableListOf<MutableList<Int>>()) { acc, i ->
-            if (acc.isEmpty() || acc.last().last() != i) {
-                acc.add(mutableListOf(i))
-            } else {
-                acc.last().add(i)
+    private fun seeSay(nums: String) =
+        nums
+            .map { it.digitToInt() }
+            .fold(mutableListOf<MutableList<Int>>()) { acc, i ->
+                if (acc.isEmpty() || acc.last().last() != i) {
+                    acc.add(mutableListOf(i))
+                } else {
+                    acc.last().add(i)
+                }
+                acc
             }
-            acc
-        }
-        .joinToString("") { it.count().toString() + it.last().toString() }
+            .joinToString("") { it.count().toString() + it.last().toString() }
 
     private fun seeSayTimes(times: Int) = generateSequence(numbers) { seeSay(it) }.drop(times).take(1).first().length
 
     fun part1() = seeSayTimes(40)
+
     fun part2() = seeSayTimes(50)
 }
 

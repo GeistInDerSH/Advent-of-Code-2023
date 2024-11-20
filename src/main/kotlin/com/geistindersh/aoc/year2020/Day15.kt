@@ -5,11 +5,12 @@ import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day15(dataFile: DataFile) {
-    private val numbers = "[0-9]+"
-        .toRegex()
-        .findAll(fileToString(2020, 15, dataFile))
-        .map { it.value.toInt() }
-        .toList()
+    private val numbers =
+        "[0-9]+"
+            .toRegex()
+            .findAll(fileToString(2020, 15, dataFile))
+            .map { it.value.toInt() }
+            .toList()
 
     private fun List<Int>.valueAtTurn(targetTurn: Int): Int {
         val history = this.associateWith { n -> this.indexOf(n) + 1 }.toMutableMap()
@@ -34,6 +35,7 @@ class Day15(dataFile: DataFile) {
     }
 
     fun part1() = numbers.valueAtTurn(2020)
+
     fun part2() = numbers.valueAtTurn(30000000)
 }
 

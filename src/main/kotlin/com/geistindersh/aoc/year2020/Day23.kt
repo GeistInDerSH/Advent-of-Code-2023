@@ -15,29 +15,31 @@ class Day23(dataFile: DataFile) {
         fun next(): Cups {
             val current = numbers.first()
             val holding = numbers.drop(1).take(3)
-            val next = (current - 1).let {
-                var next = it
-                while (true) {
-                    if (next < minCup) next = maxCup
-                    if (next !in holding) break
-                    next -= 1
+            val next =
+                (current - 1).let {
+                    var next = it
+                    while (true) {
+                        if (next < minCup) next = maxCup
+                        if (next !in holding) break
+                        next -= 1
+                    }
+                    next
                 }
-                next
-            }
 
-            val newList = mutableListOf(current).let {
-                val newList = it
-                var i = 4
-                while (numbers[i] != next) { // Add all cards up to next
-                    newList.add(numbers[i])
-                    i += 1
+            val newList =
+                mutableListOf(current).let {
+                    val newList = it
+                    var i = 4
+                    while (numbers[i] != next) { // Add all cards up to next
+                        newList.add(numbers[i])
+                        i += 1
+                    }
+                    newList.add(next) // add next
+                    newList.addAll(holding) // add what we are holding
+                    newList.addAll(numbers.subList(i + 1, numbers.size)) // Add any remaining cards
+
+                    newList.rotateLeft(1) // Rotate left so the next is always at the start
                 }
-                newList.add(next) // add next
-                newList.addAll(holding) // add what we are holding
-                newList.addAll(numbers.subList(i + 1, numbers.size)) // Add any remaining cards
-
-                newList.rotateLeft(1) // Rotate left so the next is always at the start
-            }
             return Cups(newList)
         }
 
@@ -64,15 +66,17 @@ class Day23(dataFile: DataFile) {
     private class Cup(val value: Int) {
         lateinit var next: Cup
 
-        fun nextCount(n: Int) = (1..n)
-            .runningFold(this) { cur, _ -> cur.next }
-            .drop(1)
+        fun nextCount(n: Int) =
+            (1..n)
+                .runningFold(this) { cur, _ -> cur.next }
+                .drop(1)
     }
 
-    fun part1() = generateSequence(cups) { it.next() }
-        .take(101)
-        .last()
-        .score()
+    fun part1() =
+        generateSequence(cups) { it.next() }
+            .take(101)
+            .last()
+            .score()
 
     fun part2(): Long {
         val allCups = List(1_000_001) { Cup(it) }
@@ -90,14 +94,15 @@ class Day23(dataFile: DataFile) {
             val holding = current.nextCount(3)
 
             // Find where to place the cups being held
-            val destination = (current.value - 1).let { start ->
-                val holdValue = holding.map { it.value }.toSet()
-                var dest = start
-                while (dest in holdValue || dest == 0) {
-                    dest = if (dest == 0) allCups.size - 1 else dest - 1
+            val destination =
+                (current.value - 1).let { start ->
+                    val holdValue = holding.map { it.value }.toSet()
+                    var dest = start
+                    while (dest in holdValue || dest == 0) {
+                        dest = if (dest == 0) allCups.size - 1 else dest - 1
+                    }
+                    allCups[dest]
                 }
-                allCups[dest]
-            }
 
             // Move the cups being held into position
             val prev = destination.next

@@ -5,16 +5,20 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day10(dataFile: DataFile) {
-    private val instructions = fileToStream(2022, 10, dataFile)
-        .map {
-            val items = it.split(' ')
-            val key = items[0]
-            val value = items.getOrNull(1)
+    private val instructions =
+        fileToStream(2022, 10, dataFile)
+            .map {
+                val items = it.split(' ')
+                val key = items[0]
+                val value = items.getOrNull(1)
 
-            if (value == null) Pair(key, 0)
-            else Pair(key, value.toInt())
-        }
-        .toList()
+                if (value == null) {
+                    Pair(key, 0)
+                } else {
+                    Pair(key, value.toInt())
+                }
+            }
+            .toList()
 
     private fun getSignals(): List<Int> {
         val signals = mutableListOf<Int>()
@@ -38,8 +42,10 @@ class Day10(dataFile: DataFile) {
         return signals
     }
 
-    private fun getLightStatus(cycle: Int, positions: Set<Int>) =
-        if (positions.contains(cycle % 40)) "#" else "."
+    private fun getLightStatus(
+        cycle: Int,
+        positions: Set<Int>,
+    ) = if (positions.contains(cycle % 40)) "#" else "."
 
     private fun rasterizeSignal(): String {
         var positions = (0..<3).toSet()
@@ -59,13 +65,13 @@ class Day10(dataFile: DataFile) {
                 xRegister += instruction.second
                 positions = (xRegister..<xRegister + 3).toSet()
             }
-
         }
 
         return output.toString()
     }
 
     fun part1() = getSignals().sum()
+
     fun part2(): List<String> {
         val output = rasterizeSignal()
         return (0..<6).map { output.drop(it * 40).take(40) }

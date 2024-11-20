@@ -49,11 +49,13 @@ class Day5(dataFile: DataFile) {
     }
 
     fun part1() = searches.maxOf { it.getScore() }
+
     fun part2(): Int {
-        val seatingChart: MutableMap<Point2D, Int?> = (0..127)
-            .flatMap { row -> (0..7).map { Point2D(row, it) to null } }
-            .toMap()
-            .toMutableMap()
+        val seatingChart: MutableMap<Point2D, Int?> =
+            (0..127)
+                .flatMap { row -> (0..7).map { Point2D(row, it) to null } }
+                .toMap()
+                .toMutableMap()
 
         for (search in searches) {
             seatingChart[search.getSeatPosition()] = search.getScore()

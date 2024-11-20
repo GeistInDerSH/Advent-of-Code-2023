@@ -6,34 +6,38 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day13(dataFile: DataFile) {
-    private val points = fileToStream(2021, 13, dataFile)
-        .takeWhile(String::isNotBlank)
-        .map { line ->
-            val (col, row) = "[0-9]+".toRegex().findAll(line).map { it.value.toInt() }.toList()
-            Point2D(row, col)
-        }
-        .toSet()
-    private val foldInstructions = fileToStream(2021, 13, dataFile)
-        .dropWhile(String::isNotBlank)
-        .drop(1)
-        .map { it.split(" ").last().split("=") }
-        .map { (axis, line) -> axis to line.toInt() }
-        .toList()
+    private val points =
+        fileToStream(2021, 13, dataFile)
+            .takeWhile(String::isNotBlank)
+            .map { line ->
+                val (col, row) = "[0-9]+".toRegex().findAll(line).map { it.value.toInt() }.toList()
+                Point2D(row, col)
+            }
+            .toSet()
+    private val foldInstructions =
+        fileToStream(2021, 13, dataFile)
+            .dropWhile(String::isNotBlank)
+            .drop(1)
+            .map { it.split(" ").last().split("=") }
+            .map { (axis, line) -> axis to line.toInt() }
+            .toList()
 
     fun part1(): Int {
         val (axis, foldIndex) = foldInstructions.first()
         return points
             .mapNotNull { point ->
                 when (axis) {
-                    "x" -> when {
-                        point.col < foldIndex -> point
-                        else -> point.copy(col = foldIndex - (point.col - foldIndex))
-                    }
+                    "x" ->
+                        when {
+                            point.col < foldIndex -> point
+                            else -> point.copy(col = foldIndex - (point.col - foldIndex))
+                        }
 
-                    "y" -> when {
-                        point.row < foldIndex -> point
-                        else -> point.copy(row = foldIndex - (point.row - foldIndex))
-                    }
+                    "y" ->
+                        when {
+                            point.row < foldIndex -> point
+                            else -> point.copy(row = foldIndex - (point.row - foldIndex))
+                        }
 
                     else -> null
                 }
@@ -48,19 +52,22 @@ class Day13(dataFile: DataFile) {
             val newPoints = mutableSetOf<Point2D>()
 
             for (point in points) {
-                val newPoint = when (axis) {
-                    "x" -> when {
-                        point.col < foldIndex -> point
-                        else -> point.copy(col = foldIndex - (point.col - foldIndex))
-                    }
+                val newPoint =
+                    when (axis) {
+                        "x" ->
+                            when {
+                                point.col < foldIndex -> point
+                                else -> point.copy(col = foldIndex - (point.col - foldIndex))
+                            }
 
-                    "y" -> when {
-                        point.row < foldIndex -> point
-                        else -> point.copy(row = foldIndex - (point.row - foldIndex))
-                    }
+                        "y" ->
+                            when {
+                                point.row < foldIndex -> point
+                                else -> point.copy(row = foldIndex - (point.row - foldIndex))
+                            }
 
-                    else -> continue
-                }
+                        else -> continue
+                    }
                 newPoints.add(newPoint)
             }
             points = newPoints

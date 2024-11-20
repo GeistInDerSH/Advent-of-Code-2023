@@ -7,24 +7,27 @@ import com.geistindersh.aoc.helper.report
 
 class Grid(private val tiles: List<List<Tile>>) {
     // Find the starting position of the loop
-    private val start = run {
-        for (row in tiles.indices) {
-            for (col in tiles[row].indices) {
-                if (tiles[row][col].symbol == 'S') {
-                    return@run row to col
+    private val start =
+        run {
+            for (row in tiles.indices) {
+                for (col in tiles[row].indices) {
+                    if (tiles[row][col].symbol == 'S') {
+                        return@run row to col
+                    }
                 }
             }
+            -1 to -1
         }
-        -1 to -1
-    }
 
     // Cached value for the located loops
     private val loops: MutableList<List<Pair<Int, Int>>> = mutableListOf()
 
     fun getTileAt(pair: Pair<Int, Int>) = tiles[pair.first][pair.second]
-    fun toFlatSet() = tiles
-        .flatMap { tile -> tile.map { it.position } }
-        .toSet()
+
+    fun toFlatSet() =
+        tiles
+            .flatMap { tile -> tile.map { it.position } }
+            .toSet()
 
     private fun getFirstUnvisitedOrNull(positions: List<Pair<Int, Int>>): Pair<Int, Int>? {
         for (pos in positions) {
@@ -119,17 +122,19 @@ data class Tile(val symbol: Char, val row: Int, val col: Int) {
     private var visited = false
 
     fun hasBeenVisited() = visited
+
     fun visit() {
         visited = true
     }
 }
 
 fun parseInput(fileType: DataFile): Grid {
-    val tiles = fileToStream(2023, 10, fileType)
-        .mapIndexed { row, line ->
-            line.mapIndexed { col, it -> Tile(it, row, col) }
-        }
-        .toList()
+    val tiles =
+        fileToStream(2023, 10, fileType)
+            .mapIndexed { row, line ->
+                line.mapIndexed { col, it -> Tile(it, row, col) }
+            }
+            .toList()
     return Grid(tiles)
 }
 

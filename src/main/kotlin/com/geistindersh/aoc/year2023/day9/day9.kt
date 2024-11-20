@@ -6,22 +6,23 @@ import com.geistindersh.aoc.helper.report
 
 data class Sensor(val history: MutableList<Int>) {
     // Calculate the historical values from the history, to allow for faster calculations later
-    private val extrapolated: MutableList<MutableList<Int>> = run {
-        val list: MutableList<MutableList<Int>> = mutableListOf()
-        var currentList = history.toList()
-        while (true) {
-            val newList: MutableList<Int> = mutableListOf()
-            for (win in currentList.windowed(2)) {
-                newList.add(win.last() - win.first())
+    private val extrapolated: MutableList<MutableList<Int>> =
+        run {
+            val list: MutableList<MutableList<Int>> = mutableListOf()
+            var currentList = history.toList()
+            while (true) {
+                val newList: MutableList<Int> = mutableListOf()
+                for (win in currentList.windowed(2)) {
+                    newList.add(win.last() - win.first())
+                }
+                if (newList.all { it == 0 }) {
+                    break
+                }
+                list.add(newList)
+                currentList = newList
             }
-            if (newList.all { it == 0 }) {
-                break
-            }
-            list.add(newList)
-            currentList = newList
+            list
         }
-        list
-    }
 
     /**
      * @return The next value in the [history] sequence
@@ -74,10 +75,11 @@ data class Sensor(val history: MutableList<Int>) {
 fun parseInput(fileType: DataFile): List<Sensor> {
     return fileToStream(2023, 9, fileType)
         .map { line ->
-            val history = line
-                .split(' ')
-                .map { it.toInt() }
-                .toMutableList()
+            val history =
+                line
+                    .split(' ')
+                    .map { it.toInt() }
+                    .toMutableList()
             Sensor(history)
         }
         .toList()

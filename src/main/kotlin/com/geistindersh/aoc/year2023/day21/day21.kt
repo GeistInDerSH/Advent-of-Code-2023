@@ -12,7 +12,6 @@ data class Location(val row: Int, val col: Int) {
 }
 
 data class Grid(private val start: Location, private val rocks: Set<Location>, private val lineLength: Int) {
-
     /**
      * Recursively loop through the steps, determining the locations that have been jumped to at each step.
      *
@@ -20,16 +19,21 @@ data class Grid(private val start: Location, private val rocks: Set<Location>, p
      * @param step The current step number
      * @param limit The maximum step count
      */
-    private tailrec fun part1(locations: Set<Location>, step: Int, limit: Int): Int {
+    private tailrec fun part1(
+        locations: Set<Location>,
+        step: Int,
+        limit: Int,
+    ): Int {
         return if (step < limit) {
-            val newLocations = locations
-                .flatMap { loc ->
-                    Direction
-                        .entries
-                        .map { loc + it }
-                        .filter { it !in rocks }
-                }
-                .toSet()
+            val newLocations =
+                locations
+                    .flatMap { loc ->
+                        Direction
+                            .entries
+                            .map { loc + it }
+                            .filter { it !in rocks }
+                    }
+                    .toSet()
 
             part1(newLocations, step + 1, limit)
         } else {
@@ -48,26 +52,32 @@ data class Grid(private val start: Location, private val rocks: Set<Location>, p
      * @param limit The maximum step count
      * @param list Values where the [step] mod [lineLength] and [limit] % [lineLength] are the same
      */
-    private tailrec fun part2(locations: Set<Location>, step: Int, limit: Int, list: MutableList<Int>): List<Int> {
+    private tailrec fun part2(
+        locations: Set<Location>,
+        step: Int,
+        limit: Int,
+        list: MutableList<Int>,
+    ): List<Int> {
         if (step % lineLength == limit % lineLength) {
             list.add(locations.size)
         }
 
         return if (step < limit) {
-            val newLocations = locations
-                .flatMap { loc ->
-                    Direction
-                        .entries
-                        .map { loc + it }
-                        .filter { direction ->
-                            // Get the actual row / column in the original field
-                            val row = ((direction.row % lineLength) + lineLength) % lineLength
-                            val col = ((direction.col % lineLength) + lineLength) % lineLength
+            val newLocations =
+                locations
+                    .flatMap { loc ->
+                        Direction
+                            .entries
+                            .map { loc + it }
+                            .filter { direction ->
+                                // Get the actual row / column in the original field
+                                val row = ((direction.row % lineLength) + lineLength) % lineLength
+                                val col = ((direction.col % lineLength) + lineLength) % lineLength
 
-                            Location(row, col) !in rocks
-                        }
-                }
-                .toSet()
+                                Location(row, col) !in rocks
+                            }
+                    }
+                    .toSet()
 
             part2(newLocations, step + 1, limit, list)
         } else {
@@ -99,25 +109,27 @@ data class Grid(private val start: Location, private val rocks: Set<Location>, p
     companion object {
         fun parseInput(dataFile: DataFile): Grid {
             var lineLength = 0
-            val parsed = fileToStream(2023, 21, dataFile)
-                .flatMapIndexed { row, line ->
-                    lineLength = line.length
-                    line.mapIndexed { col, c -> Obstacle(row, col, c) }
-                }
-                .toList()
+            val parsed =
+                fileToStream(2023, 21, dataFile)
+                    .flatMapIndexed { row, line ->
+                        lineLength = line.length
+                        line.mapIndexed { col, c -> Obstacle(row, col, c) }
+                    }
+                    .toList()
 
-            val start = parsed
-                .first { it.char == 'S' }
-                .let { Location(it.row, it.col) }
-            val rocks = parsed
-                .filter { it.char == '#' }
-                .map { Location(it.row, it.col) }
-                .toSet()
+            val start =
+                parsed
+                    .first { it.char == 'S' }
+                    .let { Location(it.row, it.col) }
+            val rocks =
+                parsed
+                    .filter { it.char == '#' }
+                    .map { Location(it.row, it.col) }
+                    .toSet()
             return Grid(start, rocks, lineLength)
         }
     }
 }
-
 
 fun day21(skip: Boolean = true) {
     if (skip) {

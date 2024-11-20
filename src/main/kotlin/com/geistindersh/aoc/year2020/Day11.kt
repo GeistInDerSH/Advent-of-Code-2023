@@ -8,35 +8,37 @@ import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
 
 class Day11(dataFile: DataFile) {
-    private val chart = fileToStream(2020, 11, dataFile)
-        .flatMapIndexed { row, line ->
-            line.mapIndexedNotNull { col, c ->
-                when (c) {
-                    '#' -> Point2D(row, col) to true
-                    'L' -> Point2D(row, col) to false
-                    else -> null
+    private val chart =
+        fileToStream(2020, 11, dataFile)
+            .flatMapIndexed { row, line ->
+                line.mapIndexedNotNull { col, c ->
+                    when (c) {
+                        '#' -> Point2D(row, col) to true
+                        'L' -> Point2D(row, col) to false
+                        else -> null
+                    }
                 }
             }
-        }
-        .toMap()
-        .let { chart ->
-            val visibility = generateVisibilityMap(chart)
-            SeatingChart(chart, visibility)
-        }
+            .toMap()
+            .let { chart ->
+                val visibility = generateVisibilityMap(chart)
+                SeatingChart(chart, visibility)
+            }
 
     private fun generateVisibilityMap(chart: Map<Point2D, Boolean>): Map<Point2D, List<Point2D>> {
         // Use the "raw" directions as opposed to Point::neighborsAll so we can repeatedly
         // add the current direction until we find a visible point
-        val directions = listOf(
-            Direction.North.pair(),
-            Direction.East.pair(),
-            Direction.South.pair(),
-            Direction.West.pair(),
-            Direction.North + Direction.East,
-            Direction.North + Direction.West,
-            Direction.South + Direction.East,
-            Direction.South + Direction.West,
-        )
+        val directions =
+            listOf(
+                Direction.North.pair(),
+                Direction.East.pair(),
+                Direction.South.pair(),
+                Direction.West.pair(),
+                Direction.North + Direction.East,
+                Direction.North + Direction.West,
+                Direction.South + Direction.East,
+                Direction.South + Direction.West,
+            )
 
         val visibility = mutableMapOf<Point2D, List<Point2D>>()
         val maxRow = chart.keys.maxOf { it.row } + 1
@@ -132,21 +134,23 @@ class Day11(dataFile: DataFile) {
         }
     }
 
-    fun part1() = generateSequence(chart) { it.next() }
-        .drop(1)
-        .takeWhileInclusive { it.changed > 0 }
-        .last()
-        .chart
-        .values
-        .count { it }
+    fun part1() =
+        generateSequence(chart) { it.next() }
+            .drop(1)
+            .takeWhileInclusive { it.changed > 0 }
+            .last()
+            .chart
+            .values
+            .count { it }
 
-    fun part2() = generateSequence(chart.copy(neighborThreshold = 4)) { it.nextWithVisibility() }
-        .drop(1)
-        .takeWhileInclusive { it.changed > 0 }
-        .last()
-        .chart
-        .values
-        .count { it }
+    fun part2() =
+        generateSequence(chart.copy(neighborThreshold = 4)) { it.nextWithVisibility() }
+            .drop(1)
+            .takeWhileInclusive { it.changed > 0 }
+            .last()
+            .chart
+            .values
+            .count { it }
 }
 
 fun day11() {

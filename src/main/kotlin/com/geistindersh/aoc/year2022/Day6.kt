@@ -9,19 +9,20 @@ class Day6(dataFile: DataFile) {
 
     private fun getSignalOffset(windowSize: Int): Int {
         return windowSize +
-                (0..(noise.count() - windowSize))
-                    .firstNotNullOf {
-                        val chars = noise.substring(it, it + windowSize)
-                        val unique = chars.toSet()
-                        if (chars.count() == windowSize && unique.count() == windowSize) {
-                            it
-                        } else {
-                            null
-                        }
+            (0..(noise.count() - windowSize))
+                .firstNotNullOf {
+                    val chars = noise.substring(it, it + windowSize)
+                    val unique = chars.toSet()
+                    if (chars.count() == windowSize && unique.count() == windowSize) {
+                        it
+                    } else {
+                        null
                     }
+                }
     }
 
     fun part1() = getSignalOffset(4)
+
     fun part2() = getSignalOffset(14)
 }
 

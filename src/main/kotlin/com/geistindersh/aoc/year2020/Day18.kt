@@ -6,13 +6,15 @@ import com.geistindersh.aoc.helper.report
 import java.util.*
 
 class Day18(dataFile: DataFile) {
-    private val equations = fileToStream(2020, 18, dataFile)
-        .map { Token.tokenize(it) }
-        .map { Equation(it) }
-        .toList()
+    private val equations =
+        fileToStream(2020, 18, dataFile)
+            .map { Token.tokenize(it) }
+            .map { Equation(it) }
+            .toList()
 
     private data class Equation(val tokens: List<Token>) {
         private fun Stack<Token>.reduceAll() = this.reduce(setOf(Token.Add(), Token.Multiply()))
+
         private fun Stack<Token>.reduceAdditions() = this.reduce(setOf(Token.Add()))
 
         /**
@@ -42,7 +44,6 @@ class Day18(dataFile: DataFile) {
                 stack.push(new)
             }
         }
-
 
         private fun Stack<Token>.reduceWhileInParentheses() {
             val stack = this
@@ -126,21 +127,32 @@ class Day18(dataFile: DataFile) {
     }
 
     private interface Call {
-        fun eval(n1: Token.Number, n2: Token.Number): Token.Number
+        fun eval(
+            n1: Token.Number,
+            n2: Token.Number,
+        ): Token.Number
     }
 
     private sealed class Token {
         data class Number(val value: Long) : Token()
+
         data class OpenParentheses(val tkn: Char = '(') : Token()
+
         data class ClosedParentheses(val tkn: Char = ')') : Token()
+
         data class Multiply(val tkn: Char = '*') : Token(), Call {
-            override fun eval(n1: Number, n2: Number) = Number(n1.value * n2.value)
+            override fun eval(
+                n1: Number,
+                n2: Number,
+            ) = Number(n1.value * n2.value)
         }
 
         data class Add(val tkn: Char = '+') : Token(), Call {
-            override fun eval(n1: Number, n2: Number) = Number(n1.value + n2.value)
+            override fun eval(
+                n1: Number,
+                n2: Number,
+            ) = Number(n1.value + n2.value)
         }
-
 
         companion object {
             fun tokenize(raw: String): List<Token> {
@@ -165,16 +177,17 @@ class Day18(dataFile: DataFile) {
                         continue
                     }
 
-                    val tkn = when (char) {
-                        '(' -> OpenParentheses()
-                        ')' -> ClosedParentheses()
-                        '*' -> Multiply()
-                        '+' -> Add()
-                        else -> {
-                            i += 1
-                            continue
+                    val tkn =
+                        when (char) {
+                            '(' -> OpenParentheses()
+                            ')' -> ClosedParentheses()
+                            '*' -> Multiply()
+                            '+' -> Add()
+                            else -> {
+                                i += 1
+                                continue
+                            }
                         }
-                    }
 
                     tokens.add(tkn)
                     i += 1
@@ -189,6 +202,7 @@ class Day18(dataFile: DataFile) {
     }
 
     fun part1() = equations.sumOf { it.eval() }
+
     fun part2() = equations.sumOf { it.evalWithPrecedence() }
 }
 

@@ -50,21 +50,23 @@ data class MirrorGrid(val grid: List<List<Char>>) {
                     }
 
                     char == '\\' -> {
-                        direct = when (direct) {
-                            Direction.East -> Direction.South
-                            Direction.South -> Direction.East
-                            Direction.West -> Direction.North
-                            Direction.North -> Direction.West
-                        }
+                        direct =
+                            when (direct) {
+                                Direction.East -> Direction.South
+                                Direction.South -> Direction.East
+                                Direction.West -> Direction.North
+                                Direction.North -> Direction.West
+                            }
                     }
 
                     char == '/' -> {
-                        direct = when (direct) {
-                            Direction.East -> Direction.North
-                            Direction.North -> Direction.East
-                            Direction.West -> Direction.South
-                            Direction.South -> Direction.West
-                        }
+                        direct =
+                            when (direct) {
+                                Direction.East -> Direction.North
+                                Direction.North -> Direction.East
+                                Direction.West -> Direction.South
+                                Direction.South -> Direction.West
+                            }
                     }
 
                     else -> continue
@@ -82,7 +84,8 @@ data class MirrorGrid(val grid: List<List<Char>>) {
     fun part1() = solution(Energized(0, 0, Direction.East))
 
     fun part2(): Int {
-        val toRun = grid.indices.map { Energized(it, 0, Direction.East) } +
+        val toRun =
+            grid.indices.map { Energized(it, 0, Direction.East) } +
                 grid.indices.map { Energized(it, grid[0].size, Direction.West) } +
                 grid[0].indices.map { Energized(0, it, Direction.South) } +
                 grid[0].indices.map { Energized(grid.size, it, Direction.North) }

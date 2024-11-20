@@ -24,16 +24,20 @@ class Grid(private val rocks: List<LavaRock>) {
      * @param direction The direction to move the [rocks]
      * @return The updated [LavaRock] positions
      */
-    private fun tilt(rocks: List<LavaRock>, direction: Direction): List<LavaRock> {
+    private fun tilt(
+        rocks: List<LavaRock>,
+        direction: Direction,
+    ): List<LavaRock> {
         // We want to make sure that the flat list of LavaRocks is sorted by the direction we are going
         // to be moving them. Otherwise, we may move some rocks to early and find they collide with a rock that should
         // have been moved
-        val newRocks = when (direction) {
-            Direction.South -> rocks.sortedBy { it.row }.reversed().toMutableList()
-            Direction.North -> rocks.sortedBy { it.row }.toMutableList()
-            Direction.East -> rocks.sortedBy { it.col }.reversed().toMutableList()
-            Direction.West -> rocks.sortedBy { it.col }.toMutableList()
-        }
+        val newRocks =
+            when (direction) {
+                Direction.South -> rocks.sortedBy { it.row }.reversed().toMutableList()
+                Direction.North -> rocks.sortedBy { it.row }.toMutableList()
+                Direction.East -> rocks.sortedBy { it.col }.reversed().toMutableList()
+                Direction.West -> rocks.sortedBy { it.col }.toMutableList()
+            }
 
         for (rock in newRocks) {
             if (rock.char == '#') {
@@ -131,9 +135,10 @@ class Grid(private val rocks: List<LavaRock>) {
         return when (other) {
             null -> false
             !is Grid -> false
-            else -> rocks.all { rock ->
-                other.rocks.any { it.col == rock.col && it.row == rock.row && it.char == rock.char }
-            }
+            else ->
+                rocks.all { rock ->
+                    other.rocks.any { it.col == rock.col && it.row == rock.row && it.char == rock.char }
+                }
         }
     }
 
@@ -146,19 +151,20 @@ class Grid(private val rocks: List<LavaRock>) {
 }
 
 fun parseInput(fileType: DataFile): Grid {
-    val rocks = fileToStream(2023, 14, fileType)
-        .toList()
-        .reversed()
-        .flatMapIndexed { row, string ->
-            string.mapIndexedNotNull { col, c ->
-                if (c != '.') {
-                    LavaRock(row + 1, col + 1, c)
-                } else {
-                    null
+    val rocks =
+        fileToStream(2023, 14, fileType)
+            .toList()
+            .reversed()
+            .flatMapIndexed { row, string ->
+                string.mapIndexedNotNull { col, c ->
+                    if (c != '.') {
+                        LavaRock(row + 1, col + 1, c)
+                    } else {
+                        null
+                    }
                 }
             }
-        }
-        .reversed()
+            .reversed()
     return Grid(rocks)
 }
 
@@ -169,6 +175,6 @@ fun day14() {
         year = 2023,
         dayNumber = 14,
         part1 = input.part1(),
-        part2 = input.part2()
+        part2 = input.part2(),
     )
 }

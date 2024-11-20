@@ -2,13 +2,15 @@ package com.geistindersh.aoc.helper.math
 
 import kotlin.math.max
 
-
 /**
  * @param a The first value
  * @param b The second value
  * @return The least common multiple of [a] and [b]
  */
-fun lcm(a: Long, b: Long): Long {
+fun lcm(
+    a: Long,
+    b: Long,
+): Long {
     val larger = max(a, b)
     val maxLCM = a * b
     var lcm = larger

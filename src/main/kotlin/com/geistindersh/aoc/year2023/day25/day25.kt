@@ -45,7 +45,10 @@ private fun getMostTraversedEdge(connections: Map<String, List<String>>): Edge {
  * @param connections The current connection map
  * @return The length of the loop from the [start]
  */
-private fun countConnectionsFromStart(start: String, connections: Map<String, List<String>>): Int {
+private fun countConnectionsFromStart(
+    start: String,
+    connections: Map<String, List<String>>,
+): Int {
     val visited = mutableMapOf<String, Boolean>()
     val queue = ArrayDeque<String>()
     queue.add(start)
@@ -64,15 +67,16 @@ private fun countConnectionsFromStart(start: String, connections: Map<String, Li
 }
 
 fun part1(connections: MutableMap<String, MutableList<String>>): Int {
-    val m1 = (0..2)
-        .map { _ ->
-            val edge = getMostTraversedEdge(connections)
-            connections[edge.first]!!.remove(edge.second)
-            connections[edge.second]!!.remove(edge.first)
+    val m1 =
+        (0..2)
+            .map { _ ->
+                val edge = getMostTraversedEdge(connections)
+                connections[edge.first]!!.remove(edge.second)
+                connections[edge.second]!!.remove(edge.first)
 
-            edge
-        }
-        .first()
+                edge
+            }
+            .first()
 
     val firstLoopSize = countConnectionsFromStart(m1.first, connections)
     val secondLoopSize = countConnectionsFromStart(m1.second, connections)
@@ -85,10 +89,11 @@ fun parseInput(dataFile: DataFile): MutableMap<String, MutableList<String>> {
 
     fileToStream(2023, 25, dataFile).forEach {
         val key = it.substringBefore(':')
-        val values = it
-            .substringAfter(':')
-            .trim()
-            .split(' ')
+        val values =
+            it
+                .substringAfter(':')
+                .trim()
+                .split(' ')
 
         nodes.putIfAbsent(key, mutableListOf())
 

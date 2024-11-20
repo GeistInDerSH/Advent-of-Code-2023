@@ -45,7 +45,11 @@ data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean
         // The card ranking changes slightly between the two parts, and this should reflect that
         private val withJokers = "AKQT98765432J".toList()
         private val withoutJokers = "AKQJT98765432".toList()
-        override fun compare(o1: Hand, o2: Hand): Int {
+
+        override fun compare(
+            o1: Hand,
+            o2: Hand,
+        ): Int {
             val cards = if (o1.includeJokers) withJokers else withoutJokers
             return when {
                 o1.kind > o2.kind -> 1
@@ -73,7 +77,10 @@ data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean
     }
 }
 
-fun parseInput(fileType: DataFile, includeJokers: Boolean): List<Hand> {
+fun parseInput(
+    fileType: DataFile,
+    includeJokers: Boolean,
+): List<Hand> {
     return fileToStream(2023, 7, fileType)
         .map {
             val (cards, bid) = it.split(' ')
@@ -84,6 +91,7 @@ fun parseInput(fileType: DataFile, includeJokers: Boolean): List<Hand> {
 }
 
 fun part1(fileType: DataFile) = part1(parseInput(fileType, false))
+
 fun part1(hands: List<Hand>) = hands.mapIndexed { i, hand -> (i + 1) * hand.bid }.sum()
 
 fun part2(fileType: DataFile) = part1(parseInput(fileType, true))

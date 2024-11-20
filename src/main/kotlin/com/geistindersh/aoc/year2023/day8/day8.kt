@@ -6,7 +6,10 @@ import com.geistindersh.aoc.helper.math.lcm
 import com.geistindersh.aoc.helper.report
 
 data class Walk(val instructions: String, val nodes: Map<String, Pair<String, String>>) {
-    fun getStepsCount(start: String, end: String): Long {
+    fun getStepsCount(
+        start: String,
+        end: String,
+    ): Long {
         var count = 0L
         var index = 0
         var key = start
@@ -25,11 +28,12 @@ fun parseInput(fileName: String): Walk {
     val lines = fileToStream(fileName).toList()
     val instructions = lines.first()
 
-    val nodes = lines.drop(2).associate {
-        val key = it.substringBefore(' ')
-        val (left, right) = it.substringAfter('(').substringBefore(')').split(", ")
-        key to Pair(left, right)
-    }
+    val nodes =
+        lines.drop(2).associate {
+            val key = it.substringBefore(' ')
+            val (left, right) = it.substringAfter('(').substringBefore(')').split(", ")
+            key to Pair(left, right)
+        }
 
     return Walk(instructions, nodes)
 }

@@ -58,7 +58,13 @@ data class Number(val num: Int, val row: Int, val colStart: Int, val colEnd: Int
  * @param srcColEnd The source column ending index
  * @param destCol The destination column index
  */
-fun hasOverlap(srcRow: Int, destRow: Int, srcColStart: Int, srcColEnd: Int, destCol: Int): Boolean {
+fun hasOverlap(
+    srcRow: Int,
+    destRow: Int,
+    srcColStart: Int,
+    srcColEnd: Int,
+    destCol: Int,
+): Boolean {
     return srcRow in (destRow - 1..destRow + 1) && max(srcColStart, destCol - 1) <= min(srcColEnd, destCol + 1)
 }
 
@@ -66,34 +72,36 @@ fun parseInput(fileType: DataFile): Pair<List<Symbol>, List<Number>> {
     val lines = fileToStream(2023, 3, fileType).toList()
 
     // Extract only the symbols; these are any special characters that are non-`.`
-    val symbols = lines.flatMapIndexed { row, line ->
-        line.mapIndexedNotNull { col, char ->
-            if (char.isDigit() || char == '.') {
-                null
-            } else {
-                Symbol(char, row, col)
+    val symbols =
+        lines.flatMapIndexed { row, line ->
+            line.mapIndexedNotNull { col, char ->
+                if (char.isDigit() || char == '.') {
+                    null
+                } else {
+                    Symbol(char, row, col)
+                }
             }
         }
-    }
 
     // Extract the numbers, and ensure that "1234" is 1234 not 1,2,3,4
-    val numbers = lines.flatMapIndexed { row, line ->
-        val numbers: MutableList<Number> = mutableListOf()
-        val num = StringBuilder()
-        line.forEachIndexed { index, char ->
-            if (char.isDigit()) {
-                num.append(char)
-            } else if (!char.isDigit() && num.isNotEmpty()) {
-                numbers.add(Number(num.toString().toInt(), row, index - num.length, index - 1))
-                num.clear()
+    val numbers =
+        lines.flatMapIndexed { row, line ->
+            val numbers: MutableList<Number> = mutableListOf()
+            val num = StringBuilder()
+            line.forEachIndexed { index, char ->
+                if (char.isDigit()) {
+                    num.append(char)
+                } else if (!char.isDigit() && num.isNotEmpty()) {
+                    numbers.add(Number(num.toString().toInt(), row, index - num.length, index - 1))
+                    num.clear()
+                }
+                if (index + 1 >= line.length && num.isNotEmpty()) {
+                    numbers.add(Number(num.toString().toInt(), row, index - num.length, line.length))
+                }
             }
-            if (index + 1 >= line.length && num.isNotEmpty()) {
-                numbers.add(Number(num.toString().toInt(), row, index - num.length, line.length))
-            }
-        }
 
-        numbers
-    }
+            numbers
+        }
 
     return Pair(symbols, numbers)
 }
@@ -105,7 +113,10 @@ fun parseInput(fileType: DataFile): Pair<List<Symbol>, List<Number>> {
  * @param numbers The list of parsed Numbers to use
  * @return The sum of numbers with touching symbols
  */
-fun part1(symbols: List<Symbol>, numbers: List<Number>): Int {
+fun part1(
+    symbols: List<Symbol>,
+    numbers: List<Number>,
+): Int {
     return numbers
         .map { num ->
             num.checkForTouchingSymbols(symbols)
@@ -122,7 +133,10 @@ fun part1(symbols: List<Symbol>, numbers: List<Number>): Int {
  * @param numbers The list of parsed Numbers to use
  * @return The sum of the product of '*' symbols with 2 touching numbers
  */
-fun part2(symbols: List<Symbol>, numbers: List<Number>): Int {
+fun part2(
+    symbols: List<Symbol>,
+    numbers: List<Number>,
+): Int {
     return symbols
         .map { sym ->
             sym.addAnyTouchingNumbers(numbers)

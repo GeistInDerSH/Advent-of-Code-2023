@@ -7,57 +7,62 @@ import com.geistindersh.aoc.helper.report
 class Day21(dataFile: DataFile) {
     sealed class Fn {
         data class Const(val value: Long) : Fn()
-        data class Func(val op: String, val left: String, val right: String) : Fn() {
-            val fn: (Long, Long) -> Long = when (op) {
-                "+" -> Long::plus
-                "-" -> Long::minus
-                "*" -> Long::times
-                "/" -> Long::div
-                else -> throw IllegalArgumentException("Illegal op: $op")
-            }
 
-            val invertFn: (Long, Long) -> Long = op.let {
-                if (left == "") {
-                    when (op) {
-                        "-" -> Long::plus
-                        "+" -> Long::minus
-                        "/" -> Long::times
-                        "*" -> Long::div
-                        else -> throw IllegalArgumentException("Illegal op: $op")
-                    }
-                } else {
-                    when (op) {
-                        "+" -> Long::minus
-                        "-" -> { a, b -> b - a }
-                        "*" -> Long::div
-                        "/" -> { a, b -> b / a }
-                        else -> throw IllegalArgumentException("Illegal op: $op")
+        data class Func(val op: String, val left: String, val right: String) : Fn() {
+            val fn: (Long, Long) -> Long =
+                when (op) {
+                    "+" -> Long::plus
+                    "-" -> Long::minus
+                    "*" -> Long::times
+                    "/" -> Long::div
+                    else -> throw IllegalArgumentException("Illegal op: $op")
+                }
+
+            val invertFn: (Long, Long) -> Long =
+                op.let {
+                    if (left == "") {
+                        when (op) {
+                            "-" -> Long::plus
+                            "+" -> Long::minus
+                            "/" -> Long::times
+                            "*" -> Long::div
+                            else -> throw IllegalArgumentException("Illegal op: $op")
+                        }
+                    } else {
+                        when (op) {
+                            "+" -> Long::minus
+                            "-" -> { a, b -> b - a }
+                            "*" -> Long::div
+                            "/" -> { a, b -> b / a }
+                            else -> throw IllegalArgumentException("Illegal op: $op")
+                        }
                     }
                 }
-            }
 
-            fun invertValue() = if (left == "") {
-                right.toLong()
-            } else {
-                left.toLong()
-            }
+            fun invertValue() =
+                if (left == "") {
+                    right.toLong()
+                } else {
+                    left.toLong()
+                }
         }
     }
 
-    private val table = fileToStream(2022, 21, dataFile)
-        .map {
-            val items = "[ :]+".toRegex().split(it)
-            val name = items[0]
-            val left = items[1]
-            if (left.toLongOrNull() != null) {
-                name to Fn.Const(left.toLong())
-            } else {
-                val op = items[2]
-                val right = items[3]
-                name to Fn.Func(op, left, right)
+    private val table =
+        fileToStream(2022, 21, dataFile)
+            .map {
+                val items = "[ :]+".toRegex().split(it)
+                val name = items[0]
+                val left = items[1]
+                if (left.toLongOrNull() != null) {
+                    name to Fn.Const(left.toLong())
+                } else {
+                    val op = items[2]
+                    val right = items[3]
+                    name to Fn.Func(op, left, right)
+                }
             }
-        }
-        .toMap()
+            .toMap()
 
     private fun run(name: String): Long {
         return when (val value = table[name]!!) {

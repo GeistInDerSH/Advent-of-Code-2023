@@ -40,21 +40,23 @@ data class CropMapping(val sourceStart: Long, val sourceEnd: Long, val offset: L
 
 fun parseInput(fileType: DataFile): Almanac {
     val lines = fileToString(2023, 5, fileType).split("\n\n")
-    val seeds = lines
-        .first()
-        .substringAfter(':')
-        .trim()
-        .split(' ')
-        .map { it.toLong() }
+    val seeds =
+        lines
+            .first()
+            .substringAfter(':')
+            .trim()
+            .split(' ')
+            .map { it.toLong() }
 
-    val mappings = lines.drop(1).map { line ->
-        line.split('\n').drop(1).map {
-            val (dest, src, size) = it.split(' ').map { num -> num.toLong() }
-            // Calculate the end of the source range, and the offset we will jump to if there is a match,
-            // so we don't have to do it later
-            CropMapping(src, src + size, dest - src)
+    val mappings =
+        lines.drop(1).map { line ->
+            line.split('\n').drop(1).map {
+                val (dest, src, size) = it.split(' ').map { num -> num.toLong() }
+                // Calculate the end of the source range, and the offset we will jump to if there is a match,
+                // so we don't have to do it later
+                CropMapping(src, src + size, dest - src)
+            }
         }
-    }
 
     return Almanac(seeds, mappings)
 }

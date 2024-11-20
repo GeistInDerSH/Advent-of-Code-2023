@@ -7,21 +7,24 @@ import com.geistindersh.aoc.helper.report
 import kotlin.math.sqrt
 
 class Day20(dataFile: DataFile) {
-    private val tileSet = fileToString(2020, 20, dataFile)
-        .split("\n\n")
-        .map { Tile.from(it) }
-        .let { TileSet(it) }
+    private val tileSet =
+        fileToString(2020, 20, dataFile)
+            .split("\n\n")
+            .map { Tile.from(it) }
+            .let { TileSet(it) }
 
     private data class TileSet(val tiles: List<Tile>) {
-        fun edgesToCount() = tiles
-            .flatMap { it.allSides() }
-            .groupingBy { it }
-            .eachCount()
+        fun edgesToCount() =
+            tiles
+                .flatMap { it.allSides() }
+                .groupingBy { it }
+                .eachCount()
 
-        fun tilesWithUniqueEdges() = edgesToCount()
-            .let { edges ->
-                tiles.filter { tile -> tile.allSides().count { edges[it]!! == 2 } == 4 }
-            }
+        fun tilesWithUniqueEdges() =
+            edgesToCount()
+                .let { edges ->
+                    tiles.filter { tile -> tile.allSides().count { edges[it]!! == 2 } == 4 }
+                }
     }
 
     private data class Tile(val title: Long, val board: List<List<Char>>) {
@@ -33,10 +36,13 @@ class Day20(dataFile: DataFile) {
         fun getMutableBoard() = board.map { it.toMutableList() }.toMutableList()
 
         fun sides() = listOf(top, bottom, left, right)
+
         fun allSides() = sides() + sides().map { it.reversed() }
 
         fun reflectLeftRight() = this.copy(board = board.map { it.reversed() })
+
         fun reflectTopBottom() = this.copy(board = board.reversed())
+
         fun rotateLeft(): Tile {
             val tmp = Array(board.size) { CharArray(board.size) }
             for (row in board.indices) {
@@ -61,7 +67,12 @@ class Day20(dataFile: DataFile) {
         }
 
         fun orient(edges: Map<List<Char>, Int>) = orient(emptyList(), emptyList(), edges)
-        fun orient(left: List<Char>, top: List<Char>, edges: Map<List<Char>, Int>): Tile? {
+
+        fun orient(
+            left: List<Char>,
+            top: List<Char>,
+            edges: Map<List<Char>, Int>,
+        ): Tile? {
             for (orientation in allOrientations()) {
                 val leftMatches = (left.isEmpty() && edges[orientation.left] == 1) || left == orientation.left
                 val topMatches = (top.isEmpty() && edges[orientation.top] == 1) || top == orientation.top
@@ -161,19 +172,21 @@ class Day20(dataFile: DataFile) {
         fun roughness() = getBoardWithSeaMonster().board.sumOf { row -> row.count { it == '#' } }
 
         companion object {
-            val SEA_MONSTER = "                  # \n#    ##    ##    ###\n #  #  #  #  #  #   "
-                .split("\n")
-                .flatMapIndexed { row, line ->
-                    line.mapIndexedNotNull { col, char -> if (char == '#') Point2D(row, col) else null }
-                }
+            val SEA_MONSTER =
+                "                  # \n#    ##    ##    ###\n #  #  #  #  #  #   "
+                    .split("\n")
+                    .flatMapIndexed { row, line ->
+                        line.mapIndexedNotNull { col, char -> if (char == '#') Point2D(row, col) else null }
+                    }
 
             fun from(tileSet: TileSet): Image {
                 val edgeCount = tileSet.edgesToCount()
                 val unusedTiles = tileSet.tiles.associateBy { it.title }.toMutableMap()
-                var firstInRow = tileSet // Find the first tile, and orient it
-                    .tilesWithUniqueEdges()
-                    .first()
-                    .orient(edgeCount)
+                var firstInRow =
+                    tileSet // Find the first tile, and orient it
+                        .tilesWithUniqueEdges()
+                        .first()
+                        .orient(edgeCount)
                 unusedTiles.remove(firstInRow!!.title)
 
                 val tileMap = mutableMapOf(Point2D(0, 0) to firstInRow)
@@ -218,6 +231,7 @@ class Day20(dataFile: DataFile) {
     }
 
     fun part1() = tileSet.tilesWithUniqueEdges().map { it.title }.reduce(Long::times)
+
     fun part2() = Image.from(tileSet).roughness()
 }
 

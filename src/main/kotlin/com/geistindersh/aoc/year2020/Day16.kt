@@ -11,41 +11,47 @@ class Day16(dataFile: DataFile) {
 
     init {
         val data = fileToString(2020, 16, dataFile).split("\n\n")
-        fields = data[0]
-            .split("\n")
-            .associate { line ->
-                val name = line.substringBefore(": ")
-                val ranges = NUMBER_REGEX
-                    .findAll(line)
-                    .map { it.value.toInt() }
-                    .windowed(2, 2) { it.first()..it.last() }
-                    .flatMap { it.toSet() }
-                    .toSet()
-                name to ranges
-            }
+        fields =
+            data[0]
+                .split("\n")
+                .associate { line ->
+                    val name = line.substringBefore(": ")
+                    val ranges =
+                        NUMBER_REGEX
+                            .findAll(line)
+                            .map { it.value.toInt() }
+                            .windowed(2, 2) { it.first()..it.last() }
+                            .flatMap { it.toSet() }
+                            .toSet()
+                    name to ranges
+                }
         userTickets = NUMBER_REGEX.findAll(data[1]).map { it.value.toInt() }.toList()
-        nearbyTickets = data[2]
-            .split("\n")
-            .drop(1)
-            .map { line -> NUMBER_REGEX.findAll(line).map { it.value.toInt() }.toList() }
+        nearbyTickets =
+            data[2]
+                .split("\n")
+                .drop(1)
+                .map { line -> NUMBER_REGEX.findAll(line).map { it.value.toInt() }.toList() }
     }
 
-    private fun invalidTickets() = nearbyTickets
-        .flatten()
-        .filter { ticket -> fields.values.none { ticket in it } }
+    private fun invalidTickets() =
+        nearbyTickets
+            .flatten()
+            .filter { ticket -> fields.values.none { ticket in it } }
 
     fun part1() = invalidTickets().reduce(Int::plus)
 
     fun part2(): Long {
         val invalid = invalidTickets().toSet()
-        val validTickets = nearbyTickets
-            .filter { ticket -> ticket.none { it in invalid } }
+        val validTickets =
+            nearbyTickets
+                .filter { ticket -> ticket.none { it in invalid } }
 
         val remainingFields = fields.keys.toMutableSet()
         val mapIndex: MutableMap<String, Int> = mutableMapOf()
         while (remainingFields.isNotEmpty()) {
-            val validFields = mutableMapOf<String, MutableList<Int>>()
-                .withDefault { mutableListOf() }
+            val validFields =
+                mutableMapOf<String, MutableList<Int>>()
+                    .withDefault { mutableListOf() }
 
             for (col in validTickets[0].indices) {
                 if (col in mapIndex.values) continue

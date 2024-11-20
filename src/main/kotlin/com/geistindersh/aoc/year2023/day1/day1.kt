@@ -33,7 +33,10 @@ fun String.wordStringToInt(): Int {
  * @param validValues A list of valid matches for the numbers
  * @return The sum of the found values
  */
-fun solve(fileType: DataFile, validValues: List<String>): Int {
+fun solve(
+    fileType: DataFile,
+    validValues: List<String>,
+): Int {
     return fileToStream(2023, 1, fileType).sumOf {
         val first = (it.findAnyOf(validValues)?.second ?: "0").wordStringToInt()
         val last = (it.findLastAnyOf(validValues)?.second ?: "0").wordStringToInt()
@@ -45,14 +48,15 @@ fun day1() {
     // part1 only allows for numbers to be parsed out from the strings
     val validValuesNum = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
     // part2 allows for numbers, or the text version of the numbers to represent the number
-    val validValuesNumAndStr = listOf(
-        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-        "1", "2", "3", "4", "5", "6", "7", "8", "9"
-    )
+    val validValuesNumAndStr =
+        listOf(
+            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+            "1", "2", "3", "4", "5", "6", "7", "8", "9",
+        )
     report(
         year = 2023,
         dayNumber = 1,
         part1 = solve(DataFile.Part1, validValuesNum),
-        part2 = solve(DataFile.Part1, validValuesNumAndStr)
+        part2 = solve(DataFile.Part1, validValuesNumAndStr),
     )
 }

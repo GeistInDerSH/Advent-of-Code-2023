@@ -6,44 +6,49 @@ import com.geistindersh.aoc.helper.report
 import java.util.*
 
 class Day13(dataFile: DataFile) {
-    private val packets = fileToStream(2022, 13, dataFile)
-        .filter { it.isNotEmpty() }
-        .map { line ->
-            val stack = Stack<List<Any>>()
-            stack.push(mutableListOf())
+    private val packets =
+        fileToStream(2022, 13, dataFile)
+            .filter { it.isNotEmpty() }
+            .map { line ->
+                val stack = Stack<List<Any>>()
+                stack.push(mutableListOf())
 
-            var packet = line
-            while (packet.isNotEmpty()) {
-                when (packet[0]) {
-                    ',' -> packet = packet.drop(1)
-                    '[' -> {
-                        stack.push(mutableListOf())
-                        packet = packet.drop(1)
-                    }
+                var packet = line
+                while (packet.isNotEmpty()) {
+                    when (packet[0]) {
+                        ',' -> packet = packet.drop(1)
+                        '[' -> {
+                            stack.push(mutableListOf())
+                            packet = packet.drop(1)
+                        }
 
-                    ']' -> {
-                        val item = stack.pop()
-                        (stack.peek() as MutableList<Any>).add(item)
-                        packet = packet.drop(1)
-                    }
+                        ']' -> {
+                            val item = stack.pop()
+                            (stack.peek() as MutableList<Any>).add(item)
+                            packet = packet.drop(1)
+                        }
 
-                    else -> {
-                        val digits = packet
-                            .takeWhile { it.isDigit() }
-                            .toList()
-                            .joinToString("")
-                        (stack.peek() as MutableList<Any>).add(digits.toInt())
-                        packet = packet.drop(digits.count())
+                        else -> {
+                            val digits =
+                                packet
+                                    .takeWhile { it.isDigit() }
+                                    .toList()
+                                    .joinToString("")
+                            (stack.peek() as MutableList<Any>).add(digits.toInt())
+                            packet = packet.drop(digits.count())
+                        }
                     }
                 }
-            }
 
-            stack.pop().first()
-        }
-        .toList()
+                stack.pop().first()
+            }
+            .toList()
 
     @Suppress("UNCHECKED_CAST")
-    private fun areInOrder(left: List<Any>, right: List<Any>): Pair<Boolean, Boolean> {
+    private fun areInOrder(
+        left: List<Any>,
+        right: List<Any>,
+    ): Pair<Boolean, Boolean> {
         var lIndex = 0
         var rIndex = 0
         while (lIndex < left.size && rIndex < right.size) {
@@ -99,12 +104,13 @@ class Day13(dataFile: DataFile) {
     fun part2(): Int {
         val d1 = listOf(listOf(2))
         val d2 = listOf(listOf(6))
-        val withDecoders = packets
-            .toMutableList()
-            .apply {
-                add(d1)
-                add(d2)
-            }
+        val withDecoders =
+            packets
+                .toMutableList()
+                .apply {
+                    add(d1)
+                    add(d2)
+                }
         withDecoders.sortWith { p1, p2 ->
             @Suppress("UNCHECKED_CAST")
             val result = areInOrder(p1 as List<Any>, p2 as List<Any>)

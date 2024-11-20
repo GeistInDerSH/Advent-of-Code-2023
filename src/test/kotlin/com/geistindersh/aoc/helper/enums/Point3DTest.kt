@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class Point3DTest {
-
     @Test
     fun neighbors() {
         val point = Point3D(0, 0, 0)

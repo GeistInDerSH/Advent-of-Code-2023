@@ -8,10 +8,11 @@ import com.geistindersh.aoc.helper.report
 class Day1(dataFile: DataFile) {
     private val numbers = fileToStream(2020, 1, dataFile).map(String::toInt).toList()
 
-    private fun solution(size: Int) = numbers
-        .subsetSum(2020)
-        .filter { it.size == size }
-        .maxOf { it.fold(1, Long::times) }
+    private fun solution(size: Int) =
+        numbers
+            .subsetSum(2020)
+            .filter { it.size == size }
+            .maxOf { it.fold(1, Long::times) }
 
     fun part1() = solution(2)
 

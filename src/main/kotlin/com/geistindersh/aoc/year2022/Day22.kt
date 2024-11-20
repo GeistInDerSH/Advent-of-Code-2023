@@ -7,43 +7,52 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day22(dataFile: DataFile) {
-    private val grid = fileToStream(2022, 22, dataFile)
-        .takeWhile { it.isNotEmpty() }
-        .flatMapIndexed { row, line ->
-            line.mapIndexedNotNull { col, c ->
-                if (c == ' ') null
-                else Point2D(row = row, col = col) to c
+    private val grid =
+        fileToStream(2022, 22, dataFile)
+            .takeWhile { it.isNotEmpty() }
+            .flatMapIndexed { row, line ->
+                line.mapIndexedNotNull { col, c ->
+                    if (c == ' ') {
+                        null
+                    } else {
+                        Point2D(row = row, col = col) to c
+                    }
+                }
             }
-        }
-        .associate { it }
+            .associate { it }
     private val commands = Steps.parseLine(fileToStream(2022, 22, dataFile).last())
 
     private sealed class Steps {
         data object Left : Steps()
+
         data object Right : Steps()
+
         data class Walk(val steps: Int) : Steps()
 
         companion object {
             private val re = "[0-9]+|[LR]".toRegex()
-            fun parseLine(line: String) = re
-                .findAll(line)
-                .map {
-                    when (it.value) {
-                        "L" -> Left
-                        "R" -> Right
-                        else -> Walk(it.value.toInt())
+
+            fun parseLine(line: String) =
+                re
+                    .findAll(line)
+                    .map {
+                        when (it.value) {
+                            "L" -> Left
+                            "R" -> Right
+                            else -> Walk(it.value.toInt())
+                        }
                     }
-                }
-                .toList()
+                    .toList()
         }
     }
 
     private fun walk(fn: (Point2D, Direction) -> Pair<Point2D, Direction>): Int {
-        var pos = grid
-            .keys
-            .filter { it.row == 0 }
-            .minOf { it.col }
-            .let { Point2D(row = 0, col = it) }
+        var pos =
+            grid
+                .keys
+                .filter { it.row == 0 }
+                .minOf { it.col }
+                .let { Point2D(row = 0, col = it) }
         var direction = Direction.East
 
         for (cmd in commands) {
@@ -51,45 +60,56 @@ class Day22(dataFile: DataFile) {
                 is Steps.Left -> direction = direction.turnLeft()
                 is Steps.Right -> direction = direction.turnRight()
                 is Steps.Walk -> {
-                    val (p, d) = generateSequence(pos to direction) { (p, d) ->
-                        val step = p + d
-                        when {
-                            step in grid && grid[step] == '#' -> Pair(p, d)
-                            step !in grid -> {
-                                val (wrap, wrapDirection) = fn(p, d)
-                                if (grid[wrap] == '.') Pair(wrap, wrapDirection)
-                                else Pair(p, d)
-                            }
+                    val (p, d) =
+                        generateSequence(pos to direction) { (p, d) ->
+                            val step = p + d
+                            when {
+                                step in grid && grid[step] == '#' -> Pair(p, d)
+                                step !in grid -> {
+                                    val (wrap, wrapDirection) = fn(p, d)
+                                    if (grid[wrap] == '.') {
+                                        Pair(wrap, wrapDirection)
+                                    } else {
+                                        Pair(p, d)
+                                    }
+                                }
 
-                            else -> Pair(step, d)
+                                else -> Pair(step, d)
+                            }
                         }
-                    }
-                        .take(cmd.steps + 1)
-                        .last()
+                            .take(cmd.steps + 1)
+                            .last()
                     pos = p
                     direction = d
                 }
             }
         }
 
-        val score = when (direction) {
-            Direction.North -> 3
-            Direction.South -> 1
-            Direction.East -> 0
-            Direction.West -> 2
-        }
+        val score =
+            when (direction) {
+                Direction.North -> 3
+                Direction.South -> 1
+                Direction.East -> 0
+                Direction.West -> 2
+            }
 
         return 1000 * (pos.row + 1) + 4 * (pos.col + 1) + score
     }
 
-    private fun walkMap(point: Point2D, direction: Direction): Pair<Point2D, Direction> {
+    private fun walkMap(
+        point: Point2D,
+        direction: Direction,
+    ): Pair<Point2D, Direction> {
         val newDir = direction.turnRight().turnRight()
         return generateSequence(point) { it + newDir }
             .takeWhile { it in grid }
             .last() to direction
     }
 
-    private fun walkMap3d(point: Point2D, direction: Direction): Pair<Point2D, Direction> {
+    private fun walkMap3d(
+        point: Point2D,
+        direction: Direction,
+    ): Pair<Point2D, Direction> {
         val size = 50
         return when (Triple(direction, point.col / size, point.row / size)) {
             Triple(Direction.North, 1, 0) -> Point2D(2 * size + point.col, 0) to Direction.East
@@ -111,6 +131,7 @@ class Day22(dataFile: DataFile) {
     }
 
     fun part1() = walk(::walkMap)
+
     fun part2() = walk(::walkMap3d)
 }
 

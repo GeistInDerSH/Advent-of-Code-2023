@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class Day7KtTest {
-
     @Test
     fun part1() {
         assertEquals(part1(DataFile.Example), 6440)

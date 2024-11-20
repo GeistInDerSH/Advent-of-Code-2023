@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import java.math.BigInteger
 
 class Day11Test {
-
     @Test
     fun part1() {
         assertEquals(BigInteger.valueOf(10605), Day11(DataFile.Example).part1())

@@ -53,7 +53,10 @@ data class GearProcessing(private val workflow: Map<String, List<Condition>>, pr
      * @param ruleName The current starting rule to process, corresponding to a rule in the [workflow]
      * @return The number of combinations
      */
-    private fun part2(ranges: Map<String, IntRange>, ruleName: String): Long {
+    private fun part2(
+        ranges: Map<String, IntRange>,
+        ruleName: String,
+    ): Long {
         if (ruleName == "A") {
             return ranges.values.fold(1) { prod, range -> prod * range.count() }
         } else if (ruleName == "R") {
@@ -70,29 +73,30 @@ data class GearProcessing(private val workflow: Map<String, List<Condition>>, pr
                 return 0
             }
 
-            combinations += when (cond.delim) {
-                // '<' means we want to try the values between 0 and the number - 1 and that the updated
-                // range should be AFTER the number up to the upper bound
-                '<' -> {
-                    val rangeWithBelow = mutableRange.toMutableMap()
-                    rangeWithBelow[cond.key] = rangeWithBelow[cond.key]!!.intersect(0..<cond.number)
-                    mutableRange[cond.key] = mutableRange[cond.key]!!.intersect(cond.number..4000)
-                    part2(rangeWithBelow, cond.dest)
-                }
+            combinations +=
+                when (cond.delim) {
+                    // '<' means we want to try the values between 0 and the number - 1 and that the updated
+                    // range should be AFTER the number up to the upper bound
+                    '<' -> {
+                        val rangeWithBelow = mutableRange.toMutableMap()
+                        rangeWithBelow[cond.key] = rangeWithBelow[cond.key]!!.intersect(0..<cond.number)
+                        mutableRange[cond.key] = mutableRange[cond.key]!!.intersect(cond.number..4000)
+                        part2(rangeWithBelow, cond.dest)
+                    }
 
-                // '<' means we want to try the values between the number + 1 and the upperbound and that the updated
-                // range should be BEFORE the number up to 4000
-                '>' -> {
-                    val rangeWithAbove = mutableRange.toMutableMap()
-                    rangeWithAbove[cond.key] = rangeWithAbove[cond.key]!!.intersect(cond.number + 1..4000)
-                    mutableRange[cond.key] = mutableRange[cond.key]!!.intersect(0..cond.number)
-                    part2(rangeWithAbove, cond.dest)
-                }
+                    // '<' means we want to try the values between the number + 1 and the upperbound and that the updated
+                    // range should be BEFORE the number up to 4000
+                    '>' -> {
+                        val rangeWithAbove = mutableRange.toMutableMap()
+                        rangeWithAbove[cond.key] = rangeWithAbove[cond.key]!!.intersect(cond.number + 1..4000)
+                        mutableRange[cond.key] = mutableRange[cond.key]!!.intersect(0..cond.number)
+                        part2(rangeWithAbove, cond.dest)
+                    }
 
-                // We know that we will always jump to the destination without changing the range
-                ' ' -> part2(mutableRange, cond.dest)
-                else -> throw Exception("Unknown delimiter ${cond.delim}")
-            }
+                    // We know that we will always jump to the destination without changing the range
+                    ' ' -> part2(mutableRange, cond.dest)
+                    else -> throw Exception("Unknown delimiter ${cond.delim}")
+                }
         }
 
         return combinations
@@ -107,39 +111,42 @@ data class GearProcessing(private val workflow: Map<String, List<Condition>>, pr
         fun parseInput(fileType: DataFile): GearProcessing {
             val (code, data) = fileToString(2023, 19, fileType).split("\n\n")
 
-            val workflow = code.lines().associate { line ->
-                val stage = line.substringBefore('{')
-                val conditions = line
-                    .substringAfter('{')
-                    .substringBefore('}')
-                    .split(',')
-                    .map { cond ->
-                        if (!cond.contains("[<>]".toRegex())) {
-                            Condition("", 0, cond, ' ')
-                        } else {
-                            val delim = if ('<' in cond) '<' else '>'
-                            val key = cond.substringBefore(delim)
-                            val number = cond.substringAfter(delim).substringBefore(':').toInt()
-                            val dest = cond.substringAfter(':')
+            val workflow =
+                code.lines().associate { line ->
+                    val stage = line.substringBefore('{')
+                    val conditions =
+                        line
+                            .substringAfter('{')
+                            .substringBefore('}')
+                            .split(',')
+                            .map { cond ->
+                                if (!cond.contains("[<>]".toRegex())) {
+                                    Condition("", 0, cond, ' ')
+                                } else {
+                                    val delim = if ('<' in cond) '<' else '>'
+                                    val key = cond.substringBefore(delim)
+                                    val number = cond.substringAfter(delim).substringBefore(':').toInt()
+                                    val dest = cond.substringAfter(':')
 
-                            Condition(key, number, dest, delim)
-                        }
-                    }
+                                    Condition(key, number, dest, delim)
+                                }
+                            }
 
-                stage to conditions
-            }
+                    stage to conditions
+                }
 
-
-            val parsedData = data.lines().map { line ->
-                val parts = line
-                    .substring(1, line.length - 1)
-                    .split(',')
-                    .associate {
-                        val (k, v) = it.split('=')
-                        k to v.toLong()
-                    }
-                Data(parts)
-            }
+            val parsedData =
+                data.lines().map { line ->
+                    val parts =
+                        line
+                            .substring(1, line.length - 1)
+                            .split(',')
+                            .associate {
+                                val (k, v) = it.split('=')
+                                k to v.toLong()
+                            }
+                    Data(parts)
+                }
 
             return GearProcessing(workflow, parsedData)
         }

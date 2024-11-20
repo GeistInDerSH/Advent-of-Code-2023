@@ -22,19 +22,21 @@ data class Vertex(val position: Pair<Int, Int>, var plane: Plane, val heatLoss: 
 }
 
 data class Graph(val nodes: List<List<Int>>) {
-    private val vertices = run {
-        val planes = listOf(Plane.Vertical, Plane.Horizontal)
-        val vertices = nodes.indices.flatMap { y ->
-            nodes[0].indices.flatMap { x ->
-                planes.map { Vertex(Pair(x, y), it, nodes[y][x]) }
-            }
+    private val vertices =
+        run {
+            val planes = listOf(Plane.Vertical, Plane.Horizontal)
+            val vertices =
+                nodes.indices.flatMap { y ->
+                    nodes[0].indices.flatMap { x ->
+                        planes.map { Vertex(Pair(x, y), it, nodes[y][x]) }
+                    }
+                }
+
+            vertices[0].totalHeatLoss = 0
+            vertices[0].plane = Plane.Start
+
+            vertices
         }
-
-        vertices[0].totalHeatLoss = 0
-        vertices[0].plane = Plane.Start
-
-        vertices
-    }
 
     private fun end() = vertices.last()
 
@@ -44,7 +46,11 @@ data class Graph(val nodes: List<List<Int>>) {
      * @param plane Which plane the value should be located on
      * @return A vertex, or null if the value is out of bounds
      */
-    private fun getVertexAt(x: Int, y: Int, plane: Plane): Vertex? {
+    private fun getVertexAt(
+        x: Int,
+        y: Int,
+        plane: Plane,
+    ): Vertex? {
         return if (x < 0 || y < 0 || y >= nodes.size || x >= nodes[0].size) {
             null
         } else {
@@ -60,31 +66,37 @@ data class Graph(val nodes: List<List<Int>>) {
      * @param maxDistance The maximum distance in a line that can be traveled
      * @return Vertices along the axis of [v]
      */
-    private fun horizontalEdges(v: Vertex, minDistance: Int, maxDistance: Int): List<Vertex> {
+    private fun horizontalEdges(
+        v: Vertex,
+        minDistance: Int,
+        maxDistance: Int,
+    ): List<Vertex> {
         var heatLoss = 0
         val (x, y) = v.position
-        val right = (1..maxDistance).mapNotNull { distance ->
-            val vertex = getVertexAt(x, y + distance, Plane.Vertical) ?: return@mapNotNull null
-            heatLoss += vertex.heatLoss
-            if (distance >= minDistance) {
-                vertex.calculatedHeatLoss = heatLoss
-                vertex
-            } else {
-                null
+        val right =
+            (1..maxDistance).mapNotNull { distance ->
+                val vertex = getVertexAt(x, y + distance, Plane.Vertical) ?: return@mapNotNull null
+                heatLoss += vertex.heatLoss
+                if (distance >= minDistance) {
+                    vertex.calculatedHeatLoss = heatLoss
+                    vertex
+                } else {
+                    null
+                }
             }
-        }
 
         heatLoss = 0
-        val left = (1..maxDistance).mapNotNull { distance ->
-            val vertex = getVertexAt(x, y - distance, Plane.Vertical) ?: return@mapNotNull null
-            heatLoss += vertex.heatLoss
-            if (distance >= minDistance) {
-                vertex.calculatedHeatLoss = heatLoss
-                vertex
-            } else {
-                null
+        val left =
+            (1..maxDistance).mapNotNull { distance ->
+                val vertex = getVertexAt(x, y - distance, Plane.Vertical) ?: return@mapNotNull null
+                heatLoss += vertex.heatLoss
+                if (distance >= minDistance) {
+                    vertex.calculatedHeatLoss = heatLoss
+                    vertex
+                } else {
+                    null
+                }
             }
-        }
 
         return right + left
     }
@@ -97,31 +109,37 @@ data class Graph(val nodes: List<List<Int>>) {
      * @param maxDistance The maximum distance in a line that can be traveled
      * @return Vertices along the vertical axis of [v]
      */
-    private fun verticalEdges(v: Vertex, minDistance: Int, maxDistance: Int): List<Vertex> {
+    private fun verticalEdges(
+        v: Vertex,
+        minDistance: Int,
+        maxDistance: Int,
+    ): List<Vertex> {
         var heatLoss = 0
         val (x, y) = v.position
-        val up = (1..maxDistance).mapNotNull { distance ->
-            val vertex = getVertexAt(x + distance, y, Plane.Horizontal) ?: return@mapNotNull null
-            heatLoss += vertex.heatLoss
-            if (distance >= minDistance) {
-                vertex.calculatedHeatLoss = heatLoss
-                vertex
-            } else {
-                null
+        val up =
+            (1..maxDistance).mapNotNull { distance ->
+                val vertex = getVertexAt(x + distance, y, Plane.Horizontal) ?: return@mapNotNull null
+                heatLoss += vertex.heatLoss
+                if (distance >= minDistance) {
+                    vertex.calculatedHeatLoss = heatLoss
+                    vertex
+                } else {
+                    null
+                }
             }
-        }
 
         heatLoss = 0
-        val down = (1..maxDistance).mapNotNull { distance ->
-            val vertex = getVertexAt(x - distance, y, Plane.Horizontal) ?: return@mapNotNull null
-            heatLoss += vertex.heatLoss
-            if (distance >= minDistance) {
-                vertex.calculatedHeatLoss = heatLoss
-                vertex
-            } else {
-                null
+        val down =
+            (1..maxDistance).mapNotNull { distance ->
+                val vertex = getVertexAt(x - distance, y, Plane.Horizontal) ?: return@mapNotNull null
+                heatLoss += vertex.heatLoss
+                if (distance >= minDistance) {
+                    vertex.calculatedHeatLoss = heatLoss
+                    vertex
+                } else {
+                    null
+                }
             }
-        }
 
         return up + down
     }
@@ -134,7 +152,11 @@ data class Graph(val nodes: List<List<Int>>) {
      * @param maxDistance The maximum distance in a line that can be traveled
      * @return Vertices along the axis of [v]
      */
-    private fun edges(v: Vertex, minDistance: Int, maxDistance: Int): List<Vertex> {
+    private fun edges(
+        v: Vertex,
+        minDistance: Int,
+        maxDistance: Int,
+    ): List<Vertex> {
         return when (v.plane) {
             Plane.Vertical -> verticalEdges(v, minDistance, maxDistance)
             Plane.Horizontal -> horizontalEdges(v, minDistance, maxDistance)
@@ -149,7 +171,10 @@ data class Graph(val nodes: List<List<Int>>) {
      * @param maxDistance The maximum distance in a line that can be traveled
      * @return The total heat loss along the shortest path
      */
-    fun solution(minDistance: Int, maxDistance: Int): Int {
+    fun solution(
+        minDistance: Int,
+        maxDistance: Int,
+    ): Int {
         // make a priority queue, sorting by the vertex total heat loss with the lowest being the first
         val queue = PriorityQueue(vertices)
         var current: Vertex
@@ -178,15 +203,17 @@ data class Graph(val nodes: List<List<Int>>) {
 
     companion object {
         fun parseInput(fileType: DataFile): Graph {
-            val nodes = fileToStream(2023, 17, fileType)
-                .map { line -> line.map { it.digitToInt() } }
-                .toList()
+            val nodes =
+                fileToStream(2023, 17, fileType)
+                    .map { line -> line.map { it.digitToInt() } }
+                    .toList()
             return Graph(nodes)
         }
     }
 }
 
 fun part1(fileType: DataFile) = Graph.parseInput(fileType).solution(1, 3)
+
 fun part2(fileType: DataFile) = Graph.parseInput(fileType).solution(4, 10)
 
 fun day17() {

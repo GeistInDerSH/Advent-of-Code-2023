@@ -8,11 +8,12 @@ import com.geistindersh.aoc.helper.report
 typealias Volume = Set<Triple<Int, Int, Int>>
 
 data class Brick(val lx: Int, val ly: Int, val lz: Int, val rx: Int, val ry: Int, val rz: Int) {
-    val volume: Volume = (lx..rx).flatMap { x ->
-        (ly..ry).flatMap { y ->
-            (lz..rz).map { z -> Triple(x, y, z) }
-        }
-    }.toSet()
+    val volume: Volume =
+        (lx..rx).flatMap { x ->
+            (ly..ry).flatMap { y ->
+                (lz..rz).map { z -> Triple(x, y, z) }
+            }
+        }.toSet()
     val dropVolume: Volume = volume.map { Triple(it.first, it.second, it.third - 1) }.toSet()
 
     /**
@@ -61,15 +62,16 @@ class Tower(private val bricks: List<Brick>) {
      */
     private fun cascade(): Pair<List<Brick>, Volume> {
         val volume = mutableSetOf<Triple<Int, Int, Int>>()
-        val updatedBricks = bricks
-            .sortedBy { it.lz }
-            .map { b ->
-                var brick = b
-                while (brick.lz - 1 > 0 && brick.dropVolume.none { it in volume })
-                    brick = brick.drop()
-                volume.addAll(brick.volume)
-                brick
-            }
+        val updatedBricks =
+            bricks
+                .sortedBy { it.lz }
+                .map { b ->
+                    var brick = b
+                    while (brick.lz - 1 > 0 && brick.dropVolume.none { it in volume })
+                        brick = brick.drop()
+                    volume.addAll(brick.volume)
+                    brick
+                }
 
         return Pair(updatedBricks, volume)
     }
@@ -81,7 +83,10 @@ class Tower(private val bricks: List<Brick>) {
      * @param bricks The list of remaining bricks
      * @return If the [brick] can be removed
      */
-    private fun canRemove(brick: Brick, bricks: List<Brick>): Boolean {
+    private fun canRemove(
+        brick: Brick,
+        bricks: List<Brick>,
+    ): Boolean {
         val volumeWithoutBrick = volume.filterNot { it in brick.volume }
         return bricks.none { other ->
             if (!brick.isBelow(other) || other.lz == 1) {
@@ -127,16 +132,15 @@ class Tower(private val bricks: List<Brick>) {
     }
 
     companion object {
-
         fun parseInput(dataFile: DataFile): Tower {
-            val bricks = fileToStream(2023, 22, dataFile)
-                .map { Brick.fromString(it) }
-                .toList()
+            val bricks =
+                fileToStream(2023, 22, dataFile)
+                    .map { Brick.fromString(it) }
+                    .toList()
             return Tower(bricks)
         }
     }
 }
-
 
 fun day22() {
     val input = Tower.parseInput(DataFile.Part1)

@@ -6,20 +6,25 @@ import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
 
 class Day8(dataFile: DataFile) {
-    private val rowMajor = fileToStream(2022, 8, dataFile)
-        .map { line ->
-            line.toCharArray()
-                .map { it.digitToInt() }
-                .toList()
-        }
-        .toList()
-    private val columnMajor = rowMajor.indices
-        .map { row ->
-            rowMajor.indices.map { column -> rowMajor[column][row] }
-        }
-        .toList()
+    private val rowMajor =
+        fileToStream(2022, 8, dataFile)
+            .map { line ->
+                line.toCharArray()
+                    .map { it.digitToInt() }
+                    .toList()
+            }
+            .toList()
+    private val columnMajor =
+        rowMajor.indices
+            .map { row ->
+                rowMajor.indices.map { column -> rowMajor[column][row] }
+            }
+            .toList()
 
-    private fun isVisible(row: Int, column: Int): Boolean {
+    private fun isVisible(
+        row: Int,
+        column: Int,
+    ): Boolean {
         return when {
             row == 0 -> true
             column == 0 -> true
@@ -36,7 +41,10 @@ class Day8(dataFile: DataFile) {
         }
     }
 
-    private fun score(row: Int, column: Int): Int {
+    private fun score(
+        row: Int,
+        column: Int,
+    ): Int {
         return when {
             row == 0 -> 0
             column == 0 -> 0

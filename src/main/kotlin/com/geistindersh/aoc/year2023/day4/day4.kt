@@ -20,16 +20,17 @@ data class Card(val number: Int, val winners: Set<Int>, val mine: Set<Int>) {
 
 fun parseInput(fileType: DataFile): List<Card> {
     return fileToStream(2023, 4, fileType).mapIndexed { index, line ->
-        val (winners, mine) = line
-            .substringAfter(':')
-            .split('|')
-            .map { section ->
-                section
-                    .split(' ')
-                    .filter { it.isNotBlank() }
-                    .map { it.toInt() }
-                    .toSet()
-            }
+        val (winners, mine) =
+            line
+                .substringAfter(':')
+                .split('|')
+                .map { section ->
+                    section
+                        .split(' ')
+                        .filter { it.isNotBlank() }
+                        .map { it.toInt() }
+                        .toSet()
+                }
 
         Card(index + 1, winners, mine)
     }.toList()
@@ -70,6 +71,6 @@ fun day4() {
         year = 2023,
         dayNumber = 4,
         part1 = part1(cards),
-        part2 = part2(cards)
+        part2 = part2(cards),
     )
 }

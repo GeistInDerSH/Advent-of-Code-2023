@@ -15,9 +15,12 @@ data class Vector(val px: Double, val py: Double, val pz: Double, val vx: Double
      */
     private fun isParallel(other: Vector) = a * other.b == b * other.a
 
-    private fun isPositive(x: Double, y: Double): Boolean {
+    private fun isPositive(
+        x: Double,
+        y: Double,
+    ): Boolean {
         return (x - px < 0.0) == (vx < 0.0) &&
-                (y - py < 0.0) == (vy < 0.0)
+            (y - py < 0.0) == (vy < 0.0)
     }
 
     /**
@@ -44,8 +47,10 @@ data class Vector(val px: Double, val py: Double, val pz: Double, val vx: Double
 }
 
 data class Hailstones(val vectors: Set<Vector>) {
-
-    fun part1(start: Long, end: Long): Long {
+    fun part1(
+        start: Long,
+        end: Long,
+    ): Long {
         val range = start.toDouble()..end.toDouble()
         return vectors
             .mapIndexed { index, vector ->
@@ -60,37 +65,44 @@ data class Hailstones(val vectors: Set<Vector>) {
             .sumOf { it }
     }
 
-    private fun solve(a: List<List<Double>>, b: List<List<Double>>): List<Double> {
+    private fun solve(
+        a: List<List<Double>>,
+        b: List<List<Double>>,
+    ): List<Double> {
         // Generate a matrix with the positional / magnitude info of the vectors
         val m = a.zip(b).map { (a, b) -> a + b }
-        val n = m
-            .take(4)
-            .map { lst ->
-                lst.zip(m[4])
-                    .map { it.first - it.second }
-                    .toMutableList()
-            }
-            .toMutableList()
-
-        n.indices.forEach { i ->
-            n[i] = n[i].indices
-                .map { k -> n[i][k] / n[i][i] }
+        val n =
+            m
+                .take(4)
+                .map { lst ->
+                    lst.zip(m[4])
+                        .map { it.first - it.second }
+                        .toMutableList()
+                }
                 .toMutableList()
 
-            (i + 1..<n.size).forEach { j ->
-                n[j] = n[i]
-                    .indices
-                    .map { k -> n[j][k] - n[i][k] * n[j][i] }
+        n.indices.forEach { i ->
+            n[i] =
+                n[i].indices
+                    .map { k -> n[i][k] / n[i][i] }
                     .toMutableList()
+
+            (i + 1..<n.size).forEach { j ->
+                n[j] =
+                    n[i]
+                        .indices
+                        .map { k -> n[j][k] - n[i][k] * n[j][i] }
+                        .toMutableList()
             }
         }
 
         n.indices.reversed().forEach { i ->
             (0..<i).forEach { j ->
-                n[j] = n[i]
-                    .indices
-                    .map { k -> n[j][k] - n[i][k] * n[j][i] }
-                    .toMutableList()
+                n[j] =
+                    n[i]
+                        .indices
+                        .map { k -> n[j][k] - n[i][k] * n[j][i] }
+                        .toMutableList()
             }
         }
 
@@ -111,14 +123,15 @@ data class Hailstones(val vectors: Set<Vector>) {
 }
 
 fun parseInput(dataFile: DataFile): Hailstones {
-    val hail = fileToStream(2023, 24, dataFile)
-        .map { line ->
-            val (pos, vel) = line.split(" @ ")
-            val (px, py, pz) = pos.split(',').map { it.trim().toDouble() }
-            val (vx, vy, vz) = vel.split(',').map { it.trim().toDouble() }
-            Vector(px, py, pz, vx, vy, vz)
-        }
-        .toSet()
+    val hail =
+        fileToStream(2023, 24, dataFile)
+            .map { line ->
+                val (pos, vel) = line.split(" @ ")
+                val (px, py, pz) = pos.split(',').map { it.trim().toDouble() }
+                val (vx, vy, vz) = vel.split(',').map { it.trim().toDouble() }
+                Vector(px, py, pz, vx, vy, vz)
+            }
+            .toSet()
     return Hailstones(hail)
 }
 

@@ -33,7 +33,6 @@ data class StarChart(val galaxies: List<Galaxy>, val emptyRows: Set<Int>, val em
     }
 }
 
-
 fun parseInput(fileType: DataFile): StarChart {
     val raw = fileToStream(2023, 11, fileType).map { it.toList() }.toList()
 
@@ -43,20 +42,22 @@ fun parseInput(fileType: DataFile): StarChart {
     val emptyCol = (raw[0].indices).filter { col -> raw.all { it[col] == '.' } }.toSet()
 
     // We just want the X,Y values for the galaxies as a pair
-    val galaxies = raw.flatMapIndexed { x: Int, row: List<Char> ->
-        row.mapIndexedNotNull { y, c ->
-            if (c == '.') {
-                null
-            } else {
-                Galaxy(x, y)
+    val galaxies =
+        raw.flatMapIndexed { x: Int, row: List<Char> ->
+            row.mapIndexedNotNull { y, c ->
+                if (c == '.') {
+                    null
+                } else {
+                    Galaxy(x, y)
+                }
             }
         }
-    }
 
     return StarChart(galaxies, emptyRows, emptyCol)
 }
 
 fun part1(chart: StarChart) = chart.sumDistanceWithEmptySpace(2)
+
 fun part2(chart: StarChart) = chart.sumDistanceWithEmptySpace(1000000)
 
 fun day11() {

@@ -8,7 +8,8 @@ import com.geistindersh.aoc.helper.report
 enum class ModuleType {
     Broadcast,
     FlipFlop,
-    Conjunction;
+    Conjunction,
+    ;
 
     override fun toString(): String {
         return when (this) {
@@ -18,7 +19,6 @@ enum class ModuleType {
         }
     }
 }
-
 
 data class Module(val name: String, val moduleType: ModuleType, val targets: List<String>) {
     private var pulse = false
@@ -30,6 +30,7 @@ data class Module(val name: String, val moduleType: ModuleType, val targets: Lis
     }
 
     fun pulseIsHigh() = pulse
+
     fun invertPulse() {
         pulse = !pulse
     }
@@ -47,7 +48,11 @@ data class Module(val name: String, val moduleType: ModuleType, val targets: Lis
      * @param module The module to use to update the [memory] with
      */
     fun updateMemory(module: Module) = updateMemory(module.name, module.pulse)
-    private fun updateMemory(name: String, value: Boolean) {
+
+    private fun updateMemory(
+        name: String,
+        value: Boolean,
+    ) {
         memory[name] = value
         pulse = !memory.values.all { it }
     }
@@ -83,9 +88,10 @@ data class Propagation(val modules: List<Module>) {
         modules
             .filter { it.moduleType == ModuleType.Conjunction }
             .forEach { module ->
-                val inputs = modules
-                    .filter { module.name in it.targets }
-                    .map { it.name }
+                val inputs =
+                    modules
+                        .filter { module.name in it.targets }
+                        .map { it.name }
                 module.initializeMemory(inputs)
             }
     }
@@ -100,18 +106,23 @@ data class Propagation(val modules: List<Module>) {
      *
      * @see part2 For an iterative implementation of this same function
      */
-    private tailrec fun part1(queue: List<Pair<Module, String>>, lowCount: Long, highCount: Long): Pair<Long, Long> {
+    private tailrec fun part1(
+        queue: List<Pair<Module, String>>,
+        lowCount: Long,
+        highCount: Long,
+    ): Pair<Long, Long> {
         if (queue.isEmpty()) {
             return lowCount to highCount
         }
 
         val (source, destName) = queue.first()
         val remainingQueue = queue.drop(1)
-        val (high, low) = if (source.pulseIsHigh()) {
-            highCount + 1 to lowCount
-        } else {
-            highCount to lowCount + 1
-        }
+        val (high, low) =
+            if (source.pulseIsHigh()) {
+                highCount + 1 to lowCount
+            } else {
+                highCount to lowCount + 1
+            }
 
         // Get the actual module we are targeting
         val destination = modules.firstOrNull { it.name == destName } ?: return part1(remainingQueue, low, high)
@@ -218,7 +229,6 @@ data class Propagation(val modules: List<Module>) {
         }
     }
 }
-
 
 fun day20() {
     val input = Propagation.parseInput(DataFile.Part1)

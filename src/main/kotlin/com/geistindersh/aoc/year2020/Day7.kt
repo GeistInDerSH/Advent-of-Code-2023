@@ -6,27 +6,31 @@ import com.geistindersh.aoc.helper.report
 
 class Day7(dataFile: DataFile) {
     private val target = "shiny gold"
-    private val bags = fileToStream(2020, 7, dataFile)
-        .map { line ->
-            val parts = line.split(" ")
-            val outer = "${parts[0]} ${parts[1]}"
+    private val bags =
+        fileToStream(2020, 7, dataFile)
+            .map { line ->
+                val parts = line.split(" ")
+                val outer = "${parts[0]} ${parts[1]}"
 
-            val inner = mutableListOf<Bag>()
-            var i = 4
-            while (i < parts.size) {
-                val count = parts[i].toIntOrNull() ?: break
-                val name = "${parts[i + 1]} ${parts[i + 2]}"
-                inner.add(Bag(name, count))
-                i += 4
+                val inner = mutableListOf<Bag>()
+                var i = 4
+                while (i < parts.size) {
+                    val count = parts[i].toIntOrNull() ?: break
+                    val name = "${parts[i + 1]} ${parts[i + 2]}"
+                    inner.add(Bag(name, count))
+                    i += 4
+                }
+
+                outer to inner.toList()
             }
-
-            outer to inner.toList()
-        }
-        .toMap()
+            .toMap()
 
     private data class Bag(val name: String, val count: Int)
 
-    private fun isReachable(name: String, reachabilityMap: MutableMap<String, Boolean>): MutableMap<String, Boolean> {
+    private fun isReachable(
+        name: String,
+        reachabilityMap: MutableMap<String, Boolean>,
+    ): MutableMap<String, Boolean> {
         if (name in reachabilityMap) return reachabilityMap
         if (name !in bags) {
             reachabilityMap[name] = false
@@ -60,7 +64,10 @@ class Day7(dataFile: DataFile) {
         return reachabilityMap
     }
 
-    private fun bagCount(name: String, reachabilityMap: MutableMap<String, Int>): Int {
+    private fun bagCount(
+        name: String,
+        reachabilityMap: MutableMap<String, Int>,
+    ): Int {
         if (bags[name]!!.isEmpty()) return 0
 
         var count = 0

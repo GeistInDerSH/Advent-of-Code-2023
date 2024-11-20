@@ -5,25 +5,33 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day7(dataFile: DataFile) {
-    private val commands = fileToStream(2022, 7, dataFile)
-        .map {
-            val tokens = it.split(" ")
-            when (val tokenType = tokens[0]) {
-                "$" -> Command(tokens[1], tokens.getOrNull(2))
-                "dir" -> Dir(tokens[1])
-                else -> File(tokenType.toInt())
+    private val commands =
+        fileToStream(2022, 7, dataFile)
+            .map {
+                val tokens = it.split(" ")
+                when (val tokenType = tokens[0]) {
+                    "$" -> Command(tokens[1], tokens.getOrNull(2))
+                    "dir" -> Dir(tokens[1])
+                    else -> File(tokenType.toInt())
+                }
             }
-        }
-        .toList()
-        .drop(1)
+            .toList()
+            .drop(1)
 
     interface Cmd
+
     private data class Command(val name: String, val arg: String?) : Cmd
+
     private data class File(val size: Int) : Cmd
+
     private data class Dir(val name: String) : Cmd
+
     private data class Tree(val cwd: String, val subDirs: List<String>, val files: List<File>) : Cmd
 
-    private fun getNewDirName(cwd: String, newDir: String): String {
+    private fun getNewDirName(
+        cwd: String,
+        newDir: String,
+    ): String {
         return if (newDir == "..") {
             cwd.split("/")
                 .dropLast(1)
@@ -71,7 +79,10 @@ class Day7(dataFile: DataFile) {
         return dirTree
     }
 
-    private fun sumSize(root: Map<String, Tree>, dir: Tree): Int {
+    private fun sumSize(
+        root: Map<String, Tree>,
+        dir: Tree,
+    ): Int {
         var size = dir.files.sumOf { it.size }
         dir.subDirs.forEach {
             val subDir: Tree = root[it]!!
