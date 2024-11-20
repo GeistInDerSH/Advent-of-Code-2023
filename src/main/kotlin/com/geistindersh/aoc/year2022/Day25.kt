@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day25(dataFile: DataFile) {
+class Day25(
+    dataFile: DataFile,
+) {
     private val decodeSum = fileToStream(2022, 25, dataFile).map(::decode).sum()
 
     private fun decode(line: String) =

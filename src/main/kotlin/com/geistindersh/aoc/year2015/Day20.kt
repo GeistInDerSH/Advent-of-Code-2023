@@ -6,7 +6,9 @@ import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
 import kotlin.math.sqrt
 
-class Day20(dataFile: DataFile) {
+class Day20(
+    dataFile: DataFile,
+) {
     private val presentsCount = fileToString(2015, 20, dataFile).toInt()
 
     private fun deliverPresentsInfinite() =

@@ -3,9 +3,11 @@ package com.geistindersh.aoc.year2022
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
-import java.util.*
+import java.util.Stack
 
-class Day13(dataFile: DataFile) {
+class Day13(
+    dataFile: DataFile,
+) {
     private val packets =
         fileToStream(2022, 13, dataFile)
             .filter { it.isNotEmpty() }
@@ -41,8 +43,7 @@ class Day13(dataFile: DataFile) {
                 }
 
                 stack.pop().first()
-            }
-            .toList()
+            }.toList()
 
     @Suppress("UNCHECKED_CAST")
     private fun areInOrder(
@@ -87,8 +88,8 @@ class Day13(dataFile: DataFile) {
         }
     }
 
-    fun part1(): Int {
-        return packets
+    fun part1(): Int =
+        packets
             .windowed(2, 2)
             .mapIndexed { i, (left, right) ->
                 @Suppress("UNCHECKED_CAST")
@@ -97,9 +98,7 @@ class Day13(dataFile: DataFile) {
                 } else {
                     0
                 }
-            }
-            .sum()
-    }
+            }.sum()
 
     fun part2(): Int {
         val d1 = listOf(listOf(2))
@@ -119,8 +118,7 @@ class Day13(dataFile: DataFile) {
         return withDecoders
             .mapIndexed { i, d ->
                 if (d1 == d || d2 == d) i + 1 else 1
-            }
-            .fold(1, Int::times)
+            }.fold(1, Int::times)
     }
 }
 

@@ -4,18 +4,28 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day8(dataFile: DataFile) {
+class Day8(
+    dataFile: DataFile,
+) {
     private val instructions =
         fileToStream(2020, 8, dataFile)
             .map { Instruction.from(it) }
             .toList()
 
-    private sealed class Instruction(open val count: Int) {
-        data class Nop(override val count: Int) : Instruction(count)
+    private sealed class Instruction(
+        open val count: Int,
+    ) {
+        data class Nop(
+            override val count: Int,
+        ) : Instruction(count)
 
-        data class Jmp(override val count: Int) : Instruction(count)
+        data class Jmp(
+            override val count: Int,
+        ) : Instruction(count)
 
-        data class Acc(override val count: Int) : Instruction(count)
+        data class Acc(
+            override val count: Int,
+        ) : Instruction(count)
 
         companion object {
             fun from(line: String): Instruction {

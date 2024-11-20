@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day25(dataFile: DataFile) {
+class Day25(
+    dataFile: DataFile,
+) {
     private val publicKeys = fileToStream(2020, 25, dataFile).map { it.toLong() }.toList()
     private val card = publicKeys.first()
     private val door = publicKeys.last()

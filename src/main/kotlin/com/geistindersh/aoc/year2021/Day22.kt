@@ -6,7 +6,9 @@ import com.geistindersh.aoc.helper.ranges.hasOverlap
 import com.geistindersh.aoc.helper.ranges.intersection
 import com.geistindersh.aoc.helper.report
 
-class Day22(dataFile: DataFile) {
+class Day22(
+    dataFile: DataFile,
+) {
     private val cubes =
         fileToStream(2021, 22, dataFile)
             .map { line ->
@@ -19,10 +21,14 @@ class Day22(dataFile: DataFile) {
                         .windowed(2, 2) { (start, end) -> start..end }
                         .toList()
                 RebootCube(isOn, x, y, z)
-            }
-            .toList()
+            }.toList()
 
-    private data class RebootCube(val isOn: Boolean, val x: IntRange, val y: IntRange, val z: IntRange) {
+    private data class RebootCube(
+        val isOn: Boolean,
+        val x: IntRange,
+        val y: IntRange,
+        val z: IntRange,
+    ) {
         fun volume() = (if (isOn) 1 else -1) * x.size() * y.size() * z.size()
 
         fun hasOverlap(other: RebootCube) = x.hasOverlap(other.x) && y.hasOverlap(other.y) && z.hasOverlap(other.z)

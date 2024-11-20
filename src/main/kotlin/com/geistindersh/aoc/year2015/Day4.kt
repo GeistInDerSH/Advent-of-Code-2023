@@ -5,7 +5,9 @@ import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 import java.security.MessageDigest
 
-class Day4(dataFile: DataFile) {
+class Day4(
+    dataFile: DataFile,
+) {
     private val data = fileToString(2015, 4, dataFile)
 
     private fun hashWithData(i: Int) =

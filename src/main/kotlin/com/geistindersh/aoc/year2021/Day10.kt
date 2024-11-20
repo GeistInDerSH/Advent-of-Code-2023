@@ -3,9 +3,11 @@ package com.geistindersh.aoc.year2021
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
-import java.util.*
+import java.util.Stack
 
-class Day10(dataFile: DataFile) {
+class Day10(
+    dataFile: DataFile,
+) {
     private val chunks =
         fileToStream(2021, 10, dataFile)
             .map { it.toCharArray() }

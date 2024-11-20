@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day10(dataFile: DataFile) {
+class Day10(
+    dataFile: DataFile,
+) {
     private val instructions =
         fileToStream(2022, 10, dataFile)
             .map {
@@ -17,8 +19,7 @@ class Day10(dataFile: DataFile) {
                 } else {
                     Pair(key, value.toInt())
                 }
-            }
-            .toList()
+            }.toList()
 
     private fun getSignals(): List<Int> {
         val signals = mutableListOf<Int>()

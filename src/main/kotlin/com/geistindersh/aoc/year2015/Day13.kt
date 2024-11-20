@@ -5,7 +5,9 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.permutations
 import com.geistindersh.aoc.helper.report
 
-class Day13(dataFile: DataFile) {
+class Day13(
+    dataFile: DataFile,
+) {
     private val data =
         fileToStream(2015, 13, dataFile)
             .map { line ->
@@ -15,8 +17,7 @@ class Day13(dataFile: DataFile) {
                 val sign = if (parts[2] == "lose") -1 else 1
                 val happiness = parts[3].toInt()
                 (person1 to person2) to (sign * happiness)
-            }
-            .toMap()
+            }.toMap()
     private val people = data.flatMap { it.key.toList() }.toSet()
 
     private fun optimalSeatingHappiness(

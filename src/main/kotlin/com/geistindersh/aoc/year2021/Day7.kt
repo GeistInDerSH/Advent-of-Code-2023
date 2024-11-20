@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day7(dataFile: DataFile) {
+class Day7(
+    dataFile: DataFile,
+) {
     private val data =
         fileToString(2021, 7, dataFile)
             .split(",")

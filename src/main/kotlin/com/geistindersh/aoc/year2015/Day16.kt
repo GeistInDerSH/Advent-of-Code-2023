@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day16(dataFile: DataFile) {
+class Day16(
+    dataFile: DataFile,
+) {
     private val aunts =
         fileToStream(2015, 16, dataFile)
             .map { it.replace(",", "").replace(":", "") }
@@ -12,8 +14,7 @@ class Day16(dataFile: DataFile) {
                 val pairs = it.split(" ").windowed(2, 2) { (a, b) -> a to b.toInt() }
                 val aunt = pairs[0].second
                 aunt to pairs.drop(1).toMap()
-            }
-            .toMap()
+            }.toMap()
     private val knownInfo =
         listOf(
             "children" to 3,
@@ -32,8 +33,7 @@ class Day16(dataFile: DataFile) {
         aunts
             .filter { (_, v) ->
                 knownInfo.all { (entry, value) -> v.getOrDefault(entry, value) == value }
-            }
-            .keys
+            }.keys
             .first()
 
     fun part2() =
@@ -49,8 +49,7 @@ class Day16(dataFile: DataFile) {
                         else -> false
                     }
                 }
-            }
-            .keys
+            }.keys
             .first()
 }
 

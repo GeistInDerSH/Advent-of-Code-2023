@@ -5,13 +5,14 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day9(dataFile: DataFile) {
+class Day9(
+    dataFile: DataFile,
+) {
     private val heightMap =
         fileToStream(2021, 9, dataFile)
             .flatMapIndexed { row, s ->
                 s.mapIndexed { col, c -> Point2D(row, col) to c.digitToInt() }
-            }
-            .toMap()
+            }.toMap()
 
     private fun findLowPoints() =
         heightMap
@@ -40,7 +41,8 @@ class Day9(dataFile: DataFile) {
                 val currentHeight = heightMap[point]!!
                 if (currentHeight == 8) continue
                 val toAdd =
-                    point.neighbors()
+                    point
+                        .neighbors()
                         .mapNotNull { if (it in heightMap) it to heightMap[it]!! else null }
                         .filter { (_, height) -> height - 2 <= currentHeight && height != 9 }
                         .map { it.first }

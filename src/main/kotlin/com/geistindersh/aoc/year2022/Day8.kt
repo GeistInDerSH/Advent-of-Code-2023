@@ -5,21 +5,22 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
 
-class Day8(dataFile: DataFile) {
+class Day8(
+    dataFile: DataFile,
+) {
     private val rowMajor =
         fileToStream(2022, 8, dataFile)
             .map { line ->
-                line.toCharArray()
+                line
+                    .toCharArray()
                     .map { it.digitToInt() }
                     .toList()
-            }
-            .toList()
+            }.toList()
     private val columnMajor =
         rowMajor.indices
             .map { row ->
                 rowMajor.indices.map { column -> rowMajor[column][row] }
-            }
-            .toList()
+            }.toList()
 
     private fun isVisible(
         row: Int,
@@ -44,40 +45,45 @@ class Day8(dataFile: DataFile) {
     private fun score(
         row: Int,
         column: Int,
-    ): Int {
-        return when {
+    ): Int =
+        when {
             row == 0 -> 0
             column == 0 -> 0
             row == columnMajor.size - 1 -> 1
             column == rowMajor.size - 1 -> 1
             else -> {
                 val value = rowMajor[row][column]
-                val leftScore = rowMajor[row].take(column).reversed().takeWhileInclusive { it < value }.count()
+                val leftScore =
+                    rowMajor[row]
+                        .take(column)
+                        .reversed()
+                        .takeWhileInclusive { it < value }
+                        .count()
                 val rightScore = rowMajor[row].drop(column + 1).takeWhileInclusive { it < value }.count()
-                val topScore = columnMajor[column].take(row).reversed().takeWhileInclusive { it < value }.count()
+                val topScore =
+                    columnMajor[column]
+                        .take(row)
+                        .reversed()
+                        .takeWhileInclusive { it < value }
+                        .count()
                 val botScore = columnMajor[column].drop(row + 1).takeWhileInclusive { it < value }.count()
                 leftScore * rightScore * topScore * botScore
             }
         }
-    }
 
-    fun part1(): Int {
-        return rowMajor
+    fun part1(): Int =
+        rowMajor
             .indices
             .flatMap { row ->
                 columnMajor.indices.map { isVisible(row, it) }
-            }
-            .count { it }
-    }
+            }.count { it }
 
-    fun part2(): Int {
-        return rowMajor
+    fun part2(): Int =
+        rowMajor
             .indices
             .flatMap { row ->
                 columnMajor.indices.map { score(row, it) }
-            }
-            .max()
-    }
+            }.max()
 }
 
 fun day8() {

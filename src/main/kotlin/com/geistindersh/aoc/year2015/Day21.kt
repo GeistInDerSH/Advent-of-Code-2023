@@ -6,7 +6,9 @@ import com.geistindersh.aoc.helper.iterators.cycle
 import com.geistindersh.aoc.helper.iterators.pairCombinations
 import com.geistindersh.aoc.helper.report
 
-class Day21(dataFile: DataFile) {
+class Day21(
+    dataFile: DataFile,
+) {
     private val boss =
         "[0-9]+"
             .toRegex()
@@ -71,9 +73,19 @@ class Day21(dataFile: DataFile) {
             }
         }
 
-    private data class Item(val name: String, val cost: Int, val dmg: Int, val amr: Int)
+    private data class Item(
+        val name: String,
+        val cost: Int,
+        val dmg: Int,
+        val amr: Int,
+    )
 
-    private data class Character(val hp: Int, val dmg: Int, val amr: Int, val cost: Int) {
+    private data class Character(
+        val hp: Int,
+        val dmg: Int,
+        val amr: Int,
+        val cost: Int,
+    ) {
         val isAlive = hp > 0
 
         fun hit(other: Character) = Character(other.hp - (dmg - other.amr).coerceAtLeast(1), other.dmg, other.amr, other.cost)

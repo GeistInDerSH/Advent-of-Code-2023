@@ -5,13 +5,14 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day18(dataFile: DataFile) {
+class Day18(
+    dataFile: DataFile,
+) {
     private val points =
         fileToStream(2015, 18, dataFile)
             .flatMapIndexed { row, line ->
                 line.mapIndexedNotNull { col, c -> Point2D(row, col) to c }
-            }
-            .toMap()
+            }.toMap()
     private val stuckOn =
         points.let { map ->
             val rowMax = map.keys.maxOf { it.row }
@@ -62,8 +63,7 @@ class Day18(dataFile: DataFile) {
                 stuckOn.forEach { point ->
                     it[point] = '#'
                 }
-            }
-            .gameOfLife(stuckOn)
+            }.gameOfLife(stuckOn)
             .drop(steps)
             .first()
             .count { it.value == '#' }

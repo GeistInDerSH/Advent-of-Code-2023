@@ -8,13 +8,13 @@ fun parseInput(fileType: DataFile): Map<Long, Long> {
     val (times, distance) =
         fileToStream(2023, 6, fileType)
             .map { line ->
-                line.substringAfter(':')
+                line
+                    .substringAfter(':')
                     .trim()
                     .split(' ')
                     .filter { it.isNotBlank() }
                     .map { it.toLong() }
-            }
-            .toList()
+            }.toList()
     return times.zip(distance).associate { it.first to it.second }
 }
 
@@ -28,20 +28,18 @@ fun parseInput(fileType: DataFile): Map<Long, Long> {
 fun getPossibleWinCount(
     raceTime: Long,
     recordDistance: Long,
-): Long {
-    return (0..raceTime)
+): Long =
+    (0..raceTime)
         .count { (it * (raceTime - it)) > recordDistance }
         .toLong()
-}
 
 /**
  * @return The product of the number of winning moves
  */
-fun part1(map: Map<Long, Long>): Long {
-    return map
+fun part1(map: Map<Long, Long>): Long =
+    map
         .map { getPossibleWinCount(it.key, it.value) }
         .reduce { acc, i -> acc * i }
-}
 
 /**
  * @return The number of winning moves

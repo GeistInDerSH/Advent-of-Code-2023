@@ -7,20 +7,22 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
 
-class Day5(dataFile: DataFile) {
+class Day5(
+    dataFile: DataFile,
+) {
     private val lines =
         fileToStream(2021, 5, dataFile)
             .map { line ->
                 val (start, end) =
-                    "[0-9]+".toRegex()
+                    "[0-9]+"
+                        .toRegex()
                         .findAll(line)
                         .map { it.value.toInt() }
                         .windowed(2, 2)
                         .map { Point2D(it[0], it[1]) }
                         .toList()
                 start to end
-            }
-            .toList()
+            }.toList()
 
     private fun List<Pair<Point2D, Point2D>>.fillInLines() =
         this

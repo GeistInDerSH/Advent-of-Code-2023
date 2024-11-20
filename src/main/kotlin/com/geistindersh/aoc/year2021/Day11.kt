@@ -5,13 +5,14 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day11(dataFile: DataFile) {
+class Day11(
+    dataFile: DataFile,
+) {
     private val octopuses =
         fileToStream(2021, 11, dataFile)
             .flatMapIndexed { row, line ->
                 line.mapIndexed { col, power -> Point2D(row, col) to power.digitToInt() }
-            }
-            .toMap()
+            }.toMap()
             .let {
                 Octopuses(0, it)
             }
@@ -35,7 +36,11 @@ class Day11(dataFile: DataFile) {
                 flashed.add(current)
 
                 current.neighborsAll().filter { it in octopuses }.forEach { octopuses[it] = octopuses[it]!! + 1 }
-                val newFlash = octopuses.entries.filter { it.value > 9 }.filter { it.key !in flashed }.map { it.key }
+                val newFlash =
+                    octopuses.entries
+                        .filter { it.value > 9 }
+                        .filter { it.key !in flashed }
+                        .map { it.key }
                 queue.addAll(newFlash)
             }
 

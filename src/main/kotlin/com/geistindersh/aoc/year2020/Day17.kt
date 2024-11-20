@@ -5,16 +5,19 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day17(dataFile: DataFile) {
+class Day17(
+    dataFile: DataFile,
+) {
     private val gameOfLife =
         fileToStream(2020, 17, dataFile)
             .flatMapIndexed { x, line ->
                 line.mapIndexedNotNull { y, c -> if (c == '#') Point3D(x, y, 0) else null }
-            }
-            .toSet()
+            }.toSet()
             .let { ConwaysGameOfLife3D(it) }
 
-    private data class ConwaysGameOfLife3D(val enabledCubes: Set<Point3D>) {
+    private data class ConwaysGameOfLife3D(
+        val enabledCubes: Set<Point3D>,
+    ) {
         fun next(): ConwaysGameOfLife3D {
             val points = mutableSetOf<Point3D>()
             val toCheck = enabledCubes.flatMap { it.neighbors() }.toMutableSet().apply { addAll(enabledCubes) }
@@ -32,7 +35,9 @@ class Day17(dataFile: DataFile) {
         }
     }
 
-    private data class ConwaysGameOfLife4D(val enabledCubes: Set<List<Int>>) {
+    private data class ConwaysGameOfLife4D(
+        val enabledCubes: Set<List<Int>>,
+    ) {
         private fun List<Int>.neighbors(): List<List<Int>> {
             val neighbors = mutableListOf<List<Int>>()
             for (x in -1..1) {

@@ -5,7 +5,9 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 import kotlin.math.absoluteValue
 
-class Day9(dataFile: DataFile) {
+class Day9(
+    dataFile: DataFile,
+) {
     private val moves =
         fileToStream(2022, 9, dataFile)
             .flatMap { line ->
@@ -21,18 +23,16 @@ class Day9(dataFile: DataFile) {
                     'D' -> Pair(0, -1)
                     else -> throw IllegalArgumentException("$it")
                 }
-            }
-            .toList()
+            }.toList()
 
     private fun areTouching(offset: Pair<Int, Int>) = offset.first.absoluteValue <= 1 && offset.second.absoluteValue <= 1
 
-    private fun signOf(i: Int): Int {
-        return when {
+    private fun signOf(i: Int): Int =
+        when {
             i > 0 -> 1
             i == 0 -> 0
             else -> -1
         }
-    }
 
     private fun moveCloser(
         offset: Pair<Int, Int>,

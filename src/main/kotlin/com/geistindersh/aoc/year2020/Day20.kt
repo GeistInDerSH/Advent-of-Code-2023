@@ -6,14 +6,18 @@ import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 import kotlin.math.sqrt
 
-class Day20(dataFile: DataFile) {
+class Day20(
+    dataFile: DataFile,
+) {
     private val tileSet =
         fileToString(2020, 20, dataFile)
             .split("\n\n")
             .map { Tile.from(it) }
             .let { TileSet(it) }
 
-    private data class TileSet(val tiles: List<Tile>) {
+    private data class TileSet(
+        val tiles: List<Tile>,
+    ) {
         fun edgesToCount() =
             tiles
                 .flatMap { it.allSides() }
@@ -27,7 +31,10 @@ class Day20(dataFile: DataFile) {
                 }
     }
 
-    private data class Tile(val title: Long, val board: List<List<Char>>) {
+    private data class Tile(
+        val title: Long,
+        val board: List<List<Char>>,
+    ) {
         val top = board.first()
         val bottom = board.last()
         val left = board.indices.map { board[it].first() }
@@ -106,10 +113,16 @@ class Day20(dataFile: DataFile) {
         }
     }
 
-    private data class Image(val chart: Map<Point2D, Tile>) {
+    private data class Image(
+        val chart: Map<Point2D, Tile>,
+    ) {
         val grid: Tile by lazy {
             val width = sqrt(chart.size.toDouble()).toInt()
-            val tileSize = chart.values.first().withoutBorder().board.size
+            val tileSize =
+                chart.values
+                    .first()
+                    .withoutBorder()
+                    .board.size
             val board = Array(tileSize * width) { CharArray(tileSize * width) }
 
             for ((point, tile) in chart) {

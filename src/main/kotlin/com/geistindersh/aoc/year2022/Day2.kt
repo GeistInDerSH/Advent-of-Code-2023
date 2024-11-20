@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-enum class RPS(private val value: Int) {
+enum class RPS(
+    private val value: Int,
+) {
     Rock(1),
     Paper(2),
     Scissors(3),
@@ -24,35 +26,34 @@ enum class RPS(private val value: Int) {
 
     fun getScores(other: String) = getScores(fromString(other))
 
-    fun getWinningMove(): RPS {
-        return when (this) {
+    fun getWinningMove(): RPS =
+        when (this) {
             Rock -> Paper
             Paper -> Scissors
             Scissors -> Rock
         }
-    }
 
-    fun getLosingMove(): RPS {
-        return when (this) {
+    fun getLosingMove(): RPS =
+        when (this) {
             Paper -> Rock
             Scissors -> Paper
             Rock -> Scissors
         }
-    }
 
     companion object {
-        fun fromString(string: String): RPS {
-            return when (string) {
+        fun fromString(string: String): RPS =
+            when (string) {
                 "A", "X" -> Rock
                 "B", "Y" -> Paper
                 "C", "Z" -> Scissors
                 else -> throw IllegalArgumentException("$string is not a valid RPS argument")
             }
-        }
     }
 }
 
-class Day2(dataFile: DataFile) {
+class Day2(
+    dataFile: DataFile,
+) {
     private val plays =
         fileToStream(2022, 2, dataFile)
             .map {
@@ -61,26 +62,24 @@ class Day2(dataFile: DataFile) {
                 Pair(play, parts[1])
             }.toList()
 
-    fun part1(): Int {
-        return plays
+    fun part1(): Int =
+        plays
             .map { (p1, p2) -> p1.getScores(p2).second }
             .fold(0, Int::plus)
-    }
 
-    fun part2(): Int {
-        return plays.map { (p1, p2) ->
-            val ourMove =
-                when (p2) {
-                    "X" -> p1.getLosingMove()
-                    "Y" -> p1
-                    "Z" -> p1.getWinningMove()
-                    else -> throw IllegalArgumentException("$p2 is not a valid RPS argument")
-                }
-            Pair(p1, ourMove)
-        }
-            .map { (p1, p2) -> p1.getScores(p2).second }
+    fun part2(): Int =
+        plays
+            .map { (p1, p2) ->
+                val ourMove =
+                    when (p2) {
+                        "X" -> p1.getLosingMove()
+                        "Y" -> p1
+                        "Z" -> p1.getWinningMove()
+                        else -> throw IllegalArgumentException("$p2 is not a valid RPS argument")
+                    }
+                Pair(p1, ourMove)
+            }.map { (p1, p2) -> p1.getScores(p2).second }
             .fold(0, Int::plus)
-    }
 }
 
 fun day2() {

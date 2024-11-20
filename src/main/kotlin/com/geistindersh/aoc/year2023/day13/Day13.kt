@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-data class Image(val image: List<String>) {
+data class Image(
+    val image: List<String>,
+) {
     /**
      * @return The value of the reflected image
      */
@@ -80,11 +82,10 @@ data class Image(val image: List<String>) {
     }
 }
 
-fun parseInput(type: DataFile): List<Image> {
-    return fileToString(2023, 13, type)
+fun parseInput(type: DataFile): List<Image> =
+    fileToString(2023, 13, type)
         .split("\n\n")
         .map { Image(it.split('\n')) }
-}
 
 fun part1(images: List<Image>) = images.sumOf { it.withoutSmudges() }
 

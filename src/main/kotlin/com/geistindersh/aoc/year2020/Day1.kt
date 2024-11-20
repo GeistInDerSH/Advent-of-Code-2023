@@ -5,7 +5,9 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.subsetSum
 import com.geistindersh.aoc.helper.report
 
-class Day1(dataFile: DataFile) {
+class Day1(
+    dataFile: DataFile,
+) {
     private val numbers = fileToStream(2020, 1, dataFile).map(String::toInt).toList()
 
     private fun solution(size: Int) =

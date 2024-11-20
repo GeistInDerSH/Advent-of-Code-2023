@@ -4,16 +4,20 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day8(dataFile: DataFile) {
+class Day8(
+    dataFile: DataFile,
+) {
     private val signals =
         fileToStream(2021, 8, dataFile)
             .map { line ->
                 val (signal, out) = line.split('|').map { it.trim().split(" ") }
                 Noise(signal, out)
-            }
-            .toList()
+            }.toList()
 
-    private data class Noise(val signal: List<String>, val digitalOut: List<String>) {
+    private data class Noise(
+        val signal: List<String>,
+        val digitalOut: List<String>,
+    ) {
         val denoise =
             signal.let { signal ->
                 val known =
@@ -26,8 +30,7 @@ class Day8(dataFile: DataFile) {
                                 7 -> sig to 8
                                 else -> null
                             }
-                        }
-                        .toMap()
+                        }.toMap()
                         .toMutableMap()
                 val knownRev = known.entries.associate { (k, v) -> v to k.toSet() }.toMutableMap()
 
@@ -82,8 +85,7 @@ class Day8(dataFile: DataFile) {
                         .map { signal.denoise[it.toSet()]!! }
                         .fold(0) { acc, i -> acc * 10 + i }
                 v
-            }
-            .reduce(Int::plus)
+            }.reduce(Int::plus)
 }
 
 fun day8() {

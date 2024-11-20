@@ -4,14 +4,18 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day4(dataFile: DataFile) {
+class Day4(
+    dataFile: DataFile,
+) {
     private val passports =
         fileToString(2020, 4, dataFile)
             .split("\n\n")
             .map { Passport.from(it) }
             .toList()
 
-    private data class Passport(val fields: Map<String, String>) {
+    private data class Passport(
+        val fields: Map<String, String>,
+    ) {
         fun hasRequiredFields() = REQUIRED_FIELDS.all { it in fields }
 
         fun isValid(): Boolean {

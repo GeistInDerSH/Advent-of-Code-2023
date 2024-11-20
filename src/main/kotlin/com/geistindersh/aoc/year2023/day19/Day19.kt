@@ -5,7 +5,12 @@ import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.ranges.intersect
 import com.geistindersh.aoc.helper.report
 
-data class Condition(val key: String, val number: Int, val dest: String, val delim: Char) {
+data class Condition(
+    val key: String,
+    val number: Int,
+    val dest: String,
+    val delim: Char,
+) {
     /**
      * Lazy evaluate the condition into a function that takes [Data] and returns the next location
      * to go to.
@@ -24,11 +29,16 @@ data class Condition(val key: String, val number: Int, val dest: String, val del
     }
 }
 
-data class Data(val map: Map<String, Long>) {
+data class Data(
+    val map: Map<String, Long>,
+) {
     fun sum() = map.values.sum()
 }
 
-data class GearProcessing(private val workflow: Map<String, List<Condition>>, private val inputs: List<Data>) {
+data class GearProcessing(
+    private val workflow: Map<String, List<Condition>>,
+    private val inputs: List<Data>,
+) {
     /**
      * Walk through each of the [inputs] and determine which ones end in the "A" final state. This is done
      * using repeated dictionary lookups and fun-calls to determine the next function to call

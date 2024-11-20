@@ -5,15 +5,16 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day13(dataFile: DataFile) {
+class Day13(
+    dataFile: DataFile,
+) {
     private val points =
         fileToStream(2021, 13, dataFile)
             .takeWhile(String::isNotBlank)
             .map { line ->
                 val (col, row) = "[0-9]+".toRegex().findAll(line).map { it.value.toInt() }.toList()
                 Point2D(row, col)
-            }
-            .toSet()
+            }.toSet()
     private val foldInstructions =
         fileToStream(2021, 13, dataFile)
             .dropWhile(String::isNotBlank)
@@ -41,8 +42,7 @@ class Day13(dataFile: DataFile) {
 
                     else -> null
                 }
-            }
-            .toSet()
+            }.toSet()
             .count()
     }
 

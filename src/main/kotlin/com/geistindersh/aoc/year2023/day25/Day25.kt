@@ -3,7 +3,7 @@ package com.geistindersh.aoc.year2023.day25
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
-import java.util.*
+import java.util.ArrayDeque
 
 typealias Edge = Pair<String, String>
 
@@ -75,8 +75,7 @@ fun part1(connections: MutableMap<String, MutableList<String>>): Int {
                 connections[edge.second]!!.remove(edge.first)
 
                 edge
-            }
-            .first()
+            }.first()
 
     val firstLoopSize = countConnectionsFromStart(m1.first, connections)
     val secondLoopSize = countConnectionsFromStart(m1.second, connections)

@@ -4,7 +4,10 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-data class SpringRecord(val springs: String, val records: List<Int>) {
+data class SpringRecord(
+    val springs: String,
+    val records: List<Int>,
+) {
     // Cache to avoid repeated re-calculations of known values
     private val memorization = mutableMapOf<Pair<String, List<Int>>, Long>()
 
@@ -80,8 +83,8 @@ data class SpringRecord(val springs: String, val records: List<Int>) {
 fun parseInput(
     fileType: DataFile,
     unfoldCount: Int,
-): List<SpringRecord> {
-    return fileToStream(2023, 12, fileType)
+): List<SpringRecord> =
+    fileToStream(2023, 12, fileType)
         .map { line ->
             val (rawSprings, data) = line.split(' ')
             val rawRecords = data.split(',').map { it.toInt() }
@@ -103,16 +106,13 @@ fun parseInput(
                 }
 
             SpringRecord(springs, records)
-        }
-        .toList()
-}
+        }.toList()
 
-fun solution(input: List<SpringRecord>): Long {
-    return input
+fun solution(input: List<SpringRecord>): Long =
+    input
         .parallelStream()
         .map { it.permutationCount() }
         .reduce(0) { acc, p -> acc + p }
-}
 
 fun part1(fileType: DataFile): Long = solution(parseInput(fileType, 0))
 

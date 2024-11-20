@@ -5,14 +5,15 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day9(dataFile: DataFile) {
+class Day9(
+    dataFile: DataFile,
+) {
     private val routes =
         fileToStream(2015, 9, dataFile)
             .map {
                 val parts = it.split(" ")
                 Pair(parts[0], parts[2]) to parts.last().toInt()
-            }
-            .toList()
+            }.toList()
             .toGraph()
 
     fun part1() = routes.travelingSalesman()

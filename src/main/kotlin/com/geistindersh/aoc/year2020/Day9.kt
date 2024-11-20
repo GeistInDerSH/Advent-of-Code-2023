@@ -4,7 +4,10 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day9(dataFile: DataFile, private val windowSize: Int) {
+class Day9(
+    dataFile: DataFile,
+    private val windowSize: Int,
+) {
     private val numbers = fileToStream(2020, 9, dataFile).map(String::toLong).toList()
 
     private fun firstMissingSumInWindow() =
@@ -17,8 +20,7 @@ class Day9(dataFile: DataFile, private val windowSize: Int) {
                 } else {
                     nums.last()
                 }
-            }
-            .first { it != null }!!
+            }.first { it != null }!!
 
     fun part1() = firstMissingSumInWindow()
 

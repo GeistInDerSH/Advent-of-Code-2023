@@ -5,7 +5,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Grid(private val tiles: List<List<Tile>>) {
+class Grid(
+    private val tiles: List<List<Tile>>,
+) {
     // Find the starting position of the loop
     private val start =
         run {
@@ -112,7 +114,11 @@ class Grid(private val tiles: List<List<Tile>>) {
     fun mainLoop() = getLoops().first { it.isNotEmpty() }
 }
 
-data class Tile(val symbol: Char, val row: Int, val col: Int) {
+data class Tile(
+    val symbol: Char,
+    val row: Int,
+    val col: Int,
+) {
     // Be lazy about determining what the next positions are, as we likely won't use most of them
     val position = Pair(row, col)
     val left: Pair<Int, Int> by lazy { Direction.West + position }
@@ -133,8 +139,7 @@ fun parseInput(fileType: DataFile): Grid {
         fileToStream(2023, 10, fileType)
             .mapIndexed { row, line ->
                 line.mapIndexed { col, it -> Tile(it, row, col) }
-            }
-            .toList()
+            }.toList()
     return Grid(tiles)
 }
 
@@ -149,8 +154,7 @@ fun part2(tiles: Grid): Int {
         .parallelStream()
         .map { tile ->
             loop.count { it.first == tile.first && it.second in 0..<tile.second && tiles.getTileAt(it).symbol in crossings }
-        }
-        .toList()
+        }.toList()
         .count { it % 2 == 1 }
 }
 

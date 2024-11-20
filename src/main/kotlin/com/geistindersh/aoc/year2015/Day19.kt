@@ -3,9 +3,11 @@ package com.geistindersh.aoc.year2015
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
-import java.util.*
+import java.util.PriorityQueue
 
-class Day19(dataFile: DataFile) {
+class Day19(
+    dataFile: DataFile,
+) {
     private val molecule = fileToStream(2015, 19, dataFile).last()
     private val lookupTable =
         fileToStream(2015, 19, dataFile)
@@ -21,7 +23,9 @@ class Day19(dataFile: DataFile) {
             }
 
     @JvmInline
-    value class Molecule(val name: String)
+    value class Molecule(
+        val name: String,
+    )
 
     private fun Molecule.replace(
         from: String,

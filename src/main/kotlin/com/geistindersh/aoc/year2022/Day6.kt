@@ -4,11 +4,13 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day6(dataFile: DataFile) {
+class Day6(
+    dataFile: DataFile,
+) {
     private val noise = fileToString(2022, 6, dataFile)
 
-    private fun getSignalOffset(windowSize: Int): Int {
-        return windowSize +
+    private fun getSignalOffset(windowSize: Int): Int =
+        windowSize +
             (0..(noise.count() - windowSize))
                 .firstNotNullOf {
                     val chars = noise.substring(it, it + windowSize)
@@ -19,7 +21,6 @@ class Day6(dataFile: DataFile) {
                         null
                     }
                 }
-    }
 
     fun part1() = getSignalOffset(4)
 

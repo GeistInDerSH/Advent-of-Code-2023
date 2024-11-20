@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day1(dataFile: DataFile) {
+class Day1(
+    dataFile: DataFile,
+) {
     private val depths = fileToStream(2021, 1, dataFile).map(String::toInt).toList()
 
     private fun radar(windowSize: Int) =

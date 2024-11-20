@@ -7,29 +7,47 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 import kotlin.math.absoluteValue
 
-class Day12(dataFile: DataFile) {
+class Day12(
+    dataFile: DataFile,
+) {
     private val ship =
         fileToStream(2020, 12, dataFile)
             .map { Action.from(it) }
             .toList()
             .let { Ship(it) }
 
-    private sealed class Action(open val value: Int) {
-        data class North(override val value: Int) : Action(value)
+    private sealed class Action(
+        open val value: Int,
+    ) {
+        data class North(
+            override val value: Int,
+        ) : Action(value)
 
-        data class South(override val value: Int) : Action(value)
+        data class South(
+            override val value: Int,
+        ) : Action(value)
 
-        data class West(override val value: Int) : Action(value)
+        data class West(
+            override val value: Int,
+        ) : Action(value)
 
-        data class East(override val value: Int) : Action(value)
+        data class East(
+            override val value: Int,
+        ) : Action(value)
 
-        data class Forward(override val value: Int) : Action(value)
+        data class Forward(
+            override val value: Int,
+        ) : Action(value)
 
-        data class Left(override val value: Int) : Action(value) {
+        data class Left(
+            override val value: Int,
+        ) : Action(value) {
             val turns = value / 90
         }
 
-        data class Right(override val value: Int) : Action(value) {
+        data class Right(
+            override val value: Int,
+        ) : Action(value) {
             val turns = value / 90
         }
 
@@ -51,7 +69,9 @@ class Day12(dataFile: DataFile) {
         }
     }
 
-    private class Ship(private val actions: List<Action>) {
+    private class Ship(
+        private val actions: List<Action>,
+    ) {
         fun navigate(): Int {
             var direction = Direction.East
             var position = Point2D(0, 0)

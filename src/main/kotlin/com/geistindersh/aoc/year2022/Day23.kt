@@ -7,7 +7,9 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.cycle
 import com.geistindersh.aoc.helper.report
 
-class Day23(dataFile: DataFile) {
+class Day23(
+    dataFile: DataFile,
+) {
     private val elves =
         fileToStream(2022, 23, dataFile)
             .flatMapIndexed { row, line ->
@@ -18,8 +20,7 @@ class Day23(dataFile: DataFile) {
                         null
                     }
                 }
-            }
-            .toSet()
+            }.toSet()
 
     private fun getAdjacency(direction: Direction) =
         when (direction) {
@@ -70,8 +71,7 @@ class Day23(dataFile: DataFile) {
                     proposedMoves[elf] = order
                         .firstOrNull { dir ->
                             getAdjacency(dir).map { elf + it }.all { it !in elves }
-                        }
-                        ?.let { elf + it }
+                        }?.let { elf + it }
                         ?: elf
                 }
 

@@ -7,13 +7,21 @@ import com.geistindersh.aoc.helper.report
 
 typealias Volume = Set<Triple<Int, Int, Int>>
 
-data class Brick(val lx: Int, val ly: Int, val lz: Int, val rx: Int, val ry: Int, val rz: Int) {
+data class Brick(
+    val lx: Int,
+    val ly: Int,
+    val lz: Int,
+    val rx: Int,
+    val ry: Int,
+    val rz: Int,
+) {
     val volume: Volume =
-        (lx..rx).flatMap { x ->
-            (ly..ry).flatMap { y ->
-                (lz..rz).map { z -> Triple(x, y, z) }
-            }
-        }.toSet()
+        (lx..rx)
+            .flatMap { x ->
+                (ly..ry).flatMap { y ->
+                    (lz..rz).map { z -> Triple(x, y, z) }
+                }
+            }.toSet()
     val dropVolume: Volume = volume.map { Triple(it.first, it.second, it.third - 1) }.toSet()
 
     /**
@@ -31,14 +39,13 @@ data class Brick(val lx: Int, val ly: Int, val lz: Int, val rx: Int, val ry: Int
      * @param other The brick to check against
      * @return If the current Brick is supporting the [other]
      */
-    fun isSupporting(other: Brick): Boolean {
-        return when {
+    fun isSupporting(other: Brick): Boolean =
+        when {
             !other.isBelow(this) -> false
             hasOverlap(ly, ry, other.ly, other.ry) -> true
             hasOverlap(lx, rx, other.lx, other.rx) -> true
             else -> false
         }
-    }
 
     companion object {
         fun fromString(string: String): Brick {
@@ -50,7 +57,9 @@ data class Brick(val lx: Int, val ly: Int, val lz: Int, val rx: Int, val ry: Int
     }
 }
 
-class Tower(private val bricks: List<Brick>) {
+class Tower(
+    private val bricks: List<Brick>,
+) {
     private val cascade = cascade()
     private val droppedBricks = cascade.first
     private val volume = cascade.second
@@ -67,8 +76,9 @@ class Tower(private val bricks: List<Brick>) {
                 .sortedBy { it.lz }
                 .map { b ->
                     var brick = b
-                    while (brick.lz - 1 > 0 && brick.dropVolume.none { it in volume })
+                    while (brick.lz - 1 > 0 && brick.dropVolume.none { it in volume }) {
                         brick = brick.drop()
+                    }
                     volume.addAll(brick.volume)
                     brick
                 }
@@ -97,14 +107,13 @@ class Tower(private val bricks: List<Brick>) {
         }
     }
 
-    fun part1(): Int {
-        return brickToDropped
+    fun part1(): Int =
+        brickToDropped
             .map { canRemove(it.first, it.second) }
             .count { it }
-    }
 
-    fun part2(): Int {
-        return brickToDropped
+    fun part2(): Int =
+        brickToDropped
             .parallelStream()
             .map { (baseBrick, remainingBricks) ->
                 val removed = mutableSetOf(baseBrick)
@@ -127,9 +136,7 @@ class Tower(private val bricks: List<Brick>) {
 
                 // The number of removed bricks, minus the default one
                 count
-            }
-            .reduce(0, Int::plus)
-    }
+            }.reduce(0, Int::plus)
 
     companion object {
         fun parseInput(dataFile: DataFile): Tower {

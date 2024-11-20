@@ -4,7 +4,11 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean) {
+data class Hand(
+    val cards: List<Char>,
+    val bid: Long,
+    val includeJokers: Boolean,
+) {
     // map of the characters to the number of instances of that char
     private val frequency = cards.associateWith { c -> cards.count { it == c } }
 
@@ -80,15 +84,13 @@ data class Hand(val cards: List<Char>, val bid: Long, val includeJokers: Boolean
 fun parseInput(
     fileType: DataFile,
     includeJokers: Boolean,
-): List<Hand> {
-    return fileToStream(2023, 7, fileType)
+): List<Hand> =
+    fileToStream(2023, 7, fileType)
         .map {
             val (cards, bid) = it.split(' ')
             Hand(cards.toList(), bid.toLong(), includeJokers)
-        }
-        .toList()
+        }.toList()
         .sortedWith(Hand)
-}
 
 fun part1(fileType: DataFile) = part1(parseInput(fileType, false))
 

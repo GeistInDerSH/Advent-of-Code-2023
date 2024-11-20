@@ -6,7 +6,9 @@ import com.geistindersh.aoc.helper.iterators.cycle
 import com.geistindersh.aoc.helper.math.positiveModulo
 import com.geistindersh.aoc.helper.report
 
-class Day20(dataFile: DataFile) {
+class Day20(
+    dataFile: DataFile,
+) {
     private val data = fileToStream(2022, 20, dataFile).map(String::toLong).toList()
     private val dataIndices = data.indices.toList()
 
@@ -50,14 +52,13 @@ class Day20(dataFile: DataFile) {
         return values
     }
 
-    private fun solution(values: List<Long>): Long {
-        return values
+    private fun solution(values: List<Long>): Long =
+        values
             .cycle()
             .dropWhile { it != 0L }
             .filterIndexed { idx, _ -> idx % 1000 == 0 }
             .take(4)
             .reduce(Long::plus)
-    }
 
     fun part1(): Long {
         val positions = getUpdatedPositions(data, dataIndices, dataIndices)

@@ -4,33 +4,40 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-data class Pull(val red: Int, val blue: Int, val green: Int)
+data class Pull(
+    val red: Int,
+    val blue: Int,
+    val green: Int,
+)
 
-data class Game(val id: Int, val pulls: List<Pull>)
+data class Game(
+    val id: Int,
+    val pulls: List<Pull>,
+)
 
-fun parseInput(fileType: DataFile): List<Game> {
-    return fileToStream(2023, 2, fileType).mapIndexed { index, s ->
-        val pulls =
-            s.substringAfter(':').split(";").map { sections ->
-                // Map the name to the count, so we can do a lookup later
-                val cubes =
-                    sections.split(",").map { it.trim() }.map {
-                        val parts = it.split(" ")
-                        val name = parts.last()
-                        val count = parts.first().toInt()
-                        name to count
-                    }
+fun parseInput(fileType: DataFile): List<Game> =
+    fileToStream(2023, 2, fileType)
+        .mapIndexed { index, s ->
+            val pulls =
+                s.substringAfter(':').split(";").map { sections ->
+                    // Map the name to the count, so we can do a lookup later
+                    val cubes =
+                        sections.split(",").map { it.trim() }.map {
+                            val parts = it.split(" ")
+                            val name = parts.last()
+                            val count = parts.first().toInt()
+                            name to count
+                        }
 
-                Pull(
-                    red = cubes.singleOrNull { it.first == "red" }?.second ?: 0,
-                    blue = cubes.singleOrNull { it.first == "blue" }?.second ?: 0,
-                    green = cubes.singleOrNull { it.first == "green" }?.second ?: 0,
-                )
-            }
+                    Pull(
+                        red = cubes.singleOrNull { it.first == "red" }?.second ?: 0,
+                        blue = cubes.singleOrNull { it.first == "blue" }?.second ?: 0,
+                        green = cubes.singleOrNull { it.first == "green" }?.second ?: 0,
+                    )
+                }
 
-        Game(index + 1, pulls)
-    }.toList()
-}
+            Game(index + 1, pulls)
+        }.toList()
 
 /**
  * Go through each game, and add the IDs of each one that is a valid game
@@ -42,13 +49,11 @@ fun parseInput(fileType: DataFile): List<Game> {
 fun part1(
     games: List<Game>,
     cubeCounts: Pull,
-): Int {
-    return games
+): Int =
+    games
         .filter { game ->
             game.pulls.all { cubeCounts.red >= it.red && cubeCounts.blue >= it.blue && cubeCounts.green >= it.green }
-        }
-        .sumOf { it.id }
-}
+        }.sumOf { it.id }
 
 /**
  * Determine the minimum number of cubes needed for each game to be playable, then multiply them together, and
@@ -57,8 +62,8 @@ fun part1(
  * @param games The games that have been played
  * @return The sum of the product of the minimum number of each cube type for each game
  */
-fun part2(games: List<Game>): Int {
-    return games.sumOf { game ->
+fun part2(games: List<Game>): Int =
+    games.sumOf { game ->
         var red = 0
         var blue = 0
         var green = 0
@@ -70,7 +75,6 @@ fun part2(games: List<Game>): Int {
 
         red * blue * green
     }
-}
 
 fun day2() {
     val input = parseInput(DataFile.Part1)

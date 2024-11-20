@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day5(dataFile: DataFile) {
+class Day5(
+    dataFile: DataFile,
+) {
     private val data = fileToStream(2015, 5, dataFile).toList()
     private val vowels = setOf('a', 'e', 'i', 'o', 'u')
     private val notAllowedSubstrings = setOf("ab", "cd", "pq", "xy")

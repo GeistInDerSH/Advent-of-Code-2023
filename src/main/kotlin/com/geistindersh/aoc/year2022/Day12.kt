@@ -3,9 +3,11 @@ package com.geistindersh.aoc.year2022
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
-import java.util.*
+import java.util.PriorityQueue
 
-class Day12(dataFile: DataFile) {
+class Day12(
+    dataFile: DataFile,
+) {
     private val grid =
         fileToStream(2022, 12, dataFile)
             .map { line ->
@@ -16,8 +18,7 @@ class Day12(dataFile: DataFile) {
                         else -> it.code - 97
                     }
                 }
-            }
-            .toList()
+            }.toList()
     private val start =
         grid
             .mapIndexed { index, ints ->
@@ -27,8 +28,7 @@ class Day12(dataFile: DataFile) {
                 } else {
                     null
                 }
-            }
-            .firstNotNullOf { it }
+            }.firstNotNullOf { it }
     private val end =
         grid
             .mapIndexed { index, ints ->
@@ -38,8 +38,7 @@ class Day12(dataFile: DataFile) {
                 } else {
                     null
                 }
-            }
-            .firstNotNullOf { it }
+            }.firstNotNullOf { it }
 
     private fun getNeighbors(cord: Pair<Int, Int>): Set<Pair<Int, Int>> {
         val neighbors =
@@ -59,8 +58,7 @@ class Day12(dataFile: DataFile) {
                         ?: return@filter false
 
                 neighbor - current <= 1
-            }
-            .toSet()
+            }.toSet()
     }
 
     private fun bfs(

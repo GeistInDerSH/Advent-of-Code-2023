@@ -3,11 +3,13 @@ package com.geistindersh.aoc.year2022
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
-import java.util.*
+import java.util.PriorityQueue
 import kotlin.math.ceil
 import kotlin.math.max
 
-class Day19(dataFile: DataFile) {
+class Day19(
+    dataFile: DataFile,
+) {
     private data class Robot(
         val oreCost: Int = 0,
         val clayCost: Int = 0,
@@ -40,8 +42,7 @@ class Day19(dataFile: DataFile) {
                 val geodeRobot = Robot(oreCost = nums[5], obsidianCost = nums[6], geodeRobots = 1)
 
                 Blueprint(nums[0], oreRobot, clayRobot, obsidianRobot, geodeRobot)
-            }
-            .toList()
+            }.toList()
 
     private data class State(
         val minutes: Int,
@@ -88,8 +89,7 @@ class Day19(dataFile: DataFile) {
                 if (blueprint.maxClay > clayRobots) add(next(blueprint.clayRobot))
                 if (clayRobots > 0 && blueprint.maxObsidian > obsidianRobots) add(next(blueprint.obsidianRobot))
                 if (obsidianRobots > 0) add(next(blueprint.geodeRobot))
-            }
-                .filter { it.minutes > 0 }
+            }.filter { it.minutes > 0 }
 
         fun canOutproduce(best: Int) = (0..<minutes - 1).sumOf { it + geodeRobots } + geode > best
     }

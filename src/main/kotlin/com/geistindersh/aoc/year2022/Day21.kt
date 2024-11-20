@@ -4,11 +4,19 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day21(dataFile: DataFile) {
+class Day21(
+    dataFile: DataFile,
+) {
     sealed class Fn {
-        data class Const(val value: Long) : Fn()
+        data class Const(
+            val value: Long,
+        ) : Fn()
 
-        data class Func(val op: String, val left: String, val right: String) : Fn() {
+        data class Func(
+            val op: String,
+            val left: String,
+            val right: String,
+        ) : Fn() {
             val fn: (Long, Long) -> Long =
                 when (op) {
                     "+" -> Long::plus
@@ -61,23 +69,20 @@ class Day21(dataFile: DataFile) {
                     val right = items[3]
                     name to Fn.Func(op, left, right)
                 }
-            }
-            .toMap()
+            }.toMap()
 
-    private fun run(name: String): Long {
-        return when (val value = table[name]!!) {
+    private fun run(name: String): Long =
+        when (val value = table[name]!!) {
             is Fn.Const -> value.value
             is Fn.Func -> value.fn(run(value.left), run(value.right))
         }
-    }
 
-    private fun findOps(name: String): Pair<List<Fn.Func>, Long?> {
-        return if (name == "humn") {
+    private fun findOps(name: String): Pair<List<Fn.Func>, Long?> =
+        if (name == "humn") {
             emptyList<Fn.Func>() to null
         } else {
             findOps(table[name]!!)
         }
-    }
 
     private fun findOps(fn: Fn): Pair<List<Fn.Func>, Long?> {
         val empty = emptyList<Fn.Func>()

@@ -8,11 +8,13 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.intOrNull
 
-class Day12(dataFile: DataFile) {
+class Day12(
+    dataFile: DataFile,
+) {
     private val data = fileToString(2015, 12, dataFile)
 
-    private fun filterInts(value: Any?): Pair<Int, Boolean> {
-        return when (value) {
+    private fun filterInts(value: Any?): Pair<Int, Boolean> =
+        when (value) {
             is JsonPrimitive -> {
                 val int = value.intOrNull ?: 0
                 int to false
@@ -37,19 +39,18 @@ class Day12(dataFile: DataFile) {
 
             else -> 0 to false
         }
-    }
 
     fun part1() = "-?[0-9]+".toRegex().findAll(data).sumOf { it.value.toInt() }
 
     fun part2() =
-        Json.parseToJsonElement(data)
+        Json
+            .parseToJsonElement(data)
             .let {
                 when (it) {
                     is JsonObject -> it
                     else -> mapOf("a" to it)
                 }
-            }
-            .values
+            }.values
             .map(::filterInts)
             .sumOf { it.first }
 }

@@ -6,7 +6,9 @@ import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
 
-class Day17(dataFile: DataFile) {
+class Day17(
+    dataFile: DataFile,
+) {
     private val targetArea =
         "-?[0-9]+"
             .toRegex()
@@ -21,7 +23,11 @@ class Day17(dataFile: DataFile) {
             }
     private val start = Point2D(0, 0)
 
-    private data class Throw(val rowVelocity: Int, val colVelocity: Int, val point: Point2D) {
+    private data class Throw(
+        val rowVelocity: Int,
+        val colVelocity: Int,
+        val point: Point2D,
+    ) {
         fun next(): Throw {
             val x = (rowVelocity - 1).coerceAtLeast(0)
             val y = colVelocity - 1
@@ -30,7 +36,10 @@ class Day17(dataFile: DataFile) {
         }
     }
 
-    private class TargetArea(val colRange: IntRange, val rowRange: IntRange) {
+    private class TargetArea(
+        val colRange: IntRange,
+        val rowRange: IntRange,
+    ) {
         val minRowVelocity = minimumRowVelocity()
 
         fun contains(toss: Throw) = toss.point.row in rowRange && toss.point.col in colRange
@@ -77,8 +86,7 @@ class Day17(dataFile: DataFile) {
             .flatMap { vRow ->
                 (targetArea.rowRange.first..targetArea.colRange.last * 2)
                     .mapNotNull { vCol -> targetArea.maxHeightLandingInBoundsOrNull(start, vRow, vCol) }
-            }
-            .count()
+            }.count()
 }
 
 fun day17() {

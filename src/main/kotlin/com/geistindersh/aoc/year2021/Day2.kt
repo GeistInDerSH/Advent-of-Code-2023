@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day2(dataFile: DataFile) {
+class Day2(
+    dataFile: DataFile,
+) {
     private val commands =
         fileToStream(2021, 2, dataFile)
             .map { line ->
@@ -15,15 +17,22 @@ class Day2(dataFile: DataFile) {
                     "up" -> Command.Up(dist.toInt())
                     else -> throw IllegalArgumentException("Unrecognised command: $cmd")
                 }
-            }
-            .toList()
+            }.toList()
 
-    private sealed class Command(open val distance: Int) {
-        data class Forward(override val distance: Int) : Command(distance)
+    private sealed class Command(
+        open val distance: Int,
+    ) {
+        data class Forward(
+            override val distance: Int,
+        ) : Command(distance)
 
-        data class Down(override val distance: Int) : Command(distance)
+        data class Down(
+            override val distance: Int,
+        ) : Command(distance)
 
-        data class Up(override val distance: Int) : Command(distance)
+        data class Up(
+            override val distance: Int,
+        ) : Command(distance)
     }
 
     fun part1() =
@@ -34,8 +43,7 @@ class Day2(dataFile: DataFile) {
                     is Command.Down -> (dep + cmd.distance) to fwd
                     is Command.Up -> (dep - cmd.distance) to fwd
                 }
-            }
-            .toList()
+            }.toList()
             .reduce(Int::times)
 
     fun part2() =
@@ -46,8 +54,7 @@ class Day2(dataFile: DataFile) {
                     is Command.Down -> Triple(dep, fwd, aim + cmd.distance)
                     is Command.Up -> Triple(dep, fwd, aim - cmd.distance)
                 }
-            }
-            .toList()
+            }.toList()
             .dropLast(1)
             .reduce(Int::times)
 }

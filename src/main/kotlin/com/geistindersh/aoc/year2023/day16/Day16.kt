@@ -5,9 +5,15 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-data class Energized(val row: Int, val col: Int, val direction: Direction)
+data class Energized(
+    val row: Int,
+    val col: Int,
+    val direction: Direction,
+)
 
-data class MirrorGrid(val grid: List<List<Char>>) {
+data class MirrorGrid(
+    val grid: List<List<Char>>,
+) {
     private val maxRow = grid.size
     private val maxCol = grid[0].size
     private val eastWest = setOf(Direction.East, Direction.West)

@@ -5,10 +5,14 @@ import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.iterators.rotateLeft
 import com.geistindersh.aoc.helper.report
 
-class Day23(dataFile: DataFile) {
+class Day23(
+    dataFile: DataFile,
+) {
     private val cups = Cups.from(fileToString(2020, 23, dataFile))
 
-    private data class Cups(val numbers: List<Int>) {
+    private data class Cups(
+        val numbers: List<Int>,
+    ) {
         private val minCup = numbers.minOf { it }
         private val maxCup = numbers.maxOf { it }
 
@@ -63,7 +67,9 @@ class Day23(dataFile: DataFile) {
         }
     }
 
-    private class Cup(val value: Int) {
+    private class Cup(
+        val value: Int,
+    ) {
         lateinit var next: Cup
 
         fun nextCount(n: Int) =
@@ -81,7 +87,8 @@ class Day23(dataFile: DataFile) {
     fun part2(): Long {
         val allCups = List(1_000_001) { Cup(it) }
 
-        cups.makePart2()
+        cups
+            .makePart2()
             .numbers
             .map { allCups[it] }
             .fold(allCups[cups.numbers.last()]) { prev, curr ->

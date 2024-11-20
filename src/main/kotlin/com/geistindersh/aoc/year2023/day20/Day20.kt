@@ -11,16 +11,19 @@ enum class ModuleType {
     Conjunction,
     ;
 
-    override fun toString(): String {
-        return when (this) {
+    override fun toString(): String =
+        when (this) {
             Broadcast -> "B"
             FlipFlop -> "%"
             Conjunction -> "&"
         }
-    }
 }
 
-data class Module(val name: String, val moduleType: ModuleType, val targets: List<String>) {
+data class Module(
+    val name: String,
+    val moduleType: ModuleType,
+    val targets: List<String>,
+) {
     private var pulse = false
     private val memory = mutableMapOf<String, Boolean>()
 
@@ -70,7 +73,9 @@ data class Module(val name: String, val moduleType: ModuleType, val targets: Lis
     }
 }
 
-data class Propagation(val modules: List<Module>) {
+data class Propagation(
+    val modules: List<Module>,
+) {
     private val initialTargets by lazy {
         modules
             .first { it.name == "broadcaster" }
@@ -159,8 +164,7 @@ data class Propagation(val modules: List<Module>) {
             .map { part1(initialTargets, 1, 0) }
             .reduce { acc, pair ->
                 Pair(acc.first + pair.first, acc.second + pair.second)
-            }
-            .let { it.first * it.second }
+            }.let { it.first * it.second }
     }
 
     /**

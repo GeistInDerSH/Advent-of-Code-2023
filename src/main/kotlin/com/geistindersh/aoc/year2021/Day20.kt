@@ -7,7 +7,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day20(dataFile: DataFile) {
+class Day20(
+    dataFile: DataFile,
+) {
     private val startingImage =
         fileToString(2021, 20, dataFile).let {
             val (lookupTable, rawImage) = it.split("\n\n")
@@ -16,12 +18,15 @@ class Day20(dataFile: DataFile) {
                     .split("\n")
                     .flatMapIndexed { row, line ->
                         line.mapIndexed { col, char -> Point2D(row, col) to if (char == '#') 1 else 0 }
-                    }
-                    .toMap()
+                    }.toMap()
             Image(points, lookupTable, 0)
         }
 
-    private data class Image(val points: Map<Point2D, Int>, val lookupTable: String, val default: Int) {
+    private data class Image(
+        val points: Map<Point2D, Int>,
+        val lookupTable: String,
+        val default: Int,
+    ) {
         private val minRow = points.keys.minOf { it.row }
         private val maxRow = points.keys.maxOf { it.row }
         private val minCol = points.keys.minOf { it.col }
@@ -45,8 +50,7 @@ class Day20(dataFile: DataFile) {
                 (minRow - 1..maxRow + 1)
                     .flatMap { row ->
                         (minCol - 1..maxCol + 1).map { col -> Point2D(row, col) }
-                    }
-                    .associateWith { point ->
+                    }.associateWith { point ->
                         val index =
                             orderedNeighbors()
                                 .reversed() // set the points to the south first in the int

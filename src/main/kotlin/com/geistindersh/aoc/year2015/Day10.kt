@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day10(dataFile: DataFile) {
+class Day10(
+    dataFile: DataFile,
+) {
     private val numbers = fileToString(2015, 10, dataFile)
 
     private fun seeSay(nums: String) =
@@ -17,10 +19,14 @@ class Day10(dataFile: DataFile) {
                     acc.last().add(i)
                 }
                 acc
-            }
-            .joinToString("") { it.count().toString() + it.last().toString() }
+            }.joinToString("") { it.count().toString() + it.last().toString() }
 
-    private fun seeSayTimes(times: Int) = generateSequence(numbers) { seeSay(it) }.drop(times).take(1).first().length
+    private fun seeSayTimes(times: Int) =
+        generateSequence(numbers) { seeSay(it) }
+            .drop(times)
+            .take(1)
+            .first()
+            .length
 
     fun part1() = seeSayTimes(40)
 

@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day11(dataFile: DataFile) {
+class Day11(
+    dataFile: DataFile,
+) {
     private val data = fileToString(2015, 11, dataFile)
 
     private fun String.hasMonotonicAlphabeticSeq() =
@@ -12,8 +14,7 @@ class Day11(dataFile: DataFile) {
             .windowed(3) { seq ->
                 val (a, b, c) = seq.map { it.code - 'a'.code }.toList()
                 b == (a % ALPHABET.length) + 1 && c == (b % ALPHABET.length) + 1
-            }
-            .any { it }
+            }.any { it }
 
     private fun String.containsBadChars() = this.toSet().any { it in setOf('i', 'o', 'l') }
 

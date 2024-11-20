@@ -4,26 +4,55 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day7(dataFile: DataFile) {
+class Day7(
+    dataFile: DataFile,
+) {
     private val operations =
         fileToStream(2015, 7, dataFile)
             .map { Operation.from(it) }
             .toList()
 
-    private sealed class Operation(open val name: String) {
-        data class Value(override val name: String, val value: UShort) : Operation(name)
+    private sealed class Operation(
+        open val name: String,
+    ) {
+        data class Value(
+            override val name: String,
+            val value: UShort,
+        ) : Operation(name)
 
-        data class UnprocessedValue(override val name: String, val value: String) : Operation(name)
+        data class UnprocessedValue(
+            override val name: String,
+            val value: String,
+        ) : Operation(name)
 
-        data class And(override val name: String, val lhs: String, val rhs: String) : Operation(name)
+        data class And(
+            override val name: String,
+            val lhs: String,
+            val rhs: String,
+        ) : Operation(name)
 
-        data class Or(override val name: String, val lhs: String, val rhs: String) : Operation(name)
+        data class Or(
+            override val name: String,
+            val lhs: String,
+            val rhs: String,
+        ) : Operation(name)
 
-        data class Not(override val name: String, val lhs: String) : Operation(name)
+        data class Not(
+            override val name: String,
+            val lhs: String,
+        ) : Operation(name)
 
-        data class RShift(override val name: String, val lhs: String, val amount: Int) : Operation(name)
+        data class RShift(
+            override val name: String,
+            val lhs: String,
+            val amount: Int,
+        ) : Operation(name)
 
-        data class LShift(override val name: String, val lhs: String, val amount: Int) : Operation(name)
+        data class LShift(
+            override val name: String,
+            val lhs: String,
+            val amount: Int,
+        ) : Operation(name)
 
         companion object {
             fun from(string: String): Operation {
@@ -44,13 +73,12 @@ class Day7(dataFile: DataFile) {
     private fun eval(
         expressions: MutableMap<String, Operation>,
         name: String,
-    ): Operation.Value {
-        return if (name.toUShortOrNull() != null) {
+    ): Operation.Value =
+        if (name.toUShortOrNull() != null) {
             Operation.Value(name, name.toUShort())
         } else {
             eval(expressions, expressions[name]!!)
         }
-    }
 
     private fun eval(
         expressions: MutableMap<String, Operation>,

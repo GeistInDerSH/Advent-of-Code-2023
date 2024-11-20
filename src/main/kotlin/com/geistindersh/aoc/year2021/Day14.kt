@@ -5,7 +5,9 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 import kotlin.math.ceil
 
-class Day14(dataFile: DataFile) {
+class Day14(
+    dataFile: DataFile,
+) {
     private val template = fileToStream(2021, 14, dataFile).first()
     private val mapping =
         fileToStream(2021, 14, dataFile)
@@ -13,8 +15,7 @@ class Day14(dataFile: DataFile) {
             .map { line ->
                 val (key, value) = line.split(" -> ")
                 key to value
-            }
-            .toMap()
+            }.toMap()
 
     private data class Polymer(
         private val pairCount: Map<String, Long>,

@@ -4,7 +4,10 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-data class Almanac(val seeds: List<Long>, val mappings: List<List<CropMapping>>) {
+data class Almanac(
+    val seeds: List<Long>,
+    val mappings: List<List<CropMapping>>,
+) {
     /**
      * Transform the [seed] by sending it through each of the [mappings] to get the next value
      * of the seed.
@@ -36,7 +39,11 @@ data class Almanac(val seeds: List<Long>, val mappings: List<List<CropMapping>>)
  * The container for storing how values are mapped between different plots. Because not all the "raw" data is needed,
  * some pre-processing is done when parsing
  */
-data class CropMapping(val sourceStart: Long, val sourceEnd: Long, val offset: Long)
+data class CropMapping(
+    val sourceStart: Long,
+    val sourceEnd: Long,
+    val offset: Long,
+)
 
 fun parseInput(fileType: DataFile): Almanac {
     val lines = fileToString(2023, 5, fileType).split("\n\n")
@@ -76,15 +83,14 @@ fun part1(almanac: Almanac) = almanac.seeds.minOf { almanac.seedToLocation(it) }
  * @param almanac The container with the seeds, and their transformations
  * @return The minimum value of the seed transformation
  */
-fun part2(almanac: Almanac): Long {
-    return almanac
+fun part2(almanac: Almanac): Long =
+    almanac
         .seeds
         .chunked(2)
         .parallelStream()
         .map { (start, length) -> (start..<start + length).minOf { almanac.seedToLocation(it) } }
         .toList()
         .minOf { it }
-}
 
 fun day5() {
     val input = parseInput(DataFile.Part1)

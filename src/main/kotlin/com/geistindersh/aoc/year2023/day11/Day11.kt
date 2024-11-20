@@ -6,7 +6,11 @@ import com.geistindersh.aoc.helper.report
 
 private typealias Galaxy = Pair<Int, Int>
 
-data class StarChart(val galaxies: List<Galaxy>, val emptyRows: Set<Int>, val emptyCols: Set<Int>) {
+data class StarChart(
+    val galaxies: List<Galaxy>,
+    val emptyRows: Set<Int>,
+    val emptyCols: Set<Int>,
+) {
     /**
      * Determine the sum of the distances between all [galaxies], when accounting for empty space
      * between them

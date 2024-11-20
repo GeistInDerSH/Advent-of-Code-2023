@@ -4,11 +4,13 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.pairCombinationsNonInvertible
 import com.geistindersh.aoc.helper.report
-import java.util.*
+import java.util.Stack
 import kotlin.math.ceil
 import kotlin.math.floor
 
-class Day18(dataFile: DataFile) {
+class Day18(
+    dataFile: DataFile,
+) {
     private val rawLines = fileToStream(2021, 18, dataFile).toList()
 
     private fun parseLine(line: String): List<Any> {
@@ -33,8 +35,12 @@ class Day18(dataFile: DataFile) {
         return listStart as List<Any>
     }
 
-    sealed class Sailfish(var parent: Group? = null) {
-        data class Integer(var value: Long) : Sailfish() {
+    sealed class Sailfish(
+        var parent: Group? = null,
+    ) {
+        data class Integer(
+            var value: Long,
+        ) : Sailfish() {
             override fun toString() = value.toString()
 
             fun split() {
@@ -45,7 +51,10 @@ class Day18(dataFile: DataFile) {
             }
         }
 
-        data class Group(var left: Sailfish, var right: Sailfish) : Sailfish() {
+        data class Group(
+            var left: Sailfish,
+            var right: Sailfish,
+        ) : Sailfish() {
             init {
                 left.parent = this
                 right.parent = this
@@ -66,8 +75,8 @@ class Day18(dataFile: DataFile) {
             }
         }
 
-        private fun findExplode(depth: Int = 1): Sailfish? {
-            return when (this) {
+        private fun findExplode(depth: Int = 1): Sailfish? =
+            when (this) {
                 is Integer -> null
                 is Group -> {
                     if (depth == 5) {
@@ -77,7 +86,6 @@ class Day18(dataFile: DataFile) {
                     }
                 }
             }
-        }
 
         private fun explode() {
             when (this) {
@@ -96,26 +104,23 @@ class Day18(dataFile: DataFile) {
             }
         }
 
-        private fun findSplit(): Integer? {
-            return when (this) {
+        private fun findSplit(): Integer? =
+            when (this) {
                 is Integer -> if (this.value >= 10) this else null
                 is Group -> this.left.findSplit() ?: this.right.findSplit()
             }
-        }
 
-        private fun rightMostInteger(): Integer {
-            return when (this) {
+        private fun rightMostInteger(): Integer =
+            when (this) {
                 is Integer -> this
                 is Group -> this.right.rightMostInteger()
             }
-        }
 
-        private fun leftMostInteger(): Integer {
-            return when (this) {
+        private fun leftMostInteger(): Integer =
+            when (this) {
                 is Integer -> this
                 is Group -> this.left.leftMostInteger()
             }
-        }
 
         private fun firstParentOnSide(side: Group.() -> Sailfish): Group? {
             var current = this

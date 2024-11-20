@@ -7,7 +7,9 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
 
-class Day11(dataFile: DataFile) {
+class Day11(
+    dataFile: DataFile,
+) {
     private val chart =
         fileToStream(2020, 11, dataFile)
             .flatMapIndexed { row, line ->
@@ -18,8 +20,7 @@ class Day11(dataFile: DataFile) {
                         else -> null
                     }
                 }
-            }
-            .toMap()
+            }.toMap()
             .let { chart ->
                 val visibility = generateVisibilityMap(chart)
                 SeatingChart(chart, visibility)

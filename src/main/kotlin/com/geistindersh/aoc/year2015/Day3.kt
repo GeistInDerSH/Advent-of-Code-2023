@@ -5,7 +5,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day3(dataFile: DataFile) {
+class Day3(
+    dataFile: DataFile,
+) {
     private val data =
         fileToString(2015, 3, dataFile)
             .mapNotNull {
@@ -16,8 +18,7 @@ class Day3(dataFile: DataFile) {
                     '>' -> Direction.East
                     else -> null
                 }
-            }
-            .toList()
+            }.toList()
     private val start = listOf(Pair(0, 0))
 
     fun part1() =
@@ -31,8 +32,7 @@ class Day3(dataFile: DataFile) {
             .foldIndexed(start) { index, acc, direction ->
                 val pos = if (index == 0) acc.last() else acc[acc.lastIndex - 1]
                 acc + (direction + pos)
-            }
-            .toSet()
+            }.toSet()
             .count()
 }
 

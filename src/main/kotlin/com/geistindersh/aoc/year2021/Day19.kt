@@ -6,7 +6,9 @@ import com.geistindersh.aoc.helper.iterators.pairCombinations
 import com.geistindersh.aoc.helper.report
 import kotlin.math.absoluteValue
 
-class Day19(dataFile: DataFile) {
+class Day19(
+    dataFile: DataFile,
+) {
     private val scanners =
         fileToString(2021, 19, dataFile)
             .split("\n\n")
@@ -19,10 +21,11 @@ class Day19(dataFile: DataFile) {
                         .map { Beacon.from(it) }
                         .toSet()
                 Scanner(beacons)
-            }
-            .toList()
+            }.toList()
 
-    private data class Scanner(val beacons: Set<Beacon>) {
+    private data class Scanner(
+        val beacons: Set<Beacon>,
+    ) {
         fun transformationIntersection(other: Scanner): Pair<Scanner, Beacon>? {
             for (facing in 0..<6) {
                 for (rotation in 0..<4) {
@@ -43,15 +46,19 @@ class Day19(dataFile: DataFile) {
         }
     }
 
-    private data class Beacon(val x: Int, val y: Int, val z: Int) {
+    private data class Beacon(
+        val x: Int,
+        val y: Int,
+        val z: Int,
+    ) {
         operator fun plus(other: Beacon) = Beacon(x + other.x, y + other.y, z + other.z)
 
         operator fun minus(other: Beacon) = Beacon(x - other.x, y - other.y, z - other.z)
 
         fun distanceTo(other: Beacon) = (x - other.x).absoluteValue + (y - other.y).absoluteValue + (z - other.z).absoluteValue
 
-        fun face(dir: Int): Beacon {
-            return when (dir) {
+        fun face(dir: Int): Beacon =
+            when (dir) {
                 0 -> this
                 1 -> Beacon(x, -y, -z)
                 2 -> Beacon(x, -z, y)
@@ -60,17 +67,15 @@ class Day19(dataFile: DataFile) {
                 5 -> Beacon(-x, -z, -y)
                 else -> throw IllegalArgumentException("Unknown beacon: $dir")
             }
-        }
 
-        fun rotate(dir: Int): Beacon {
-            return when (dir) {
+        fun rotate(dir: Int): Beacon =
+            when (dir) {
                 0 -> this
                 1 -> Beacon(-y, x, z)
                 2 -> Beacon(-x, -y, z)
                 3 -> Beacon(y, -x, z)
                 else -> throw IllegalArgumentException("Unknown direction: $dir")
             }
-        }
 
         companion object {
             fun from(list: List<Int>) = Beacon(list[0], list[1], list[2])

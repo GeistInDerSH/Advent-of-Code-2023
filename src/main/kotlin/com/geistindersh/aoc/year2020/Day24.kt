@@ -5,10 +5,14 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day24(dataFile: DataFile) {
+class Day24(
+    dataFile: DataFile,
+) {
     private val lines = fileToStream(2020, 24, dataFile).map { Line(it) }.toList()
 
-    private data class Line(val raw: String) {
+    private data class Line(
+        val raw: String,
+    ) {
         val directions =
             DIRECTION_REGEX
                 .findAll(raw)
@@ -50,8 +54,7 @@ class Day24(dataFile: DataFile) {
                     !isBlack && adjacentPoints == 2 -> true
                     else -> isBlack
                 }
-            }
-            .toSet()
+            }.toSet()
 
     fun part1() = lines.flipTiles().size
 

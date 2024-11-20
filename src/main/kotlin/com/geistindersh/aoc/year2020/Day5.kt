@@ -5,10 +5,14 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day5(dataFile: DataFile) {
+class Day5(
+    dataFile: DataFile,
+) {
     private val searches = fileToStream(2020, 5, dataFile).map { Zone(it) }.toList()
 
-    private data class Zone(val instruction: String) {
+    private data class Zone(
+        val instruction: String,
+    ) {
         fun getSeatPosition(): Point2D {
             var rowRange = 0..127
             var colRange = 0..7

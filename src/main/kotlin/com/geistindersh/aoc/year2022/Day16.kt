@@ -5,7 +5,9 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 import kotlin.math.max
 
-class Day16(dataFile: DataFile) {
+class Day16(
+    dataFile: DataFile,
+) {
     private val lines =
         fileToStream(2022, 16, dataFile)
             .map { "[\\s=;,]+".toRegex().split(it) }
@@ -28,8 +30,7 @@ class Day16(dataFile: DataFile) {
                     .keys
                     .associateWith { if (graph[x]?.contains(it) == true) 1 else 9999999999 }
                     .toMutableMap()
-            }
-            .toMutableMap()
+            }.toMutableMap()
 
     init {
         for (k in distances.keys) {

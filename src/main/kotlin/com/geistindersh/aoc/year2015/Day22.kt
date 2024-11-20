@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day22(dataFile: DataFile) {
+class Day22(
+    dataFile: DataFile,
+) {
     private val boss =
         "[0-9]+"
             .toRegex()
@@ -36,17 +38,26 @@ class Day22(dataFile: DataFile) {
         }
     }
 
-    private abstract class Character(open val hp: Int) {
+    private abstract class Character(
+        open val hp: Int,
+    ) {
         fun isAlive() = hp > 0
     }
 
-    private data class Player(override var hp: Int, var mp: Int, var armor: Int = 0) : Character(hp) {
+    private data class Player(
+        override var hp: Int,
+        var mp: Int,
+        var armor: Int = 0,
+    ) : Character(hp) {
         fun hitBy(boss: Boss) {
             hp -= (boss.dmg - armor).coerceAtLeast(1)
         }
     }
 
-    private data class Boss(override var hp: Int, val dmg: Int) : Character(hp)
+    private data class Boss(
+        override var hp: Int,
+        val dmg: Int,
+    ) : Character(hp)
 
     private data class Game(
         val player: Player,

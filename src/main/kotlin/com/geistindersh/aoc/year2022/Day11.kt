@@ -5,13 +5,20 @@ import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 import java.math.BigInteger
 
-class Day11(dataFile: DataFile) {
+class Day11(
+    dataFile: DataFile,
+) {
     private val monkeys =
         fileToString(2022, 11, dataFile)
             .split("\n\n")
             .associate { line ->
                 val lines = line.split("\n")
-                val monkey = lines[0].trim(':').drop(7).toInt().toBigInteger()
+                val monkey =
+                    lines[0]
+                        .trim(':')
+                        .drop(7)
+                        .toInt()
+                        .toBigInteger()
                 val items =
                     lines[1]
                         .replace(",", "")
@@ -40,8 +47,18 @@ class Day11(dataFile: DataFile) {
                     }
                 val test: (BigInteger) -> BigInteger =
                     lines[3].split(" ").drop(3).last().toInt().toBigInteger().let {
-                        val trueCond = lines[4].split(" ").last().toInt().toBigInteger()
-                        val falseCond = lines[5].split(" ").last().toInt().toBigInteger()
+                        val trueCond =
+                            lines[4]
+                                .split(" ")
+                                .last()
+                                .toInt()
+                                .toBigInteger()
+                        val falseCond =
+                            lines[5]
+                                .split(" ")
+                                .last()
+                                .toInt()
+                                .toBigInteger()
 
                         val fn = { x: BigInteger -> if (x % it == BigInteger.ZERO) trueCond else falseCond }
                         fn
@@ -54,9 +71,12 @@ class Day11(dataFile: DataFile) {
             .split("\n\n")
             .map { block ->
                 val relevant = block.split("\n")[3]
-                relevant.split(" ").last().toInt().toBigInteger()
-            }
-            .fold(BigInteger.ONE, BigInteger::multiply)
+                relevant
+                    .split(" ")
+                    .last()
+                    .toInt()
+                    .toBigInteger()
+            }.fold(BigInteger.ONE, BigInteger::multiply)
 
     private data class MonkeyBox(
         val items: MutableList<BigInteger>,

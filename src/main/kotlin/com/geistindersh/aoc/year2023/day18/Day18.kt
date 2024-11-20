@@ -5,9 +5,14 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-data class DigLocation(val direction: Direction, val distance: Int)
+data class DigLocation(
+    val direction: Direction,
+    val distance: Int,
+)
 
-data class DigPlan(private val digLocations: List<DigLocation>) {
+data class DigPlan(
+    private val digLocations: List<DigLocation>,
+) {
     /**
      * @return The area inside the [digLocations]
      * @see <a href="https://en.wikipedia.org/wiki/Shoelace_formula">Shoelace Formula</a>
@@ -38,8 +43,7 @@ fun part1(dataFile: DataFile): Long {
                 val direction = Direction.tryFromString(dir) ?: throw Exception("Couldn't convert $dir to Direction")
                 val distance = dis.toInt()
                 DigLocation(direction, distance)
-            }
-            .toList()
+            }.toList()
     return DigPlan(plan).areaInsideLocations()
 }
 
@@ -57,8 +61,7 @@ fun part2(dataFile: DataFile): Long {
                 val distance = hexString.substring(0, hexString.length - 1).toInt(16)
 
                 DigLocation(direction, distance)
-            }
-            .toList()
+            }.toList()
     return DigPlan(plan).areaInsideLocations()
 }
 

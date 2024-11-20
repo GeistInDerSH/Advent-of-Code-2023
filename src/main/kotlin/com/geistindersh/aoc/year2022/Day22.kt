@@ -6,7 +6,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day22(dataFile: DataFile) {
+class Day22(
+    dataFile: DataFile,
+) {
     private val grid =
         fileToStream(2022, 22, dataFile)
             .takeWhile { it.isNotEmpty() }
@@ -18,8 +20,7 @@ class Day22(dataFile: DataFile) {
                         Point2D(row = row, col = col) to c
                     }
                 }
-            }
-            .associate { it }
+            }.associate { it }
     private val commands = Steps.parseLine(fileToStream(2022, 22, dataFile).last())
 
     private sealed class Steps {
@@ -27,7 +28,9 @@ class Day22(dataFile: DataFile) {
 
         data object Right : Steps()
 
-        data class Walk(val steps: Int) : Steps()
+        data class Walk(
+            val steps: Int,
+        ) : Steps()
 
         companion object {
             private val re = "[0-9]+|[LR]".toRegex()
@@ -41,8 +44,7 @@ class Day22(dataFile: DataFile) {
                             "R" -> Right
                             else -> Walk(it.value.toInt())
                         }
-                    }
-                    .toList()
+                    }.toList()
         }
     }
 
@@ -76,8 +78,7 @@ class Day22(dataFile: DataFile) {
 
                                 else -> Pair(step, d)
                             }
-                        }
-                            .take(cmd.steps + 1)
+                        }.take(cmd.steps + 1)
                             .last()
                     pos = p
                     direction = d

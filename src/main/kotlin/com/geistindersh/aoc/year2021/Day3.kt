@@ -6,7 +6,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day3(dataFile: DataFile) {
+class Day3(
+    dataFile: DataFile,
+) {
     private val bits = fileToStream(2021, 3, dataFile).map { line -> line.map { it } }.toList()
 
     private fun List<List<Char>>.getZerosAndOnesInColumn(column: Int) =
@@ -38,8 +40,8 @@ class Day3(dataFile: DataFile) {
         index: Int,
         bit: Char,
         maximize: Boolean,
-    ): String {
-        return if (this.size == 2 && index + 1 == this[0].size) {
+    ): String =
+        if (this.size == 2 && index + 1 == this[0].size) {
             this[1].joinToString("")
         } else if (this.size == 1 || index + 1 == this[0].size) {
             this[0].joinToString("")
@@ -57,7 +59,6 @@ class Day3(dataFile: DataFile) {
                 }
             filter.filterByCommonBit(index + 1, nextBit, maximize)
         }
-    }
 
     fun part1() = getGammaAndEpsilon().toList().reduce(Int::times)
 

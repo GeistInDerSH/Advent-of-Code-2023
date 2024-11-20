@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day23(dataFile: DataFile) {
+class Day23(
+    dataFile: DataFile,
+) {
     private val instructions =
         fileToStream(2015, 23, dataFile)
             .map { it.replace(",", "") }
@@ -19,21 +21,34 @@ class Day23(dataFile: DataFile) {
                     "jio" -> Instruction.JumpIfOne(parts[1], parts[2].toInt())
                     else -> throw IllegalArgumentException("Unexpected line: $line")
                 }
-            }
-            .toList()
+            }.toList()
 
     private sealed class Instruction {
-        data class Half(val register: String) : Instruction()
+        data class Half(
+            val register: String,
+        ) : Instruction()
 
-        data class Triple(val register: String) : Instruction()
+        data class Triple(
+            val register: String,
+        ) : Instruction()
 
-        data class Increment(val register: String) : Instruction()
+        data class Increment(
+            val register: String,
+        ) : Instruction()
 
-        data class Jump(val offset: Int) : Instruction()
+        data class Jump(
+            val offset: Int,
+        ) : Instruction()
 
-        data class JumpIfEven(val register: String, val offset: Int) : Instruction()
+        data class JumpIfEven(
+            val register: String,
+            val offset: Int,
+        ) : Instruction()
 
-        data class JumpIfOne(val register: String, val offset: Int) : Instruction()
+        data class JumpIfOne(
+            val register: String,
+            val offset: Int,
+        ) : Instruction()
     }
 
     private fun List<Instruction>.run(registers: MutableMap<String, Int>): Map<String, Int> {

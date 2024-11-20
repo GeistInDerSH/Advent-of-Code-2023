@@ -4,11 +4,14 @@ import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
-import java.util.*
-import kotlin.collections.ArrayDeque
+import java.util.Stack
 import kotlin.math.max
 
-data class Trail(val row: Int, val col: Int, val symbol: Char) {
+data class Trail(
+    val row: Int,
+    val col: Int,
+    val symbol: Char,
+) {
     val pair = Pair(row, col)
     val allNeighbors = Direction.entries.map { it + pair }
     val neighbors =
@@ -21,7 +24,9 @@ data class Trail(val row: Int, val col: Int, val symbol: Char) {
         }
 }
 
-data class Hike(val trail: Set<Trail>) {
+data class Hike(
+    val trail: Set<Trail>,
+) {
     private val start = trail.minBy { it.row }
     private val end = trail.maxBy { it.row }
     private val coordinateToTrail = trail.associateBy { it.pair }
@@ -82,8 +87,8 @@ data class Hike(val trail: Set<Trail>) {
         current: Trail,
         seen: Stack<Trail>,
         longest: Int,
-    ): Int {
-        return if (current == end) {
+    ): Int =
+        if (current == end) {
             max(longest, seen.size)
         } else {
             val localMax =
@@ -99,7 +104,6 @@ data class Hike(val trail: Set<Trail>) {
 
             max(localMax, longest)
         }
-    }
 
     /**
      * Walk the path from the start to the end, without repeating any steps, & ignore the
@@ -116,8 +120,8 @@ data class Hike(val trail: Set<Trail>) {
         seen: Stack<Trail>,
         longest: Int,
         distance: Int,
-    ): Int {
-        return if (current == end) {
+    ): Int =
+        if (current == end) {
             max(longest, distance)
         } else {
             val found = trailDistance[current]!!.filterNot { (_, t) -> t in seen }
@@ -135,7 +139,6 @@ data class Hike(val trail: Set<Trail>) {
 
             max(localMax, longest)
         }
-    }
 
     fun part1() = depthFirstSearch(start, Stack(), 0)
 
@@ -146,10 +149,10 @@ fun parseInput(dataFile: DataFile): Hike {
     val trails =
         fileToStream(2023, 23, dataFile)
             .flatMapIndexed { row, line ->
-                line.mapIndexed { col, c -> Trail(row, col, c) }
+                line
+                    .mapIndexed { col, c -> Trail(row, col, c) }
                     .filter { it.symbol != '#' }
-            }
-            .toSet()
+            }.toSet()
     return Hike(trails)
 }
 

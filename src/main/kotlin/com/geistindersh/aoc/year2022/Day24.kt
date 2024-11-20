@@ -6,7 +6,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day24(lines: List<String>) {
+class Day24(
+    lines: List<String>,
+) {
     constructor(dataFile: DataFile) : this(fileToStream(2022, 24, dataFile).toList())
 
     private val storms =
@@ -27,8 +29,8 @@ class Day24(lines: List<String>) {
     private val end = Point2D(lines.lastIndex, lines.last().indexOf('.'))
     private val mapEnd = Point2D(lines.lastIndex, lines.last().lastIndex)
 
-    private fun moveStorms(storms: List<Pair<Point2D, Direction>>): List<Pair<Point2D, Direction>> {
-        return storms
+    private fun moveStorms(storms: List<Pair<Point2D, Direction>>): List<Pair<Point2D, Direction>> =
+        storms
             .map { (point, dir) ->
                 val newPoint = point + dir
                 val pos =
@@ -41,7 +43,6 @@ class Day24(lines: List<String>) {
                     }
                 pos to dir
             }
-    }
 
     private fun isInBounds(point: Point2D) = point.row in 1..<mapEnd.row && point.col in 1..<mapEnd.col
 

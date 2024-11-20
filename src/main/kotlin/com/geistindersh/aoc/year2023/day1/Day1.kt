@@ -10,8 +10,8 @@ import com.geistindersh.aoc.helper.report
  *
  * @return The numeric representation of the string
  */
-fun String.wordStringToInt(): Int {
-    return when (this) {
+fun String.wordStringToInt(): Int =
+    when (this) {
         "one", "1" -> 1
         "two", "2" -> 2
         "three", "3" -> 3
@@ -23,7 +23,6 @@ fun String.wordStringToInt(): Int {
         "nine", "9" -> 9
         else -> 0
     }
-}
 
 /**
  * Read through each line of the file, finding the first and last instance that is in
@@ -36,13 +35,12 @@ fun String.wordStringToInt(): Int {
 fun solve(
     fileType: DataFile,
     validValues: List<String>,
-): Int {
-    return fileToStream(2023, 1, fileType).sumOf {
+): Int =
+    fileToStream(2023, 1, fileType).sumOf {
         val first = (it.findAnyOf(validValues)?.second ?: "0").wordStringToInt()
         val last = (it.findLastAnyOf(validValues)?.second ?: "0").wordStringToInt()
         (first * 10) + last
     }
-}
 
 fun day1() {
     // part1 only allows for numbers to be parsed out from the strings
@@ -50,8 +48,24 @@ fun day1() {
     // part2 allows for numbers, or the text version of the numbers to represent the number
     val validValuesNumAndStr =
         listOf(
-            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-            "1", "2", "3", "4", "5", "6", "7", "8", "9",
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
         )
     report(
         year = 2023,

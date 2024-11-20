@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day19(dataFile: DataFile) {
+class Day19(
+    dataFile: DataFile,
+) {
     private val grammar =
         fileToString(2020, 19, dataFile).let { data ->
             val (rules, input) = data.split("\n\n")
@@ -12,7 +14,10 @@ class Day19(dataFile: DataFile) {
             Message(ruleMap, input.split("\n"))
         }
 
-    private data class Message(val rules: Map<Int, Grammar>, val input: List<String>) {
+    private data class Message(
+        val rules: Map<Int, Grammar>,
+        val input: List<String>,
+    ) {
         private fun String.hasMatch(): Boolean {
             val strings = this.hasMatch(rules[0]!!)
             return strings.any { it.isEmpty() }
@@ -52,11 +57,18 @@ class Day19(dataFile: DataFile) {
     }
 
     private sealed class Grammar {
-        data class Constant(val value: String) : Grammar()
+        data class Constant(
+            val value: String,
+        ) : Grammar()
 
-        data class Rule(val rules: List<Int>) : Grammar()
+        data class Rule(
+            val rules: List<Int>,
+        ) : Grammar()
 
-        data class OptionalRule(val lhs: Rule, val rhs: Rule) : Grammar()
+        data class OptionalRule(
+            val lhs: Rule,
+            val rhs: Rule,
+        ) : Grammar()
 
         companion object {
             fun from(line: String): Pair<Int, Grammar> {
@@ -91,10 +103,12 @@ class Day19(dataFile: DataFile) {
                         .toMutableMap()
                         .apply {
                             set(8, Grammar.OptionalRule(Grammar.Rule(listOf(42)), Grammar.Rule(listOf(42, 8))))
-                            set(11, Grammar.OptionalRule(Grammar.Rule(listOf(42, 31)), Grammar.Rule(listOf(42, 11, 31))))
+                            set(
+                                11,
+                                Grammar.OptionalRule(Grammar.Rule(listOf(42, 31)), Grammar.Rule(listOf(42, 11, 31))),
+                            )
                         },
-            )
-            .matchCount()
+            ).matchCount()
 }
 
 fun day19() {

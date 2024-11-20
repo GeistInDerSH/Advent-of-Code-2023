@@ -6,7 +6,9 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
 
-class Day3(dataFile: DataFile) {
+class Day3(
+    dataFile: DataFile,
+) {
     private val data =
         fileToStream(2020, 3, dataFile)
             .flatMapIndexed { row, line -> line.mapIndexed { col, value -> Point2D(row, col) to value } }
@@ -24,8 +26,7 @@ class Day3(dataFile: DataFile) {
                 } else {
                     it.copy(col = maxCol)
                 }
-            }
-            .takeWhileInclusive { it.row != maxRow }
+            }.takeWhileInclusive { it.row != maxRow }
             .count { data[it]!! == '#' }
 
     fun part1() = descend(Point2D(1, 3))

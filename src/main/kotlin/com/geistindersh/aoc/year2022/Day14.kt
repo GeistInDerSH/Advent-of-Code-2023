@@ -5,7 +5,9 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
 
-class Day14(dataFile: DataFile) {
+class Day14(
+    dataFile: DataFile,
+) {
     private val data =
         fileToStream(2022, 14, dataFile)
             .map { line ->
@@ -13,8 +15,7 @@ class Day14(dataFile: DataFile) {
                     val (l, r) = it.split(",", limit = 2)
                     Pair(l.toInt(), r.toInt())
                 }
-            }
-            .toList()
+            }.toList()
     private val bounds =
         data
             .flatMap { points ->
@@ -46,10 +47,8 @@ class Day14(dataFile: DataFile) {
 
                             else -> null
                         }
-                    }
-                    .flatten()
-            }
-            .toMutableSet()
+                    }.flatten()
+            }.toMutableSet()
             .apply { addAll(data.flatten()) }
             .toSet()
     private val bottom = bounds.maxOf { it.second } + 1
@@ -87,12 +86,11 @@ class Day14(dataFile: DataFile) {
             }
         }
 
-    fun part1(): Int {
-        return pourSand(true)
+    fun part1(): Int =
+        pourSand(true)
             .drop(1)
             .takeWhileInclusive { it.isNotEmpty() }
             .count()
-    }
 
     fun part2() =
         pourSand(false)

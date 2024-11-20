@@ -5,14 +5,18 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day14(dataFile: DataFile) {
+class Day14(
+    dataFile: DataFile,
+) {
     private val instructions =
         fileToStream(2020, 14, dataFile)
             .map { Program.from(it) }
             .toList()
 
     private sealed class Program {
-        data class Mask(val mask: List<Pair<Int, Long>>) : Program() {
+        data class Mask(
+            val mask: List<Pair<Int, Long>>,
+        ) : Program() {
             private val floatingBitPositions =
                 mask
                     .map { it.first }
@@ -38,7 +42,8 @@ class Day14(dataFile: DataFile) {
 
             fun addresses(address: Long): List<Long> {
                 var addr = address
-                mask.filter { it.second == 1L } // 0 won't change the value so we can skip it
+                mask
+                    .filter { it.second == 1L } // 0 won't change the value so we can skip it
                     .forEach { (idx, bit) -> addr = addr.setBit(idx, bit) }
 
                 val permutations = mutableListOf(addr)
@@ -53,13 +58,16 @@ class Day14(dataFile: DataFile) {
             }
         }
 
-        data class Memory(val position: Long, val value: Long) : Program()
+        data class Memory(
+            val position: Long,
+            val value: Long,
+        ) : Program()
 
         companion object {
             private val NUMBER_REGEX = "[0-9]+".toRegex()
 
-            fun from(line: String): Program {
-                return if (line.startsWith("mask = ")) {
+            fun from(line: String): Program =
+                if (line.startsWith("mask = ")) {
                     val bitSetLocation =
                         line
                             .substringAfter("mask = ")
@@ -76,7 +84,6 @@ class Day14(dataFile: DataFile) {
                             .toList()
                     Memory(position, value)
                 }
-            }
         }
     }
 

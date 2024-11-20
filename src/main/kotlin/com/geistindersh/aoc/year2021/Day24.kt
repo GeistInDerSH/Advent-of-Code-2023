@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day24(dataFile: DataFile) {
+class Day24(
+    dataFile: DataFile,
+) {
     private val rawInput = fileToStream(2021, 24, dataFile).toList()
     private val instructions =
         rawInput
@@ -28,17 +30,34 @@ class Day24(dataFile: DataFile) {
         }
 
     private sealed class Instruction {
-        data class Inp(val a: String) : Instruction()
+        data class Inp(
+            val a: String,
+        ) : Instruction()
 
-        data class Add(val a: String, val b: String) : Instruction()
+        data class Add(
+            val a: String,
+            val b: String,
+        ) : Instruction()
 
-        data class Mul(val a: String, val b: String) : Instruction()
+        data class Mul(
+            val a: String,
+            val b: String,
+        ) : Instruction()
 
-        data class Div(val a: String, val b: String) : Instruction()
+        data class Div(
+            val a: String,
+            val b: String,
+        ) : Instruction()
 
-        data class Mod(val a: String, val b: String) : Instruction()
+        data class Mod(
+            val a: String,
+            val b: String,
+        ) : Instruction()
 
-        data class Eql(val a: String, val b: String) : Instruction()
+        data class Eql(
+            val a: String,
+            val b: String,
+        ) : Instruction()
 
         companion object {
             fun from(line: String): Instruction {

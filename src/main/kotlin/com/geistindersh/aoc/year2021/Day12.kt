@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day12(dataFile: DataFile) {
+class Day12(
+    dataFile: DataFile,
+) {
     private val graph =
         fileToStream(2021, 12, dataFile)
             .flatMap { line ->
@@ -18,10 +20,12 @@ class Day12(dataFile: DataFile) {
                     end == "start" -> listOf(Node(end, start))
                     else -> listOf(Node(start, end), Node(end, start))
                 }
-            }
-            .toSet()
+            }.toSet()
 
-    data class Node(val current: String, val next: String) {
+    data class Node(
+        val current: String,
+        val next: String,
+    ) {
         val nextIsLower = next == next.lowercase()
     }
 
@@ -46,8 +50,7 @@ class Day12(dataFile: DataFile) {
                         isPart2 && !seenAnyTwice -> Triple(node, path, true)
                         else -> null
                     }
-                }
-                .map { (node, newPath, anyTwice) -> this.copy(node = node, path = newPath, seenAnyTwice = anyTwice) }
+                }.map { (node, newPath, anyTwice) -> this.copy(node = node, path = newPath, seenAnyTwice = anyTwice) }
     }
 
     private fun randomWalk(isPart2: Boolean): Int {

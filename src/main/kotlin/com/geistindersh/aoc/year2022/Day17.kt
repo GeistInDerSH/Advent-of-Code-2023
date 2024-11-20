@@ -4,12 +4,20 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day17(dataFile: DataFile) {
+class Day17(
+    dataFile: DataFile,
+) {
     private val pattern = fileToString(2022, 17, dataFile)
 
-    private data class Checkpoint(val peak: List<Int>, val patternIndex: Int, val rockIndex: Long)
+    private data class Checkpoint(
+        val peak: List<Int>,
+        val patternIndex: Int,
+        val rockIndex: Long,
+    )
 
-    private class Pile(private val pattern: String) {
+    private class Pile(
+        private val pattern: String,
+    ) {
         private val points = (0..6).map { Pair(it, -1) }.toMutableSet()
         private var patternIndex = 0
             set(idx) {
@@ -58,12 +66,13 @@ class Day17(dataFile: DataFile) {
             return Checkpoint(peaks, patternIndex, rockIndex)
         }
 
-        private fun hasIntersection(rock: Rock): Boolean {
-            return rock.points.intersect(points).isNotEmpty() || rock.points.any { it.first !in (0..6) }
-        }
+        private fun hasIntersection(rock: Rock): Boolean =
+            rock.points.intersect(points).isNotEmpty() || rock.points.any { it.first !in (0..6) }
     }
 
-    private data class Rock(val points: Collection<Pair<Int, Int>>) {
+    private data class Rock(
+        val points: Collection<Pair<Int, Int>>,
+    ) {
         fun push(direction: Char): Rock {
             val newPoints =
                 when (direction) {

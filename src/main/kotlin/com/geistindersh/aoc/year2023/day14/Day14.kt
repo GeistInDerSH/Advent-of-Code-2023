@@ -5,11 +5,17 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-data class LavaRock(var row: Int, var col: Int, val char: Char) : Cloneable {
+data class LavaRock(
+    var row: Int,
+    var col: Int,
+    val char: Char,
+) : Cloneable {
     public override fun clone() = LavaRock(row, col, char)
 }
 
-class Grid(private val rocks: List<LavaRock>) {
+class Grid(
+    private val rocks: List<LavaRock>,
+) {
     private val colMax = rocks.maxOf { it.col }
     private val rowMax = rocks.maxOf { it.row }
 
@@ -131,8 +137,8 @@ class Grid(private val rocks: List<LavaRock>) {
             .sumOf { it.row }
     }
 
-    override fun equals(other: Any?): Boolean {
-        return when (other) {
+    override fun equals(other: Any?): Boolean =
+        when (other) {
             null -> false
             !is Grid -> false
             else ->
@@ -140,7 +146,6 @@ class Grid(private val rocks: List<LavaRock>) {
                     other.rocks.any { it.col == rock.col && it.row == rock.row && it.char == rock.char }
                 }
         }
-    }
 
     override fun hashCode(): Int {
         var result = rocks.hashCode()
@@ -163,8 +168,7 @@ fun parseInput(fileType: DataFile): Grid {
                         null
                     }
                 }
-            }
-            .reversed()
+            }.reversed()
     return Grid(rocks)
 }
 

@@ -3,7 +3,7 @@ package com.geistindersh.aoc.year2023.day17
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
-import java.util.*
+import java.util.PriorityQueue
 
 /**
  * What plane the given vertex is on
@@ -14,14 +14,20 @@ enum class Plane {
     Start,
 }
 
-data class Vertex(val position: Pair<Int, Int>, var plane: Plane, val heatLoss: Int) : Comparable<Vertex> {
+data class Vertex(
+    val position: Pair<Int, Int>,
+    var plane: Plane,
+    val heatLoss: Int,
+) : Comparable<Vertex> {
     var calculatedHeatLoss = 0
     var totalHeatLoss = 1 shl 30 // Do not use Int.MAX_VALUE as it may overflow
 
     override fun compareTo(other: Vertex) = totalHeatLoss - other.totalHeatLoss
 }
 
-data class Graph(val nodes: List<List<Int>>) {
+data class Graph(
+    val nodes: List<List<Int>>,
+) {
     private val vertices =
         run {
             val planes = listOf(Plane.Vertical, Plane.Horizontal)
@@ -50,13 +56,12 @@ data class Graph(val nodes: List<List<Int>>) {
         x: Int,
         y: Int,
         plane: Plane,
-    ): Vertex? {
-        return if (x < 0 || y < 0 || y >= nodes.size || x >= nodes[0].size) {
+    ): Vertex? =
+        if (x < 0 || y < 0 || y >= nodes.size || x >= nodes[0].size) {
             null
         } else {
             vertices[y * 2 * nodes.size + x * 2 + plane.ordinal]
         }
-    }
 
     /**
      * Get vertices along the horizontal axis
@@ -156,15 +161,14 @@ data class Graph(val nodes: List<List<Int>>) {
         v: Vertex,
         minDistance: Int,
         maxDistance: Int,
-    ): List<Vertex> {
-        return when (v.plane) {
+    ): List<Vertex> =
+        when (v.plane) {
             Plane.Vertical -> verticalEdges(v, minDistance, maxDistance)
             Plane.Horizontal -> horizontalEdges(v, minDistance, maxDistance)
             Plane.Start -> {
                 horizontalEdges(v, minDistance, maxDistance) + verticalEdges(v, minDistance, maxDistance)
             }
         }
-    }
 
     /**
      * @param minDistance The minimum distance we can step

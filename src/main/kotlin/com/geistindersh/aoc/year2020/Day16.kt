@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day16(dataFile: DataFile) {
+class Day16(
+    dataFile: DataFile,
+) {
     private val fields: Map<String, Set<Int>>
     private val userTickets: List<Int>
     private val nearbyTickets: List<List<Int>>

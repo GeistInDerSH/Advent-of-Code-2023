@@ -4,7 +4,14 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-data class Vector(val px: Double, val py: Double, val pz: Double, val vx: Double, val vy: Double, val vz: Double) {
+data class Vector(
+    val px: Double,
+    val py: Double,
+    val pz: Double,
+    val vx: Double,
+    val vy: Double,
+    val vz: Double,
+) {
     private val a = vy
     private val b = -vx
     val c = vy * px - vx * py
@@ -18,10 +25,9 @@ data class Vector(val px: Double, val py: Double, val pz: Double, val vx: Double
     private fun isPositive(
         x: Double,
         y: Double,
-    ): Boolean {
-        return (x - px < 0.0) == (vx < 0.0) &&
+    ): Boolean =
+        (x - px < 0.0) == (vx < 0.0) &&
             (y - py < 0.0) == (vy < 0.0)
-    }
 
     /**
      * Check to see if two vectors intersect, and return the point that they do
@@ -46,7 +52,9 @@ data class Vector(val px: Double, val py: Double, val pz: Double, val vx: Double
     }
 }
 
-data class Hailstones(val vectors: Set<Vector>) {
+data class Hailstones(
+    val vectors: Set<Vector>,
+) {
     fun part1(
         start: Long,
         end: Long,
@@ -61,8 +69,7 @@ data class Hailstones(val vectors: Set<Vector>) {
                     // only count those that intersect in the range
                     .count { it.first in range && it.second in range }
                     .toLong()
-            }
-            .sumOf { it }
+            }.sumOf { it }
     }
 
     private fun solve(
@@ -75,15 +82,16 @@ data class Hailstones(val vectors: Set<Vector>) {
             m
                 .take(4)
                 .map { lst ->
-                    lst.zip(m[4])
+                    lst
+                        .zip(m[4])
                         .map { it.first - it.second }
                         .toMutableList()
-                }
-                .toMutableList()
+                }.toMutableList()
 
         n.indices.forEach { i ->
             n[i] =
-                n[i].indices
+                n[i]
+                    .indices
                     .map { k -> n[i][k] / n[i][i] }
                     .toMutableList()
 
@@ -130,8 +138,7 @@ fun parseInput(dataFile: DataFile): Hailstones {
                 val (px, py, pz) = pos.split(',').map { it.trim().toDouble() }
                 val (vx, vy, vz) = vel.split(',').map { it.trim().toDouble() }
                 Vector(px, py, pz, vx, vy, vz)
-            }
-            .toSet()
+            }.toSet()
     return Hailstones(hail)
 }
 

@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day13(dataFile: DataFile) {
+class Day13(
+    dataFile: DataFile,
+) {
     private val numbers =
         fileToString(2020, 13, dataFile)
             .replace("\n", ",")
@@ -15,7 +17,10 @@ class Day13(dataFile: DataFile) {
     private val times = numbers.drop(1)
     private val validTimes = times.filterNotNull()
 
-    private data class Bus(val id: Long, val offset: Long) {
+    private data class Bus(
+        val id: Long,
+        val offset: Long,
+    ) {
         constructor(id: Long, offset: Int) : this(id, offset.toLong())
 
         fun meetsSchedule(time: Long) = (time + offset) % id == 0L

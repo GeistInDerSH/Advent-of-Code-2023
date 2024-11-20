@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day15(dataFile: DataFile) {
+class Day15(
+    dataFile: DataFile,
+) {
     private val numbers =
         "[0-9]+"
             .toRegex()

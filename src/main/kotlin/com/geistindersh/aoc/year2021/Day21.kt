@@ -4,18 +4,23 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day21(dataFile: DataFile) {
+class Day21(
+    dataFile: DataFile,
+) {
     private val game =
         fileToStream(2021, 21, dataFile)
             .map { line ->
                 val (index, start) = "[0-9]+".toRegex().findAll(line).map { it.value.toInt() }.toList()
                 Player(index, start, 0)
-            }
-            .toList()
+            }.toList()
             .sortedBy { it.index }
             .let { (p1, p2) -> Game(p1, p2) }
 
-    private data class Player(val index: Int, val position: Int, val score: Int) {
+    private data class Player(
+        val index: Int,
+        val position: Int,
+        val score: Int,
+    ) {
         fun next(moves: Int): Player {
             val position = (position + moves - 1) % 10 + 1
             return this.copy(position = position, score = score + position)
@@ -43,7 +48,10 @@ class Day21(dataFile: DataFile) {
             }
     }
 
-    private class Die(private var rolls: Int = 0, private var value: Int = 0) {
+    private class Die(
+        private var rolls: Int = 0,
+        private var value: Int = 0,
+    ) {
         fun totalRolls() = rolls
 
         fun next(): Int {
@@ -76,8 +84,7 @@ class Day21(dataFile: DataFile) {
                 .map { (die, freq) ->
                     val (winsP1, winsP2) = play(game.next(die))
                     Pair(winsP1 * freq, winsP2 * freq)
-                }
-                .reduce { (wins1, wins2), (score1, score2) -> (wins1 + score1) to (wins2 + score2) }
+                }.reduce { (wins1, wins2), (score1, score2) -> (wins1 + score1) to (wins2 + score2) }
                 .also { history[game] = it }
         }
 

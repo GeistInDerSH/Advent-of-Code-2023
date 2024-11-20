@@ -4,14 +4,19 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day22(dataFile: DataFile) {
+class Day22(
+    dataFile: DataFile,
+) {
     private val players =
         fileToString(2020, 22, dataFile)
             .split("\n\n")
             .map { Player.from(it.split("\n")) }
             .toList()
 
-    private data class Player(val id: Int, val deck: List<Int>) {
+    private data class Player(
+        val id: Int,
+        val deck: List<Int>,
+    ) {
         val hasCards = deck.isNotEmpty()
 
         fun topCard() = deck.first()

@@ -5,7 +5,9 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day4(dataFile: DataFile) {
+class Day4(
+    dataFile: DataFile,
+) {
     private val numbers = fileToStream(2021, 4, dataFile).first().split(",").map(String::toInt)
     private val boards =
         fileToString(2021, 4, dataFile)
@@ -17,7 +19,9 @@ class Day4(dataFile: DataFile) {
                 BingoBoard(values)
             }
 
-    private data class BingoBoard(val board: List<List<Int>>) {
+    private data class BingoBoard(
+        val board: List<List<Int>>,
+    ) {
         private val seen = Array(board.size) { BooleanArray(board[0].size) { false } }
         private var lastCalled = -1
 
@@ -43,8 +47,7 @@ class Day4(dataFile: DataFile) {
                 board
                     .flatMapIndexed { row, ints ->
                         ints.mapIndexed { col, i -> if (seen[row][col]) 0 else i }
-                    }
-                    .reduce(Int::plus)
+                    }.reduce(Int::plus)
     }
 
     fun part1(): Int {

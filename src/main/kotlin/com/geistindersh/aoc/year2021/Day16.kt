@@ -4,16 +4,22 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day16(dataFile: DataFile) {
+class Day16(
+    dataFile: DataFile,
+) {
     private val data = fileToString(2021, 16, dataFile)
 
     private val lookupTable =
-        "0123456789ABCDEF".mapIndexed { i, c ->
-            val paddedBinary = i.toString(2).let { (0..<4 - it.length).joinToString("") { "0" } + it }
-            c to paddedBinary
-        }.toMap()
+        "0123456789ABCDEF"
+            .mapIndexed { i, c ->
+                val paddedBinary = i.toString(2).let { (0..<4 - it.length).joinToString("") { "0" } + it }
+                c to paddedBinary
+            }.toMap()
 
-    private sealed class Packet(open val version: Int, open val typeId: Int) {
+    private sealed class Packet(
+        open val version: Int,
+        open val typeId: Int,
+    ) {
         data class LiteralValue(
             override val version: Int,
             override val typeId: Int,
@@ -24,18 +30,16 @@ class Day16(dataFile: DataFile) {
             override val version: Int,
             override val typeId: Int,
             val subPackets: List<Packet>,
-        ) :
-            Packet(version, typeId)
+        ) : Packet(version, typeId)
 
-        fun sumVersions(): Int {
-            return when (this) {
+        fun sumVersions(): Int =
+            when (this) {
                 is LiteralValue -> version
                 is Operator -> version + subPackets.sumOf { it.sumVersions() }
             }
-        }
 
-        fun value(): Long {
-            return when (this) {
+        fun value(): Long =
+            when (this) {
                 // Join to a binary string, and convert to a long
                 is LiteralValue -> literals.joinToString("") { it }.toLong(2)
                 is Operator -> {
@@ -51,7 +55,6 @@ class Day16(dataFile: DataFile) {
                     }
                 }
             }
-        }
     }
 
     /**

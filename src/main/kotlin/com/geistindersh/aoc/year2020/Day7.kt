@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-class Day7(dataFile: DataFile) {
+class Day7(
+    dataFile: DataFile,
+) {
     private val target = "shiny gold"
     private val bags =
         fileToStream(2020, 7, dataFile)
@@ -22,10 +24,12 @@ class Day7(dataFile: DataFile) {
                 }
 
                 outer to inner.toList()
-            }
-            .toMap()
+            }.toMap()
 
-    private data class Bag(val name: String, val count: Int)
+    private data class Bag(
+        val name: String,
+        val count: Int,
+    )
 
     private fun isReachable(
         name: String,

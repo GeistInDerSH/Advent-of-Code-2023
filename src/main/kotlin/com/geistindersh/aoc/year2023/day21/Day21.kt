@@ -5,13 +5,24 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-data class Obstacle(val row: Int, val col: Int, val char: Char)
+data class Obstacle(
+    val row: Int,
+    val col: Int,
+    val char: Char,
+)
 
-data class Location(val row: Int, val col: Int) {
+data class Location(
+    val row: Int,
+    val col: Int,
+) {
     operator fun plus(direction: Direction) = Location(row + direction.rowInc, col + direction.colInc)
 }
 
-data class Grid(private val start: Location, private val rocks: Set<Location>, private val lineLength: Int) {
+data class Grid(
+    private val start: Location,
+    private val rocks: Set<Location>,
+    private val lineLength: Int,
+) {
     /**
      * Recursively loop through the steps, determining the locations that have been jumped to at each step.
      *
@@ -23,8 +34,8 @@ data class Grid(private val start: Location, private val rocks: Set<Location>, p
         locations: Set<Location>,
         step: Int,
         limit: Int,
-    ): Int {
-        return if (step < limit) {
+    ): Int =
+        if (step < limit) {
             val newLocations =
                 locations
                     .flatMap { loc ->
@@ -32,14 +43,12 @@ data class Grid(private val start: Location, private val rocks: Set<Location>, p
                             .entries
                             .map { loc + it }
                             .filter { it !in rocks }
-                    }
-                    .toSet()
+                    }.toSet()
 
             part1(newLocations, step + 1, limit)
         } else {
             locations.size
         }
-    }
 
     fun part1(maxSteps: Int) = part1(setOf(start), 0, maxSteps)
 
@@ -76,8 +85,7 @@ data class Grid(private val start: Location, private val rocks: Set<Location>, p
 
                                 Location(row, col) !in rocks
                             }
-                    }
-                    .toSet()
+                    }.toSet()
 
             part2(newLocations, step + 1, limit, list)
         } else {
@@ -114,8 +122,7 @@ data class Grid(private val start: Location, private val rocks: Set<Location>, p
                     .flatMapIndexed { row, line ->
                         lineLength = line.length
                         line.mapIndexed { col, c -> Obstacle(row, col, c) }
-                    }
-                    .toList()
+                    }.toList()
 
             val start =
                 parsed

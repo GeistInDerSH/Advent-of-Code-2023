@@ -5,7 +5,9 @@ import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.iterators.rotateLeft
 import com.geistindersh.aoc.helper.report
 
-class Day6(dataFile: DataFile) {
+class Day6(
+    dataFile: DataFile,
+) {
     private val lanternFish =
         fileToString(2021, 6, dataFile)
             .split(",")
@@ -23,8 +25,7 @@ class Day6(dataFile: DataFile) {
             val fish = it.rotateLeft(1)
             fish[6] += fish[8]
             fish
-        }
-            .drop(days)
+        }.drop(days)
             .first()
             .sum()
 

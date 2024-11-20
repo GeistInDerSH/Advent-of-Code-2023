@@ -3,10 +3,12 @@ package com.geistindersh.aoc.year2021
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
-import java.util.*
+import java.util.PriorityQueue
 import kotlin.math.absoluteValue
 
-class Day23(dataFile: DataFile) {
+class Day23(
+    dataFile: DataFile,
+) {
     private val rawInput =
         fileToStream(2021, 23, dataFile)
             .drop(1)
@@ -21,7 +23,10 @@ class Day23(dataFile: DataFile) {
                 Diagram.from(lines)
             }
 
-    private enum class Amphipods(val cost: Int, val index: Int) {
+    private enum class Amphipods(
+        val cost: Int,
+        val index: Int,
+    ) {
         Amber(1, 2),
         Bronze(10, 4),
         Copper(100, 6),
@@ -41,7 +46,10 @@ class Day23(dataFile: DataFile) {
         }
     }
 
-    private data class Room(val roomFor: Amphipods, val contents: List<Amphipods>) {
+    private data class Room(
+        val roomFor: Amphipods,
+        val contents: List<Amphipods>,
+    ) {
         fun isFinished() = contents.all { it == roomFor }
 
         fun isEmptyOrAllCorrect() = contents.all { it == Amphipods.Empty || it == roomFor }
@@ -56,7 +64,10 @@ class Day23(dataFile: DataFile) {
         }
     }
 
-    private data class Diagram(val hallway: List<Amphipods>, val rooms: Map<Amphipods, Room>) {
+    private data class Diagram(
+        val hallway: List<Amphipods>,
+        val rooms: Map<Amphipods, Room>,
+    ) {
         fun isFinished() = rooms.all { it.value.isFinished() }
 
         fun next() =

@@ -5,7 +5,9 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.subsetSum
 import com.geistindersh.aoc.helper.report
 
-class Day17(dataFile: DataFile) {
+class Day17(
+    dataFile: DataFile,
+) {
     private val numbers = fileToStream(2015, 17, dataFile).map(String::toInt).toList()
 
     fun part1(target: Int) = numbers.subsetSum(target).count()

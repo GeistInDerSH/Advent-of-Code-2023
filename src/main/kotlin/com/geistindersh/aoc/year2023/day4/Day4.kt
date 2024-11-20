@@ -6,7 +6,11 @@ import com.geistindersh.aoc.helper.report
 import kotlin.math.max
 import kotlin.math.pow
 
-data class Card(val number: Int, val winners: Set<Int>, val mine: Set<Int>) {
+data class Card(
+    val number: Int,
+    val winners: Set<Int>,
+    val mine: Set<Int>,
+) {
     /**
      * @return The number of matches the winning card has with ours
      */
@@ -18,23 +22,23 @@ data class Card(val number: Int, val winners: Set<Int>, val mine: Set<Int>) {
     fun points() = max(2f.pow(matchCount() - 1), 0f).toInt()
 }
 
-fun parseInput(fileType: DataFile): List<Card> {
-    return fileToStream(2023, 4, fileType).mapIndexed { index, line ->
-        val (winners, mine) =
-            line
-                .substringAfter(':')
-                .split('|')
-                .map { section ->
-                    section
-                        .split(' ')
-                        .filter { it.isNotBlank() }
-                        .map { it.toInt() }
-                        .toSet()
-                }
+fun parseInput(fileType: DataFile): List<Card> =
+    fileToStream(2023, 4, fileType)
+        .mapIndexed { index, line ->
+            val (winners, mine) =
+                line
+                    .substringAfter(':')
+                    .split('|')
+                    .map { section ->
+                        section
+                            .split(' ')
+                            .filter { it.isNotBlank() }
+                            .map { it.toInt() }
+                            .toSet()
+                    }
 
-        Card(index + 1, winners, mine)
-    }.toList()
-}
+            Card(index + 1, winners, mine)
+        }.toList()
 
 /**
  * Sum the number of points each card is worth

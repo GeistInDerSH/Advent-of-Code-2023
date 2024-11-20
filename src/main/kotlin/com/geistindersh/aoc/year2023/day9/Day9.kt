@@ -4,7 +4,9 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
-data class Sensor(val history: MutableList<Int>) {
+data class Sensor(
+    val history: MutableList<Int>,
+) {
     // Calculate the historical values from the history, to allow for faster calculations later
     private val extrapolated: MutableList<MutableList<Int>> =
         run {
@@ -72,8 +74,8 @@ data class Sensor(val history: MutableList<Int>) {
     }
 }
 
-fun parseInput(fileType: DataFile): List<Sensor> {
-    return fileToStream(2023, 9, fileType)
+fun parseInput(fileType: DataFile): List<Sensor> =
+    fileToStream(2023, 9, fileType)
         .map { line ->
             val history =
                 line
@@ -81,9 +83,7 @@ fun parseInput(fileType: DataFile): List<Sensor> {
                     .map { it.toInt() }
                     .toMutableList()
             Sensor(history)
-        }
-        .toList()
-}
+        }.toList()
 
 fun part1(sequences: List<Sensor>) = sequences.sumOf { it.next() }
 

@@ -5,10 +5,14 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.subsetSum
 import com.geistindersh.aoc.helper.report
 
-class Day24(dataFile: DataFile) {
+class Day24(
+    dataFile: DataFile,
+) {
     private val weights = fileToStream(2015, 24, dataFile).map(String::toInt).toList()
 
-    private data class Group(val weights: Set<Int>) : Comparable<Group> {
+    private data class Group(
+        val weights: Set<Int>,
+    ) : Comparable<Group> {
         fun quantumEntanglement() = weights.fold(1L, Long::times)
 
         fun hasOverlap(other: Group) = other.weights.any { it in weights }
@@ -38,16 +42,16 @@ class Day24(dataFile: DataFile) {
         return null
     }
 
-    private fun Collection<Group>.canPartitionBy(size: Int): Boolean {
-        return if (size == 1) {
+    private fun Collection<Group>.canPartitionBy(size: Int): Boolean =
+        if (size == 1) {
             this.isNotEmpty()
         } else {
             this.firstOrNull { group ->
-                this.filter { nextGroup -> !nextGroup.hasOverlap(group) }
+                this
+                    .filter { nextGroup -> !nextGroup.hasOverlap(group) }
                     .canPartitionBy(size - 1)
             } != null
         }
-    }
 
     fun part1() = findGroupOrNull(3)?.quantumEntanglement() ?: throw Exception("No solution")
 

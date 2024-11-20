@@ -6,7 +6,11 @@ import com.geistindersh.aoc.helper.report
 import kotlin.math.max
 import kotlin.math.min
 
-data class Symbol(val name: Char, val row: Int, val col: Int) {
+data class Symbol(
+    val name: Char,
+    val row: Int,
+    val col: Int,
+) {
     private val touchingNumbers: MutableSet<Int> = mutableSetOf()
 
     /**
@@ -30,7 +34,12 @@ data class Symbol(val name: Char, val row: Int, val col: Int) {
     fun touchingNumbersProduct(): Int = touchingNumbers.fold(1) { acc, number -> acc * number }
 }
 
-data class Number(val num: Int, val row: Int, val colStart: Int, val colEnd: Int) {
+data class Number(
+    val num: Int,
+    val row: Int,
+    val colStart: Int,
+    val colEnd: Int,
+) {
     private var hasTouchingSymbol = false
 
     /**
@@ -64,9 +73,7 @@ fun hasOverlap(
     srcColStart: Int,
     srcColEnd: Int,
     destCol: Int,
-): Boolean {
-    return srcRow in (destRow - 1..destRow + 1) && max(srcColStart, destCol - 1) <= min(srcColEnd, destCol + 1)
-}
+): Boolean = srcRow in (destRow - 1..destRow + 1) && max(srcColStart, destCol - 1) <= min(srcColEnd, destCol + 1)
 
 fun parseInput(fileType: DataFile): Pair<List<Symbol>, List<Number>> {
     val lines = fileToStream(2023, 3, fileType).toList()
@@ -116,15 +123,13 @@ fun parseInput(fileType: DataFile): Pair<List<Symbol>, List<Number>> {
 fun part1(
     symbols: List<Symbol>,
     numbers: List<Number>,
-): Int {
-    return numbers
+): Int =
+    numbers
         .map { num ->
             num.checkForTouchingSymbols(symbols)
             num
-        }
-        .filter { it.hasTouchingSymbol() }
+        }.filter { it.hasTouchingSymbol() }
         .sumOf { it.num }
-}
 
 /**
  * Sum up the product of each [Symbol] named "*" with exactly 2 touching numbers
@@ -136,15 +141,13 @@ fun part1(
 fun part2(
     symbols: List<Symbol>,
     numbers: List<Number>,
-): Int {
-    return symbols
+): Int =
+    symbols
         .map { sym ->
             sym.addAnyTouchingNumbers(numbers)
             sym
-        }
-        .filter { it.name == '*' && it.touchingNumbersCount() == 2 }
+        }.filter { it.name == '*' && it.touchingNumbersCount() == 2 }
         .sumOf { it.touchingNumbersProduct() }
-}
 
 fun day3() {
     val (symbols, numbers) = parseInput(DataFile.Part1)
