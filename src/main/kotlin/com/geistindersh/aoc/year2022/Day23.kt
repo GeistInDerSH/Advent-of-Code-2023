@@ -26,14 +26,14 @@ class Day23(
         when (direction) {
             Direction.North, Direction.South ->
                 listOf(
-                    direction.pair(),
+                    direction.toPair(),
                     direction + Direction.East,
                     direction + Direction.West,
                 )
 
             Direction.East, Direction.West ->
                 listOf(
-                    direction.pair(),
+                    direction.toPair(),
                     direction + Direction.North,
                     direction + Direction.South,
                 )
@@ -41,14 +41,14 @@ class Day23(
 
     private fun getAllNeighbours() =
         listOf(
-            Direction.North.pair(),
+            Direction.North.toPair(),
             Direction.North + Direction.East,
             Direction.North + Direction.West,
-            Direction.South.pair(),
+            Direction.South.toPair(),
             Direction.South + Direction.East,
             Direction.South + Direction.West,
-            Direction.East.pair(),
-            Direction.West.pair(),
+            Direction.East.toPair(),
+            Direction.West.toPair(),
         )
 
     private fun rounds() =

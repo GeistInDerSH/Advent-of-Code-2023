@@ -32,8 +32,8 @@ class Day5(
 
                 val direction =
                     when {
-                        start.row == end.row -> ewDirection.pair()
-                        start.col == end.col -> nsDirection.pair()
+                        start.row == end.row -> ewDirection.toPair()
+                        start.col == end.col -> nsDirection.toPair()
                         else -> nsDirection + ewDirection
                     }
                 generateSequence(start) { it + direction }

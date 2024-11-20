@@ -58,7 +58,7 @@ fun fileToStream(
  * @param fileName The file to read
  * @return An iterable sequence of strings
  */
-fun fileToStream(fileName: String): Sequence<String> =
+fun fileToStream(fileName: String) =
     File(fileName)
         .inputStream()
         .bufferedReader()

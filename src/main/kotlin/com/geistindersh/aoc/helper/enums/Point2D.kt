@@ -14,10 +14,10 @@ data class Point2D(
 
     fun neighborsAll() =
         listOf(
-            Direction.North.pair(),
-            Direction.East.pair(),
-            Direction.South.pair(),
-            Direction.West.pair(),
+            Direction.North.toPair(),
+            Direction.East.toPair(),
+            Direction.South.toPair(),
+            Direction.West.toPair(),
             Direction.North + Direction.East,
             Direction.North + Direction.West,
             Direction.South + Direction.East,

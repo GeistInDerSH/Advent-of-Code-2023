@@ -10,7 +10,7 @@ enum class Direction(
     West(0, -1),
     ;
 
-    fun pair() = rowInc to colInc
+    fun toPair() = rowInc to colInc
 
     operator fun plus(pair: Pair<Int, Int>) = Pair(pair.first + rowInc, pair.second + colInc)
 
