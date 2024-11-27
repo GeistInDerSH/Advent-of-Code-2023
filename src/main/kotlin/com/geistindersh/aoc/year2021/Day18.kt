@@ -32,6 +32,7 @@ class Day18(
         }
         val listStart = stack.firstElement().first()
         if (listStart !is MutableList<*>) throw IllegalArgumentException("The stack produced an invalid object: $listStart")
+        @Suppress("UNCHECKED_CAST")
         return listStart as List<Any>
     }
 
@@ -158,6 +159,7 @@ class Day18(
             }
 
         companion object {
+            @Suppress("UNCHECKED_CAST")
             fun from(list: List<Any>): Sailfish {
                 val first = list.first()
                 val left = if (first is MutableList<*>) from(first as List<Any>) else Integer(first as Long)
