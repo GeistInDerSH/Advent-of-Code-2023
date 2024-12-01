@@ -11,20 +11,14 @@ class Day1(
     private val pairs =
         fileToStream(2024, 1, dataFile)
             .map { it.split("   ") }
-            .map { (a, b) -> a.toInt() to b.toInt() }
+            .map { (l, r) -> l.toInt() to r.toInt() }
             .toList()
     private val left = pairs.map { it.first }.sorted()
     private val right = pairs.map { it.second }.sorted()
 
-    fun part1() =
-        left
-            .zip(right)
-            .sumOf { (left, right) -> (left - right).absoluteValue }
+    fun part1() = left.zip(right).sumOf { (l, r) -> (l - r).absoluteValue }
 
-    fun part2() =
-        left
-            .map { l -> l to right.count { l == it } }
-            .sumOf { (left, right) -> left * right }
+    fun part2() = left.sumOf { l -> l * right.count { l == it } }
 }
 
 fun day1() {
