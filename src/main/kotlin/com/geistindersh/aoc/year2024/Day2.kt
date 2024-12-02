@@ -25,17 +25,23 @@ class Day2(
         return true
     }
 
+    /**
+     * Check all possible removal points in the worst case, or only one in the best case
+     */
+    private fun List<Int>.canBeMadeSafe() =
+        this.indices.any {
+            this.toMutableList().apply { removeAt(it) }.isSafe()
+        }
+
     fun part1() = data.count { it.isSafe() }
 
     fun part2() =
         data
             .map { seq ->
-                if (seq.isSafe()) {
-                    1
-                } else {
-                    val anyValid =
-                        seq.indices.any { seq.toMutableList().apply { removeAt(it) }.isSafe() }
-                    if (anyValid) 1 else 0
+                when {
+                    seq.isSafe() -> 1
+                    seq.canBeMadeSafe() -> 1
+                    else -> 0
                 }
             }.sum()
 }
