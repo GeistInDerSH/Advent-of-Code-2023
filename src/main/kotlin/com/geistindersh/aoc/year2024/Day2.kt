@@ -37,10 +37,10 @@ class Day2(
 
     fun part2() =
         data
-            .map { seq ->
+            .map {
                 when {
-                    seq.isSafe() -> 1
-                    seq.canBeMadeSafe() -> 1
+                    it.isSafe() -> 1
+                    it.canBeMadeSafe() -> 1
                     else -> 0
                 }
             }.sum()
