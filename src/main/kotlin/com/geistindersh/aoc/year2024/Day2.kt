@@ -8,21 +8,19 @@ import kotlin.math.absoluteValue
 class Day2(
     dataFile: DataFile,
 ) {
-    private val data =
+    private val lines =
         fileToStream(2024, 2, dataFile)
             .map { line -> "[0-9]+".toRegex().findAll(line).map { it.value.toInt() }.toList() }
             .toList()
 
     private fun List<Int>.isSafe(): Boolean {
-        val isIncreasing = this[0] < this[1]
-        for ((a, b) in this.windowed(2)) {
-            when {
-                isIncreasing && a > b -> return false
-                !isIncreasing && a < b -> return false
-                (a - b).absoluteValue !in 1..3 -> return false
-            }
-        }
-        return true
+        val inRange =
+            this
+                .windowed(2) { (l, r) -> (l - r).absoluteValue }
+                .all { it in 1..3 }
+        if (!inRange) return false
+        val sorted = this.sorted()
+        return sorted == this || sorted == this.reversed()
     }
 
     /**
@@ -33,10 +31,10 @@ class Day2(
             this.toMutableList().apply { removeAt(it) }.isSafe()
         }
 
-    fun part1() = data.count { it.isSafe() }
+    fun part1() = lines.count { it.isSafe() }
 
     fun part2() =
-        data
+        lines
             .map {
                 when {
                     it.isSafe() -> 1
