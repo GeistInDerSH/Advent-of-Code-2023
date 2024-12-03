@@ -20,14 +20,14 @@ class Day3(
             .fold(0L) { acc, match -> acc + match.groups.reduceGroup() }
 
     fun part2(): Long {
-        var isDont = false
+        var isEnabled = true
         var total = 0L
         for (match in doDontMulRegex.findAll(input)) {
             when (match.value) {
-                "don't()" -> isDont = true
-                "do()" -> isDont = false
+                "don't()" -> isEnabled = false
+                "do()" -> isEnabled = true
                 else -> {
-                    if (isDont) continue
+                    if (!isEnabled) continue
                     total += match.groups.reduceGroup()
                 }
             }
