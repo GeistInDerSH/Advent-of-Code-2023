@@ -36,8 +36,8 @@ class Day3(
     }
 
     companion object {
-        private val mulRegex = "mul\\(([0-9]+),([0-9]+)\\)".toRegex()
-        private val doDontMulRegex = "(do\\(\\)|don't\\(\\)|mul\\(([0-9]+),([0-9]+)\\))".toRegex()
+        private val mulRegex = """mul\((\d+),(\d+)\)""".toRegex()
+        private val doDontMulRegex = """(do\(\)|don't\(\)|mul\((\d+),(\d+)\))""".toRegex()
     }
 }
 
