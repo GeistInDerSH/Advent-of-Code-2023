@@ -7,20 +7,38 @@ import com.geistindersh.aoc.helper.report
 class Day3(
     dataFile: DataFile,
 ) {
-    private val mulRegex = "mul\\(([0-9]+),([0-9]+)\\)".toRegex()
-    private val data =
-        fileToStream(2024, 3, dataFile)
-            .flatMap { line ->
-                mulRegex
-                    .findAll(line)
-                    .map {
-                        it.groups.mapNotNull { g -> g?.value?.toLongOrNull() }.reduce(Long::times)
-                    }.toList()
-            }.toList()
+    private val input = fileToStream(2024, 3, dataFile).joinToString("")
 
-    fun part1() = data.reduce(Long::plus)
+    fun part1() =
+        mulRegex
+            .findAll(input)
+            .map {
+                it.groups
+                    .mapNotNull { g -> g?.value?.toLongOrNull() }
+                    .reduce(Long::times)
+            }.reduce(Long::plus)
 
-    fun part2() = 0
+    fun part2(): Long {
+        var isDont = false
+        var total = 0L
+        for (match in doDontMulRegex.findAll(input)) {
+            when (match.value) {
+                "don't()" -> isDont = true
+                "do()" -> isDont = false
+                else -> {
+                    if (isDont) continue
+                    val groups = match.groups.mapNotNull { g -> g?.value?.toLongOrNull() }
+                    total += groups.reduce(Long::times)
+                }
+            }
+        }
+        return total
+    }
+
+    companion object {
+        private val mulRegex = "mul\\(([0-9]+),([0-9]+)\\)".toRegex()
+        private val doDontMulRegex = "(do\\(\\)|don't\\(\\)|mul\\(([0-9]+),([0-9]+)\\))".toRegex()
+    }
 }
 
 fun day3() {
