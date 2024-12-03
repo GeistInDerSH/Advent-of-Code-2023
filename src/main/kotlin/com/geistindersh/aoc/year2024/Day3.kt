@@ -9,14 +9,15 @@ class Day3(
 ) {
     private val input = fileToStream(2024, 3, dataFile).joinToString("")
 
+    private fun MatchGroupCollection.reduceGroup() =
+        this
+            .mapNotNull { it?.value?.toLongOrNull() }
+            .reduce(Long::times)
+
     fun part1() =
         mulRegex
             .findAll(input)
-            .map {
-                it.groups
-                    .mapNotNull { g -> g?.value?.toLongOrNull() }
-                    .reduce(Long::times)
-            }.reduce(Long::plus)
+            .fold(0L) { acc, match -> acc + match.groups.reduceGroup() }
 
     fun part2(): Long {
         var isDont = false
@@ -27,8 +28,7 @@ class Day3(
                 "do()" -> isDont = false
                 else -> {
                     if (isDont) continue
-                    val groups = match.groups.mapNotNull { g -> g?.value?.toLongOrNull() }
-                    total += groups.reduce(Long::times)
+                    total += match.groups.reduceGroup()
                 }
             }
         }
