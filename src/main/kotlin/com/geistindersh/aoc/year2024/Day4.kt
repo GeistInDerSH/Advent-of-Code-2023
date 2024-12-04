@@ -14,96 +14,60 @@ class Day4(
                 line.mapIndexed { col, value -> Point2D(row, col) to value }
             }.toMap()
 
-    private fun Point2D.hasRight() =
-        (0..3)
-            .map { this + Point2D(0, it) }
-            .zip("XMAS".toList())
-            .all { it.first in data && data[it.first] == it.second }
-
-    private fun Point2D.hasLeft() =
-        (-3..0)
-            .map { this + Point2D(0, it) }
-            .zip("XMAS".toList().reversed())
-            .all { it.first in data && data[it.first] == it.second }
-
-    private fun Point2D.hasSouth() =
-        (0..3)
-            .map { this + Point2D(it, 0) }
-            .zip("XMAS".toList())
-            .all { it.first in data && data[it.first] == it.second }
-
-    private fun Point2D.hasNorth() =
-        (-3..0)
-            .map { this + Point2D(it, 0) }
-            .zip("XMAS".toList().reversed())
-            .all { it.first in data && data[it.first] == it.second }
-
-    private fun Point2D.diagonalMatchCount(): Int {
-        var count = 0
-        val hasDownDiagonal =
-            (0..3)
-                .map { this + Point2D(it, it) }
-                .zip("XMAS".toList())
-                .all { it.first in data && data[it.first] == it.second }
-        if (hasDownDiagonal) count += 1
-
-        val hasDownDiagonalReverse =
-            (0..3)
-                .map { this + Point2D(it, -1 * it) }
-                .zip("XMAS".toList())
-                .all { it.first in data && data[it.first] == it.second }
-        if (hasDownDiagonalReverse) count += 1
-
-        val hasUpDiagonalReverse =
-            (-3..0)
-                .map { this + Point2D(it, it) }
-                .zip("XMAS".toList().reversed())
-                .all { it.first in data && data[it.first] == it.second }
-        if (hasUpDiagonalReverse) count += 1
-
-        val hasUpDiagonal =
-            (0..3)
-                .map { this + Point2D(-1 * it, it) }
-                .zip("XMAS".toList())
-                .all { it.first in data && data[it.first] == it.second }
-        if (hasUpDiagonal) count += 1
-        return count
-    }
-
-    private fun Point2D.matchCount(): Int {
-        var count = 0
-        if (this.hasLeft()) count += 1
-        if (this.hasRight()) count += 1
-        if (this.hasNorth()) count += 1
-        if (this.hasSouth()) count += 1
-        return count + this.diagonalMatchCount()
-    }
-
-    private fun Point2D.hasXmas(): Boolean {
-        val masMas =
-            listOf(Point2D(-1, -1) to 'M', Point2D(1, -1) to 'M', Point2D(0, 0) to 'A', Point2D(1, 1) to 'S', Point2D(-1, 1) to 'S')
-        val masSam =
-            listOf(Point2D(-1, -1) to 'M', Point2D(1, -1) to 'S', Point2D(0, 0) to 'A', Point2D(1, 1) to 'S', Point2D(-1, 1) to 'M')
-        val samSam =
-            listOf(Point2D(-1, -1) to 'S', Point2D(1, -1) to 'S', Point2D(0, 0) to 'A', Point2D(1, 1) to 'M', Point2D(-1, 1) to 'M')
-        val samMas =
-            listOf(Point2D(-1, -1) to 'S', Point2D(1, -1) to 'M', Point2D(0, 0) to 'A', Point2D(1, 1) to 'M', Point2D(-1, 1) to 'S')
-
-        return listOf(masMas, masSam, samSam, samMas)
-            .any { col ->
-                col
-                    .map { (this + it.first) to it.second }
+    private fun Point2D.matchCount() =
+        PART_1_OPTIONS
+            .count { points ->
+                points
+                    .map { this + it }
+                    .zip("XMAS".toList())
                     .all { it.first in data && data[it.first] == it.second }
             }
+
+    private fun Point2D.hasXmas() =
+        PART_2_OPTIONS
+            .any { points ->
+                points
+                    .map { this + it.first to it.second }
+                    .all { it.first in data && data[it.first] == it.second }
+            }
+
+    fun part1() =
+        data
+            .filter { it.value == 'X' }
+            .keys
+            .sumOf { it.matchCount() }
+
+    fun part2() =
+        data
+            .filter { it.value == 'A' }
+            .keys
+            .count { it.hasXmas() }
+
+    companion object {
+        private val PART_1_OPTIONS =
+            listOf(
+                (0..3).map { Point2D(0, it) }, // Horizontal: Right
+                (0..3).map { Point2D(0, -1 * it) }, // Horizontal: Left (reversed)
+                (0..3).map { Point2D(it, 0) }, // Vertical: Below
+                (0..3).map { Point2D(-1 * it, 0) }, // Vertical: Above (reversed)
+                (0..3).map { Point2D(it, it) }, // Diagonal: Down right
+                (0..3).map { Point2D(it, -1 * it) }, // Diagonal: Down left
+                (0..3).map { Point2D(-1 * it, it) }, // Diagonal: Up left (reversed)
+                (0..3).map { Point2D(-1 * it, -1 * it) }, // Diagonal: Up right
+            )
+
+        private val PART_2_UP = (-1..1).zip((-1..1).reversed()).map { Point2D(it.first, it.second) }
+        private val PART_2_DOWN = (-1..1).map { Point2D(it, it) }
+        private val MAS = "MAS".toList()
+        private val SAM = "SAM".toList()
+        private val PART_2_OPTIONS =
+            listOf(
+                PART_2_DOWN.zip(MAS) + PART_2_UP.zip(MAS),
+                PART_2_DOWN.zip(MAS) + PART_2_UP.zip(SAM),
+                PART_2_DOWN.zip(SAM) + PART_2_UP.zip(SAM),
+                PART_2_DOWN.zip(SAM) + PART_2_UP.zip(MAS),
+            )
     }
-
-    init {
-        data.filter { it.value == 'A' }.forEach { println("$it\t${it.key.hasXmas()}") }
-    }
-
-    fun part1() = data.filter { it.value == 'X' }.keys.sumOf { it.matchCount() }
-
-    fun part2() = data.filter { it.value == 'A' }.keys.count { it.hasXmas() }
 }
 
 fun day4() {
