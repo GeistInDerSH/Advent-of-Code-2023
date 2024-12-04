@@ -14,8 +14,6 @@ class Day4(
                 line.mapIndexed { col, value -> Point2D(row, col) to value }
             }.toMap()
 
-    private fun getStarting() = data.filter { it.value == 'X' }
-
     private fun Point2D.hasRight() =
         (0..3)
             .map { this + Point2D(0, it) }
@@ -81,9 +79,31 @@ class Day4(
         return count + this.diagonalMatchCount()
     }
 
-    fun part1() = getStarting().keys.sumOf { it.matchCount() }
+    private fun Point2D.hasXmas(): Boolean {
+        val masMas =
+            listOf(Point2D(-1, -1) to 'M', Point2D(1, -1) to 'M', Point2D(0, 0) to 'A', Point2D(1, 1) to 'S', Point2D(-1, 1) to 'S')
+        val masSam =
+            listOf(Point2D(-1, -1) to 'M', Point2D(1, -1) to 'S', Point2D(0, 0) to 'A', Point2D(1, 1) to 'S', Point2D(-1, 1) to 'M')
+        val samSam =
+            listOf(Point2D(-1, -1) to 'S', Point2D(1, -1) to 'S', Point2D(0, 0) to 'A', Point2D(1, 1) to 'M', Point2D(-1, 1) to 'M')
+        val samMas =
+            listOf(Point2D(-1, -1) to 'S', Point2D(1, -1) to 'M', Point2D(0, 0) to 'A', Point2D(1, 1) to 'M', Point2D(-1, 1) to 'S')
 
-    fun part2() = 0
+        return listOf(masMas, masSam, samSam, samMas)
+            .any { col ->
+                col
+                    .map { (this + it.first) to it.second }
+                    .all { it.first in data && data[it.first] == it.second }
+            }
+    }
+
+    init {
+        data.filter { it.value == 'A' }.forEach { println("$it\t${it.key.hasXmas()}") }
+    }
+
+    fun part1() = data.filter { it.value == 'X' }.keys.sumOf { it.matchCount() }
+
+    fun part2() = data.filter { it.value == 'A' }.keys.count { it.hasXmas() }
 }
 
 fun day4() {
