@@ -56,17 +56,20 @@ class Day4(
                 (0..3).map { Point2D(-1 * it, -1 * it) }, // Diagonal: Up right
             )
 
-        private val PART_2_UP = (-1..1).zip((-1..1).reversed()).map { Point2D(it.first, it.second) }
-        private val PART_2_DOWN = (-1..1).map { Point2D(it, it) }
-        private val MAS = "MAS".toList()
-        private val SAM = "SAM".toList()
         private val PART_2_OPTIONS =
-            listOf(
-                PART_2_DOWN.zip(MAS) + PART_2_UP.zip(MAS),
-                PART_2_DOWN.zip(MAS) + PART_2_UP.zip(SAM),
-                PART_2_DOWN.zip(SAM) + PART_2_UP.zip(SAM),
-                PART_2_DOWN.zip(SAM) + PART_2_UP.zip(MAS),
-            )
+            run {
+                val up = (-1..1).zip((-1..1).reversed()).map { Point2D(it.first, it.second) }
+                val down = (-1..1).map { Point2D(it, it) }
+                val mas = "MAS".toList()
+                val sam = "SAM".toList()
+
+                listOf(
+                    down.zip(mas) + up.zip(mas),
+                    down.zip(mas) + up.zip(sam),
+                    down.zip(sam) + up.zip(sam),
+                    down.zip(sam) + up.zip(mas),
+                )
+            }
     }
 }
 
