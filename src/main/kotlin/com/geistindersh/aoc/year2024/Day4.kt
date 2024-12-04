@@ -46,14 +46,22 @@ class Day4(
     companion object {
         private val PART_1_OPTIONS =
             listOf(
-                (0..3).map { Point2D(0, it) }, // Horizontal: Right
-                (0..3).map { Point2D(0, -1 * it) }, // Horizontal: Left (reversed)
-                (0..3).map { Point2D(it, 0) }, // Vertical: Below
-                (0..3).map { Point2D(-1 * it, 0) }, // Vertical: Above (reversed)
-                (0..3).map { Point2D(it, it) }, // Diagonal: Down right
-                (0..3).map { Point2D(it, -1 * it) }, // Diagonal: Down left
-                (0..3).map { Point2D(-1 * it, it) }, // Diagonal: Up left (reversed)
-                (0..3).map { Point2D(-1 * it, -1 * it) }, // Diagonal: Up right
+                // Horizontal: Right
+                (0..3).map { Point2D(0, it) },
+                // Horizontal: Left (reversed)
+                (0..3).map { Point2D(0, -1 * it) },
+                // Vertical: Below
+                (0..3).map { Point2D(it, 0) },
+                // Vertical: Above (reversed)
+                (0..3).map { Point2D(-1 * it, 0) },
+                // Diagonal: Down right
+                (0..3).map { Point2D(it, it) },
+                // Diagonal: Down left
+                (0..3).map { Point2D(it, -1 * it) },
+                // Diagonal: Up left (reversed)
+                (0..3).map { Point2D(-1 * it, it) },
+                // Diagonal: Up right
+                (0..3).map { Point2D(-1 * it, -1 * it) },
             )
 
         private val PART_2_OPTIONS =
