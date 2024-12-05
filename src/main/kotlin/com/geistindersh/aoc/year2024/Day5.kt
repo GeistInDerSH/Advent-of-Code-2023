@@ -30,13 +30,38 @@ class Day5(
 
     private fun List<Int>.hasCorrectOrder() = this.windowed(2).all { (a, b) -> Pages(a, b) in pages }
 
+    private fun List<Int>.fixOrder(): List<Int> {
+        val lst = this.toMutableList()
+
+        while (!lst.hasCorrectOrder()) {
+            for (i in this.indices) {
+                val curr = lst[i]
+                val toCheck = pages.filter { it.y == curr }.map { it.x }.toSet()
+                for (value in lst.drop(i)) {
+                    if (value !in toCheck) continue
+                    val tmp = lst.indexOf(value)
+                    lst[i] = value
+                    lst[tmp] = curr
+                    break
+                }
+            }
+        }
+
+        return lst
+    }
+
     fun part1() =
         updates
             .filter { it.hasCorrectOrder() }
             .map { it[it.lastIndex / 2] }
             .reduce(Int::plus)
 
-    fun part2() = 0
+    fun part2() =
+        updates
+            .filterNot { it.hasCorrectOrder() }
+            .map { it.fixOrder() }
+            .map { it[it.lastIndex / 2] }
+            .reduce(Int::plus)
 }
 
 fun day5() {
