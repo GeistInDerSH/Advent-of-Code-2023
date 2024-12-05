@@ -13,10 +13,8 @@ class Day5(
             val pages =
                 parts[0]
                     .split("\n")
-                    .map { line ->
-                        val (x, y) = line.split("|").map { it.toInt() }
-                        Pages(x, y)
-                    }.toSet()
+                    .map { line -> line.split("|").map { it.toInt() }.let { Pages(it[0], it[1]) } }
+                    .toSet()
             val updates =
                 parts[1]
                     .split("\n")
