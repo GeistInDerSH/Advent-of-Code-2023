@@ -17,38 +17,30 @@ class Day5(
                         val (x, y) = line.split("|").map { it.toInt() }
                         Pages(x, y)
                     }.toSet()
-            val updates = parts[1].split("\n").map { line -> line.split(",").map { it.toInt() } }
+            val updates =
+                parts[1]
+                    .split("\n")
+                    .map { line -> line.split(",").map { it.toInt() } }
             pages to updates
         }
     private val pages = data.first
     private val updates = data.second
 
     private data class Pages(
-        val x: Int,
-        val y: Int,
+        val left: Int,
+        val right: Int,
     )
 
-    private fun List<Int>.hasCorrectOrder() = this.windowed(2).all { (a, b) -> Pages(a, b) in pages }
+    private fun List<Int>.hasCorrectOrder() =
+        this
+            .windowed(2)
+            .all { (a, b) -> Pages(a, b) in pages }
 
-    private fun List<Int>.fixOrder(): List<Int> {
-        val lst = this.toMutableList()
-
-        while (!lst.hasCorrectOrder()) {
-            for (i in this.indices) {
-                val curr = lst[i]
-                val toCheck = pages.filter { it.y == curr }.map { it.x }.toSet()
-                for (value in lst.drop(i)) {
-                    if (value !in toCheck) continue
-                    val tmp = lst.indexOf(value)
-                    lst[i] = value
-                    lst[tmp] = curr
-                    break
-                }
-            }
+    private fun List<Int>.fixOrder() =
+        this.sortedWith { a, b ->
+            val options = pages.filter { it.right == a }.map { it.left }.toSet()
+            if (b in options) -1 else 0
         }
-
-        return lst
-    }
 
     fun part1() =
         updates
