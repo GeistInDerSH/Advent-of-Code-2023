@@ -14,11 +14,25 @@ class Day6(
             .flatMapIndexed { row, line ->
                 line.mapIndexed { col, value -> Point2D(row, col) to value }
             }.toMap()
-    private val maxColumn = data.maxOf { it.key.col }
-    private val maxRow = data.maxOf { it.key.row }
     private val start = data.filterValues { it == '^' }.keys.first()
 
-    fun part1() =
+    private fun Map<Point2D, Char>.hasLoop(): Boolean {
+        val memory = mutableSetOf<Pair<Point2D, Direction>>()
+        var pos = start
+        var dir = Direction.North
+        while (true) {
+            if (!memory.add(pos to dir)) return true
+            val next = pos + dir
+            if (next !in this) return false
+            if (this[next] == '#') {
+                dir = dir.turnRight()
+            } else {
+                pos = next
+            }
+        }
+    }
+
+    private fun traverse() =
         generateSequence(start to Direction.North) { (pos, dir) ->
             val newPos = pos + dir
             if (data.getOrDefault(newPos, '.') == '#') {
@@ -27,11 +41,21 @@ class Day6(
                 newPos to dir
             }
         }.map { it.first }
-            .takeWhile { it in data.keys }
+            .takeWhile { it in data }
             .toSet()
-            .count()
 
-    fun part2() = 0
+    fun part1() = traverse().count()
+
+    fun part2(): Int {
+        val path = traverse().toMutableSet().apply { remove(start) }
+
+        return path.count { point ->
+            data
+                .toMutableMap()
+                .also { it[point] = '#' }
+                .hasLoop()
+        }
+    }
 }
 
 fun day6() {
