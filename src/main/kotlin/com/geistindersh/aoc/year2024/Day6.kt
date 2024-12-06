@@ -16,15 +16,15 @@ class Day6(
             }.toMap()
     private val start = grid.filterValues { it == '^' }.keys.first()
 
-    private fun Map<Point2D, Char>.hasLoop(): Boolean {
-        val memory = mutableSetOf<Pair<Point2D, Direction>>()
+    private fun hasLoop(newObstacle: Point2D): Boolean {
+        val memory = HashSet<Pair<Point2D, Direction>>(4096)
         var pos = start
         var dir = Direction.North
         while (true) {
             if (!memory.add(pos to dir)) return true
             val next = pos + dir
-            if (next !in this) return false
-            if (this[next] == '#') {
+            if (next !in grid) return false
+            if (next == newObstacle || grid[next] == '#') {
                 dir = dir.turnRight()
             } else {
                 pos = next
@@ -46,12 +46,12 @@ class Day6(
 
     fun part1() = traverse().count()
 
-    fun part2(): Int =
+    fun part2() =
         traverse()
             .parallelStream()
-            .map { point -> if (grid.toMutableMap().also { it[point] = '#' }.hasLoop()) 1 else 0 }
+            .mapToInt { if (hasLoop(it)) 1 else 0 }
             .reduce(Int::plus)
-            .orElse(-1)
+            .orElseThrow { IllegalStateException("Failed to determine loops for 2024 Day 6 Part 2") }
 }
 
 fun day6() {
