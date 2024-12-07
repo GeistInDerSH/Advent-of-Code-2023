@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.binary.concat
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -48,7 +49,7 @@ class Day7(
                 listOf(
                     { a: Long, b: Long -> a + b },
                     { a: Long, b: Long -> a * b },
-                    { a: Long, b: Long -> "$a$b".toLong() },
+                    { a: Long, b: Long -> a.concat(b) },
                 )
         }
     }
