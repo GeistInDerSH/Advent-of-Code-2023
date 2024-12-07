@@ -16,9 +16,10 @@ class Day7(
         val answer: Long,
         val values: List<Long>,
     ) {
-        fun anyMatch(operations: List<(Long, Long) -> Long>) = operations.any { operations.anyMatch(1, values[0], it) }
+        fun applyAndCheckMatchesAnswer(operations: List<(Long, Long) -> Long>) =
+            operations.any { operations.applyAndCheckMatchesAnswer(1, values[0], it) }
 
-        private fun List<(Long, Long) -> Long>.anyMatch(
+        private fun List<(Long, Long) -> Long>.applyAndCheckMatchesAnswer(
             index: Int,
             value: Long,
             op: (Long, Long) -> Long,
@@ -27,7 +28,7 @@ class Day7(
                 value == answer
             } else {
                 val newValue = op(value, values[index])
-                this.any { this.anyMatch(index + 1, newValue, it) }
+                this.any { this.applyAndCheckMatchesAnswer(index + 1, newValue, it) }
             }
 
         companion object {
@@ -52,7 +53,7 @@ class Day7(
         }
     }
 
-    private fun solve(ops: List<(Long, Long) -> Long>) = data.filter { it.anyMatch(ops) }.sumOf { it.answer }
+    private fun solve(ops: List<(Long, Long) -> Long>) = data.filter { it.applyAndCheckMatchesAnswer(ops) }.sumOf { it.answer }
 
     fun part1() = solve(Equation.PART_1_OPERATIONS)
 
