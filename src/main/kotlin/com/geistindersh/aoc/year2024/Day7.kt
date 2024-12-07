@@ -16,19 +16,16 @@ class Day7(
         val answer: Long,
         val values: List<Long>,
     ) {
-        fun evalWith(operations: List<(Long, Long) -> Long>) =
-            values.drop(1).foldIndexed(values[0]) { idx, acc, v -> operations[idx](acc, v) }
+        fun anyMatch(operations: List<(Long, Long) -> Long>) = operations.any { operations.anyMatch(1, values[0], it) }
 
-        fun anyMatch() = anyMatch(1, values[0], Long::plus) || anyMatch(1, values[0], Long::times)
-
-        private fun anyMatch(
+        private fun List<(Long, Long) -> Long>.anyMatch(
             index: Int,
             value: Long,
             op: (Long, Long) -> Long,
         ): Boolean {
             if (index > values.lastIndex) return value == answer
             val newValue = op(value, values[index])
-            return anyMatch(index + 1, newValue, Long::plus) || anyMatch(index + 1, newValue, Long::times)
+            return this.any { this.anyMatch(index + 1, newValue, it) }
         }
 
         companion object {
@@ -38,12 +35,26 @@ class Day7(
                 val rhs = parts.drop(1)
                 return Equation(lhs, rhs)
             }
+
+            val PART_1_OPERATIONS =
+                listOf(
+                    { a: Long, b: Long -> a + b },
+                    { a: Long, b: Long -> a * b },
+                )
+            val PART_2_OPERATIONS =
+                listOf(
+                    { a: Long, b: Long -> a + b },
+                    { a: Long, b: Long -> a * b },
+                    { a: Long, b: Long -> "$a$b".toLong() },
+                )
         }
     }
 
-    fun part1() = data.filter { it.anyMatch() }.sumOf { it.answer }
+    private fun solve(ops: List<(Long, Long) -> Long>) = data.filter { it.anyMatch(ops) }.sumOf { it.answer }
 
-    fun part2() = 0
+    fun part1() = solve(Equation.PART_1_OPERATIONS)
+
+    fun part2() = solve(Equation.PART_2_OPERATIONS)
 }
 
 fun day7() {
