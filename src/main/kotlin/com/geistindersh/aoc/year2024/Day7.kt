@@ -22,11 +22,13 @@ class Day7(
             index: Int,
             value: Long,
             op: (Long, Long) -> Long,
-        ): Boolean {
-            if (index > values.lastIndex) return value == answer
-            val newValue = op(value, values[index])
-            return this.any { this.anyMatch(index + 1, newValue, it) }
-        }
+        ): Boolean =
+            if (index > values.lastIndex) {
+                value == answer
+            } else {
+                val newValue = op(value, values[index])
+                this.any { this.anyMatch(index + 1, newValue, it) }
+            }
 
         companion object {
             fun from(line: String): Equation {
