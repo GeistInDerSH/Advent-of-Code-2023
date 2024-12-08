@@ -22,11 +22,34 @@ class Day8(
         val points = data.filterValues { it == node }.keys.toList()
         return buildSet {
             for ((a, b) in points.pairCombinations()) {
-                val rowDist = a.row - b.row
-                val colDist = a.col - b.col
-                val p = Point2D(rowDist, colDist)
+                val p = a - b
                 add(a + p)
                 add(b - p)
+            }
+        }
+    }
+
+    private fun Point2D.inBounds() = this.row in 0..maxRow && this.col in 0..maxCol
+
+    private fun antinodesRepeated(node: Char): Set<Point2D> {
+        val points = data.filterValues { it == node }.keys.toList()
+        return buildSet {
+            for ((a, b) in points.pairCombinations()) {
+                add(a)
+                add(b)
+                val p = a - b
+
+                var incPoint = a + p
+                while (incPoint.inBounds()) {
+                    add(incPoint)
+                    incPoint += p
+                }
+
+                var decPoint = b - p
+                while (decPoint.inBounds()) {
+                    add(decPoint)
+                    decPoint -= p
+                }
             }
         }
     }
@@ -34,11 +57,15 @@ class Day8(
     fun part1() =
         frequencies
             .flatMap { antinodes(it) }
-            .filter { it.row in 0..maxRow && it.col in 0..maxCol }
+            .filter { it.inBounds() }
             .toSet()
             .size
 
-    fun part2() = 0
+    fun part2() =
+        frequencies
+            .flatMap { antinodesRepeated(it) }
+            .toSet()
+            .size
 }
 
 fun day8() {
