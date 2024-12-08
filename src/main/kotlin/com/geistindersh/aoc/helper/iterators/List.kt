@@ -2,7 +2,7 @@ package com.geistindersh.aoc.helper.iterators
 
 import com.geistindersh.aoc.helper.math.positiveModulo
 
-fun <T> List<T>.pairCombinations() =
+fun <T> Collection<T>.pairCombinations() =
     sequence {
         val seen = mutableSetOf<Pair<T, T>>()
         for (i in this@pairCombinations) {
