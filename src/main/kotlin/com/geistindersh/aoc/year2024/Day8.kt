@@ -17,31 +17,31 @@ class Day8(
     private val frequencies = grid.values.toSet().filterNot { it == '.' }
 
     private fun antinodes(node: Char) =
-        buildSet {
+        sequence {
             val points = grid.filterValues { it == node }.keys
             for ((a, b) in points.pairCombinations()) {
                 val p = a - b
-                add(a + p)
-                add(b - p)
+                yield(a + p)
+                yield(b - p)
             }
         }
 
     private fun antinodesRepeated(node: Char) =
-        buildSet {
+        sequence {
             val points = grid.filterValues { it == node }.keys
-            addAll(points)
+            yieldAll(points)
             for ((a, b) in points.pairCombinations()) {
                 val p = a - b
 
                 var incPoint = a + p
                 while (incPoint in grid) {
-                    add(incPoint)
+                    yield(incPoint)
                     incPoint += p
                 }
 
                 var decPoint = b - p
                 while (decPoint in grid) {
-                    add(decPoint)
+                    yield(decPoint)
                     decPoint -= p
                 }
             }
