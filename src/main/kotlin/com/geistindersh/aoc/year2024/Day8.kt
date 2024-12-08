@@ -9,20 +9,16 @@ import com.geistindersh.aoc.helper.report
 class Day8(
     dataFile: DataFile,
 ) {
-    private val data =
+    private val grid =
         fileToStream(2024, 8, dataFile)
             .flatMapIndexed { row, line ->
                 line.mapIndexed { col, c -> Point2D(row, col) to c }
             }.toMap()
-    private val frequencies = data.values.toSet().filterNot { it == '.' }
-    private val maxRow = data.keys.maxOf { it.row }
-    private val maxCol = data.keys.maxOf { it.col }
-
-    private fun Point2D.inBounds() = this.row in 0..maxRow && this.col in 0..maxCol
+    private val frequencies = grid.values.toSet().filterNot { it == '.' }
 
     private fun antinodes(node: Char) =
         buildSet {
-            val points = data.filterValues { it == node }.keys
+            val points = grid.filterValues { it == node }.keys
             for ((a, b) in points.pairCombinations()) {
                 val p = a - b
                 add(a + p)
@@ -32,19 +28,19 @@ class Day8(
 
     private fun antinodesRepeated(node: Char) =
         buildSet {
-            val points = data.filterValues { it == node }.keys
+            val points = grid.filterValues { it == node }.keys
             addAll(points)
             for ((a, b) in points.pairCombinations()) {
                 val p = a - b
 
                 var incPoint = a + p
-                while (incPoint.inBounds()) {
+                while (incPoint in grid) {
                     add(incPoint)
                     incPoint += p
                 }
 
                 var decPoint = b - p
-                while (decPoint.inBounds()) {
+                while (decPoint in grid) {
                     add(decPoint)
                     decPoint -= p
                 }
@@ -54,7 +50,7 @@ class Day8(
     fun part1() =
         frequencies
             .flatMap { antinodes(it) }
-            .filter { it.inBounds() }
+            .filter { it in grid }
             .toSet()
             .size
 
