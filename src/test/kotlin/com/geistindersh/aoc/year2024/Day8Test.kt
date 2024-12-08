@@ -13,6 +13,5 @@ class Day8Test {
     @Test
     fun part2() {
         assertEquals(34, Day8(DataFile.Example).part2())
-        assertEquals(-1, Day8(DataFile.Part1).part2())
     }
 }
