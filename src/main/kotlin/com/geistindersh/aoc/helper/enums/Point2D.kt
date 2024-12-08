@@ -6,9 +6,15 @@ data class Point2D(
 ) {
     operator fun plus(other: Point2D) = Point2D(row + other.row, col + other.col)
 
+    operator fun minus(other: Point2D) = Point2D(row - other.row, col - other.col)
+
     operator fun plus(other: Direction) = Point2D(row + other.rowInc, col + other.colInc)
 
+    operator fun minus(other: Direction) = Point2D(row - other.rowInc, col - other.colInc)
+
     operator fun plus(other: Pair<Int, Int>) = Point2D(row + other.first, col + other.second)
+
+    operator fun minus(other: Pair<Int, Int>) = Point2D(row - other.first, col - other.second)
 
     fun neighbors() = listOf(Direction.North, Direction.East, Direction.South, Direction.West).map { this + it }
 
