@@ -2,6 +2,7 @@ package com.geistindersh.aoc.year2024
 
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
+import com.geistindersh.aoc.helper.ranges.size
 import com.geistindersh.aoc.helper.report
 
 class Day9(
@@ -9,49 +10,43 @@ class Day9(
 ) {
     private val blockSectors =
         fileToString(2024, 9, dataFile)
-            .map(Char::digitToInt)
-            .windowed(2, 2, true)
-            .flatMapIndexed { idx: Int, vals: List<Int> ->
-                if (vals.size == 2) {
-                    listOf(DiskMap.BlockFile(idx, vals.first()), DiskMap.EmptyBlock(vals.last()))
-                } else {
-                    listOf(DiskMap.BlockFile(idx, vals.first()))
+            .let {
+                buildList {
+                    var idx = -1
+                    for (i in it.indices) {
+                        val size = it[i].digitToInt()
+                        val newBlock =
+                            if (i % 2 == 0) {
+                                idx += 1
+                                BlockFile(idx, size)
+                            } else {
+                                BlockFile(-1, size)
+                            }
+                        add(newBlock)
+                    }
                 }
-            }.toList()
+            }
 
-    private sealed class DiskMap(
-        open val size: Int,
-    ) {
-        data class BlockFile(
-            val id: Int,
-            override val size: Int,
-        ) : DiskMap(size)
-
-        data class EmptyBlock(
-            override val size: Int,
-        ) : DiskMap(size)
-    }
+    private data class BlockFile(
+        val id: Int,
+        val size: Int,
+    )
 
     /**
-     * Convert the list of [DiskMap] into an [IntArray].
+     * Convert the list of [BlockFile] into an [IntArray].
      *
      * The id of each of the files is inserted at an appropriate index to match its block
      * offset. Empty locations are denoted with a value of '-1'.
      *
      * @return The block location of each of the files
      */
-    private fun List<DiskMap>.toArray(): IntArray {
+    private fun List<BlockFile>.toArray(): IntArray {
         val size = this.sumOf { it.size }
         val fileArray = IntArray(size) { -1 }
         var i = 0
         for (file in this) {
-            when (file) {
-                is DiskMap.EmptyBlock -> {}
-                is DiskMap.BlockFile -> {
-                    for (j in 0..<file.size) {
-                        fileArray[i + j] = file.id
-                    }
-                }
+            for (j in 0..<file.size) {
+                fileArray[i + j] = file.id
             }
             i += file.size
         }
@@ -72,8 +67,9 @@ class Day9(
             // Move the single block
             this[firstEmptyIndex] = this[lastFilledIndex]
             this[lastFilledIndex] = -1
-            firstEmptyIndex = this.indexOfFirst { it == -1 }
-            lastFilledIndex = this.indexOfLast { it != -1 }
+            // Loop to find the next index. Faster than calling indexOfFirst / indexOfLast
+            while (this[firstEmptyIndex] != -1) firstEmptyIndex += 1
+            while (this[lastFilledIndex] == -1) lastFilledIndex -= 1
         }
         return this
     }
@@ -105,38 +101,47 @@ class Day9(
      *
      * @return The compacted memory
      */
-    private fun List<DiskMap>.toCompactArrayContiguous(): IntArray {
+    private fun List<BlockFile>.toCompactArrayContiguous(): IntArray {
         val fileArray = this.toArray()
 
         // Get ranges for the known empty blocks that we can later fill
         val emptyBlockRanges = fileArray.emptyBlockRanges()
 
+        // Use this to track where we can still write to. This allows for us to do an early return once the
+        // start of a file block is larger than this value
+        var firstOpenIndex = fileArray.indexOfFirst { it == -1 }
+
         for (file in this.reversed()) {
-            when (file) {
-                is DiskMap.EmptyBlock -> continue
-                is DiskMap.BlockFile -> {
-                    val insertBlock = emptyBlockRanges.firstOrNull { it.count() >= file.size } ?: continue
-                    val fileStart = fileArray.indexOfFirst { it == file.id }
-                    // Check that the first open spot is before the current file location
-                    if (insertBlock.first > fileStart) continue
+            // Skip empty blocks
+            if (file.id == -1) continue
 
-                    // Move the file, and clear the old position
-                    for (i in 0..<file.size) {
-                        fileArray[i + insertBlock.first] = file.id
-                        fileArray[i + fileStart] = -1
-                    }
+            // Because the files are contiguous, we can get the final id position and remove the size of the file.
+            // This is better for the common case where we are moving files from the end to the start.
+            val fileStart = fileArray.lastIndexOf(file.id) - file.size + 1
+            if (firstOpenIndex > fileStart) break
+            // Check that the first open spot is before the current file location
+            val insertBlock = emptyBlockRanges.firstOrNull { it.first < fileStart && it.size() >= file.size } ?: continue
 
-                    // Remove, and possibly adjust the free space we just filled with the moved file
-                    emptyBlockRanges.remove(insertBlock)
-                    if (file.size != insertBlock.count()) {
-                        emptyBlockRanges.add(insertBlock.first + file.size..insertBlock.last)
-                    }
-
-                    // Add the cleared file range, and reorder the blocks by the first index free
-                    emptyBlockRanges.add(fileStart..fileStart + file.size)
-                    emptyBlockRanges.sortBy { it.first }
-                }
+            // Move the file, and clear the old position
+            for (i in 0..<file.size) {
+                fileArray[i + insertBlock.first] = file.id
+                fileArray[i + fileStart] = -1
             }
+
+            // Remove, and possibly adjust the free space we just filled with the moved file
+            emptyBlockRanges.remove(insertBlock)
+            if (file.size != insertBlock.size()) {
+                // Insert at the sorted position. This saves needing to call emptyBlockRanges.sort
+                var insertIdx = 0
+                val insertRange = insertBlock.first + file.size..insertBlock.last
+                while (emptyBlockRanges[insertIdx].first < insertRange.first) insertIdx += 1
+                emptyBlockRanges.add(insertIdx, insertRange)
+            }
+
+            // Add the cleared file range, and reorder the blocks by the first index free
+            emptyBlockRanges.add(fileStart..fileStart + file.size)
+
+            while (fileArray[firstOpenIndex] != -1) firstOpenIndex += 1
         }
 
         return fileArray
