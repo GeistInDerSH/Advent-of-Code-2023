@@ -49,3 +49,11 @@ fun IntRange.isFullyContained(other: IntRange): Boolean = this.toSet().containsA
  * @return A new range, that contains both ranges
  */
 fun IntRange.intersection(other: IntRange): IntRange = maxOf(this.first, other.first)..minOf(this.last, other.last)
+
+/**
+ * Count the number of elements in the [IntRange]. It's faster than calling IntRange::count
+ * because it doesn't need to loop over the whole range
+ *
+ * @return The size of the [IntRange]
+ */
+fun IntRange.size(): Int = this.last - this.first + 1
