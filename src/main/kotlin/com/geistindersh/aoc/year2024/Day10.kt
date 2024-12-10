@@ -23,13 +23,16 @@ class Day10(
 
         while (queue.isNotEmpty()) {
             val (point, grade) = queue.poll()
-            if (point in seen) continue
-            seen.add(point)
-            val toAdd = point.neighbors().filter { it in data && data[it]!! == grade + 1 }.map { it to data[it]!! }
-            queue.addAll(toAdd)
+            if (!seen.add(point)) continue
+            val nextPairs =
+                point
+                    .neighbors()
+                    .filter { it !in seen && it in data && data[it]!! == grade + 1 }
+                    .map { it to data[it]!! }
+            queue.addAll(nextPairs)
         }
 
-        return seen.filter { data[it]!! == 9 }.size
+        return seen.count { data[it]!! == 9 }
     }
 
     private fun Point2D.trailCount(): Int {
@@ -37,15 +40,16 @@ class Day10(
         val queue = ArrayDeque<Pair<Point2D, Set<Point2D>>>().apply { add(start) }
         val seen = mutableSetOf<Pair<Point2D, Set<Point2D>>>()
 
+        var count = 0
         while (queue.isNotEmpty()) {
             val head = queue.removeFirst()
-            if (head in seen) continue
-            seen.add(head)
+            if (!seen.add(head)) continue
 
             val (point, path) = head
-            val newPath = path.toMutableSet().apply { add(point) }.toSet()
+            val newPath = path.toMutableSet().apply { add(point) }
             if (data[point]!! == 9) {
                 seen.add(point to newPath)
+                count += 1
                 continue
             }
 
@@ -57,21 +61,12 @@ class Day10(
             }
         }
 
-        return seen
-            .map { it.second }
-            .filter { set -> set.any { data[it]!! == 9 } }
-            .toSet()
-            .size
+        return count
     }
 
     fun part1() = startingPoints.sumOf { it.trailScore() }
 
-    fun part2() =
-        startingPoints.sumOf {
-            val score = it.trailCount()
-            println(score)
-            score
-        }
+    fun part2() = startingPoints.sumOf { it.trailCount() }
 }
 
 fun day10() {
