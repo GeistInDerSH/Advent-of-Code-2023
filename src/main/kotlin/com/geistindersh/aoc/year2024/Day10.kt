@@ -14,6 +14,7 @@ class Day10(
             .flatMapIndexed { row, line ->
                 line.mapIndexed { col, digit -> Point2D(row, col) to digit.digitToInt() }
             }.toMap()
+    private val startingPoints = data.filterValues { it == 0 }.keys
 
     private fun Point2D.trailScore(): Int {
         val start = this to data[this]!!
@@ -31,14 +32,46 @@ class Day10(
         return seen.filter { data[it]!! == 9 }.size
     }
 
-    fun part1(): Int =
-        data.filterValues { it == 0 }.keys.sumOf {
-            val score = it.trailScore()
-            println("$it\t$score")
-            score
+    private fun Point2D.trailCount(): Int {
+        val start = this to emptySet<Point2D>()
+        val queue = ArrayDeque<Pair<Point2D, Set<Point2D>>>().apply { add(start) }
+        val seen = mutableSetOf<Pair<Point2D, Set<Point2D>>>()
+
+        while (queue.isNotEmpty()) {
+            val head = queue.removeFirst()
+            if (head in seen) continue
+            seen.add(head)
+
+            val (point, path) = head
+            val newPath = path.toMutableSet().apply { add(point) }.toSet()
+            if (data[point]!! == 9) {
+                seen.add(point to newPath)
+                continue
+            }
+
+            val nextStepUp = data[point]!! + 1
+            for (nextPoint in point.neighbors().filter { it in data && data[it] == nextStepUp }) {
+                val toAdd = nextPoint to newPath
+                if (toAdd in seen) continue
+                queue.add(toAdd)
+            }
         }
 
-    fun part2() = 0
+        return seen
+            .map { it.second }
+            .filter { set -> set.any { data[it]!! == 9 } }
+            .toSet()
+            .size
+    }
+
+    fun part1() = startingPoints.sumOf { it.trailScore() }
+
+    fun part2() =
+        startingPoints.sumOf {
+            val score = it.trailCount()
+            println(score)
+            score
+        }
 }
 
 fun day10() {
