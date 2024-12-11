@@ -10,24 +10,23 @@ class Day11(
     dataFile: DataFile,
 ) {
     private val stones = fileToString(2024, 11, dataFile).split(" ").associate { it.toLong() to 1L }
-    private var memory = mutableMapOf(0L to listOf(1L))
+    private val memory = mutableMapOf(0L to listOf(1L))
 
     private fun Map<Long, Long>.update() =
         this
             .flatMap { (k, v) ->
-                if (k !in memory) {
-                    val digits = k.digitCount()
-                    memory[k] =
+                memory
+                    .computeIfAbsent(k) {
+                        val digits = k.digitCount()
                         if (digits % 2 == 0) {
                             val div = 10.0.pow(digits / 2.0).toLong()
                             listOf(k.floorDiv(div), k % div)
                         } else {
                             listOf(k * 2024)
                         }
-                }
-                memory[k]!!.map { it to v }
+                    }.map { it to v }
             }.groupingBy { it.first }
-            .aggregate { _, accumulator: Long?, element, _ -> (accumulator ?: 0) + element.second }
+            .fold(0L) { acc, element -> acc + element.second }
 
     private fun Map<Long, Long>.blink(times: Int) =
         generateSequence(this) { it.update() }
