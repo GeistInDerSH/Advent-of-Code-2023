@@ -1,6 +1,7 @@
 package com.geistindersh.aoc.year2024
 
 import com.geistindersh.aoc.helper.binary.digitCount
+import com.geistindersh.aoc.helper.caching.memoize
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
@@ -10,22 +11,22 @@ class Day11(
     dataFile: DataFile,
 ) {
     private val stones = fileToString(2024, 11, dataFile).split(" ").associate { it.toLong() to 1L }
-    private val memory = mutableMapOf(0L to listOf(1L))
+    private val memoizedCore = memoize(::core, mapOf(0L to listOf(1L)))
+
+    private fun core(value: Long): List<Long> {
+        val digits = value.digitCount()
+        return if (digits % 2 == 0) {
+            val div = 10.0.pow(digits / 2.0).toLong()
+            listOf(value.floorDiv(div), value % div)
+        } else {
+            listOf(value * 2024)
+        }
+    }
 
     private fun Map<Long, Long>.update() =
         this
-            .flatMap { (k, v) ->
-                memory
-                    .computeIfAbsent(k) {
-                        val digits = k.digitCount()
-                        if (digits % 2 == 0) {
-                            val div = 10.0.pow(digits / 2.0).toLong()
-                            listOf(k.floorDiv(div), k % div)
-                        } else {
-                            listOf(k * 2024)
-                        }
-                    }.map { it to v }
-            }.groupingBy { it.first }
+            .flatMap { (k, v) -> memoizedCore(k).map { it to v } }
+            .groupingBy { it.first }
             .fold(0L) { acc, element -> acc + element.second }
 
     private fun Map<Long, Long>.blink(times: Int) =
