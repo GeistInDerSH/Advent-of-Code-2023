@@ -7,27 +7,34 @@ import com.geistindersh.aoc.helper.report
 class Day11(
     dataFile: DataFile,
 ) {
-    private val stones = fileToString(2024, 11, dataFile).split(" ")
+    private val stones = fileToString(2024, 11, dataFile).split(" ").associateWith { 1L }
+    private var memory = mutableMapOf("0" to listOf("1"))
 
-    private fun List<String>.update() =
-        this.flatMap {
-            when {
-                it == "0" -> listOf("1")
-                it.length % 2 == 0 -> {
-                    val mid = it.length / 2
-                    listOf(it.substring(0, mid).toLong().toString(), it.substring(mid).toLong().toString())
+    private fun Map<String, Long>.update() =
+        this
+            .flatMap { (k, v) ->
+                when {
+                    k in memory -> {}
+                    k.length % 2 == 0 -> {
+                        val mid = k.length / 2
+                        memory[k] = listOf(k.substring(0, mid).toLong().toString(), k.substring(mid).toLong().toString())
+                    }
+                    else -> memory[k] = listOf((k.toLong() * 2024).toString())
                 }
-                else -> listOf((it.toLong() * 2024).toString())
-            }
-        }
+                memory[k]!!.map { it to v }
+            }.groupingBy { it.first }
+            .aggregate { _, accumulator: Long?, element, _ -> (accumulator ?: 0) + element.second }
 
-    fun part1() =
-        generateSequence(stones) { it.update() }
-            .drop(25)
+    private fun Map<String, Long>.blink(times: Int) =
+        generateSequence(this) { it.update() }
+            .drop(times)
             .first()
-            .count()
+            .values
+            .sum()
 
-    fun part2() = 0
+    fun part1() = stones.blink(25)
+
+    fun part2() = stones.blink(75)
 }
 
 fun day11() {
