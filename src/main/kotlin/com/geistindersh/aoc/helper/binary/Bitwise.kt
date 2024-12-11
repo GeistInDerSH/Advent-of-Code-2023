@@ -1,6 +1,7 @@
 package com.geistindersh.aoc.helper.binary
 
 import kotlin.math.absoluteValue
+import kotlin.math.floor
 import kotlin.math.log10
 
 /**
@@ -70,3 +71,16 @@ fun Long.bitCount() =
         }
         else -> log10(this.absoluteValue.toDouble()).toInt() + 1
     }
+
+/**
+ * Count the number of digits in the [Long]
+ * @return The number of digits, e.g. 1000 -> 4
+ */
+fun Long.digitCount() = floor(log10(this.toDouble()) + 1).toInt()
+
+/**
+ * Count the number of digits in the [Int]
+ * @return The number of digits, e.g. 1000 -> 4
+ */
+@Suppress("unused")
+fun Int.digitCount() = floor(log10(this.toDouble()) + 1).toInt()
