@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
@@ -17,16 +18,37 @@ class Day12(
 
     private fun Set<Point2D>.area() = this.size
 
-    private fun Set<Point2D>.perimeter() =
-        this.sumOf { point ->
-            val char = grid[point]!!
+    private fun Set<Point2D>.perimeter(): Int {
+        val char = grid[this.first()]!!
+        return this.sumOf { point ->
             4 - point.neighbors().count { it in grid && grid[it]!! == char }
         }
+    }
+
+    private fun Set<Point2D>.sides(): Int {
+        var corners = 0
+
+        for (point in this) {
+            for (ns in listOf(Direction.North, Direction.South)) {
+                for (ew in listOf(Direction.East, Direction.West)) {
+                    val nsIn = point + ns in this
+                    val ewIn = point + ew in this
+                    if (!nsIn && !ewIn) {
+                        corners += 1
+                    } else if (nsIn && ewIn && point + ns + ew !in this) {
+                        corners += 1
+                    }
+                }
+            }
+        }
+
+        return corners
+    }
 
     private fun Char.getPlots(): List<Set<Point2D>> {
         val plots = mutableListOf<Set<Point2D>>()
-        val chr = this
-        val toVisit = grid.filterValues { it == chr }.keys.toMutableSet()
+        val char = this
+        val toVisit = grid.filterValues { it == char }.keys.toMutableSet()
         val queue = ArrayDeque<Point2D>()
         while (toVisit.isNotEmpty()) {
             queue.add(toVisit.first())
@@ -36,7 +58,7 @@ class Day12(
                 if (point !in toVisit) continue
                 toVisit.remove(point)
                 bucket.add(point)
-                queue.addAll(point.neighbors().filter { it in grid && grid[it]!! == chr })
+                queue.addAll(point.neighbors().filter { it in grid && grid[it]!! == char })
             }
             plots.add(bucket)
         }
@@ -45,7 +67,7 @@ class Day12(
 
     fun part1() = plants.map { it.getPlots() }.sumOf { it.sumOf { plot -> plot.area() * plot.perimeter() } }
 
-    fun part2() = 0
+    fun part2() = plants.map { it.getPlots() }.sumOf { it.sumOf { plot -> plot.area() * plot.sides() } }
 }
 
 fun day12() {
