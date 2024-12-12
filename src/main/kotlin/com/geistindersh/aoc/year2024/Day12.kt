@@ -1,6 +1,5 @@
 package com.geistindersh.aoc.year2024
 
-import com.geistindersh.aoc.helper.benchmark
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -72,5 +71,3 @@ fun day12() {
     val day = Day12(DataFile.Part1)
     report(2024, 12, day.part1(), day.part2())
 }
-
-fun main() = println(benchmark({ Day12(DataFile.Part1) }, { it.part1() }, { it.part2() }, warmup = 100))
