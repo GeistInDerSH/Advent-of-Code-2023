@@ -19,12 +19,8 @@ class Day12(
 
     private fun Set<Point2D>.area() = this.size
 
-    private fun Set<Point2D>.perimeter(): Int {
-        val char = grid[this.first()]!!
-        return this.sumOf { point ->
-            4 - point.neighbors().count { it in grid && grid[it]!! == char }
-        }
-    }
+    private fun Set<Point2D>.perimeter(): Int =
+        this.sumOf { point -> point.neighbors().count { it !in grid || grid[it]!! != grid[point]!! } }
 
     private fun Set<Point2D>.sides(): Int {
         var corners = 0
