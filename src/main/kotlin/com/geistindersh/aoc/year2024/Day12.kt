@@ -1,10 +1,12 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.benchmark
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
+import kotlin.collections.sumOf
 
 class Day12(
     dataFile: DataFile,
@@ -16,35 +18,43 @@ class Day12(
             }.toMap()
     private val plots = grid.values.toSet().flatMap { it.getPlots() }
 
+    /**
+     * @return The number of points in the set
+     */
     private fun Set<Point2D>.area() = this.size
 
-    private fun Set<Point2D>.perimeter(): Int =
-        this.sumOf { point -> point.neighbors().count { it !in grid || grid[it]!! != grid[point]!! } }
+    /**
+     * @return The number of edges not touching a point inside the set
+     */
+    private fun Set<Point2D>.perimeter(): Int = this.sumOf { point -> point.neighbors().count { it !in this } }
 
-    private fun Set<Point2D>.sides(): Int {
-        var corners = 0
-
-        for (point in this) {
-            for (ns in listOf(Direction.North, Direction.South)) {
-                for (ew in listOf(Direction.East, Direction.West)) {
-                    val nsTouching = (point + ns) in this
-                    val ewTouching = (point + ew) in this
-                    if (!(nsTouching || ewTouching)) {
-                        corners += 1
-                    } else if (nsTouching && ewTouching && (point + ns + ew) !in this) {
-                        corners += 1
+    /**
+     * Get the number of vertices for the shape defined by the set of points. Fortunately, the number of vertices
+     * is equal to the number of edges for a 2D shape.
+     * @return The number of vertices in the shape
+     */
+    private fun Set<Point2D>.vertices() =
+        this
+            .sumOf { point ->
+                verticesToCheck
+                    .count { (ns, ew, corner) ->
+                        val hasNs = (point + ns) in this
+                        val hasEw = (point + ew) in this
+                        when {
+                            !(hasNs || hasEw) -> true
+                            !(hasNs && hasEw) -> false
+                            else -> (point + corner) !in this
+                        }
                     }
-                }
             }
-        }
 
-        return corners
-    }
-
+    /**
+     * @return All possible plots of points for the given [Char]
+     */
     private fun Char.getPlots(): List<Set<Point2D>> {
         val plots = mutableListOf<Set<Point2D>>()
-        val char = this
-        val toVisit = grid.filterValues { it == char }.keys.toMutableSet()
+        val plotName = this
+        val toVisit = grid.filterValues { it == plotName }.keys.toMutableSet()
         val queue = ArrayDeque<Point2D>()
         while (toVisit.isNotEmpty()) {
             // Flood fill from this point, and remove all points touching it
@@ -55,7 +65,7 @@ class Day12(
                 if (point !in toVisit) continue
                 toVisit.remove(point)
                 bucket.add(point)
-                queue.addAll(point.neighbors().filter { it in grid && grid[it]!! == char })
+                queue.addAll(point.neighbors().filter { it in grid && grid[it]!! == plotName })
             }
             plots.add(bucket)
         }
@@ -64,10 +74,22 @@ class Day12(
 
     fun part1() = plots.sumOf { it.area() * it.perimeter() }
 
-    fun part2() = plots.sumOf { it.area() * it.sides() }
+    fun part2() = plots.sumOf { it.area() * it.vertices() }
+
+    companion object {
+        private val verticesToCheck =
+            listOf(
+                Triple(Direction.North, Direction.East, Direction.North + Direction.East),
+                Triple(Direction.North, Direction.West, Direction.North + Direction.West),
+                Triple(Direction.South, Direction.East, Direction.South + Direction.East),
+                Triple(Direction.South, Direction.West, Direction.South + Direction.West),
+            )
+    }
 }
 
 fun day12() {
     val day = Day12(DataFile.Part1)
     report(2024, 12, day.part1(), day.part2())
 }
+
+fun main() = println(benchmark({ Day12(DataFile.Part1) }, { it.part1() }, { it.part2() }, 100))
