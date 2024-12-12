@@ -14,7 +14,7 @@ class Day12(
             .flatMapIndexed { row, line ->
                 line.mapIndexed { col, value -> Point2D(row, col) to value }
             }.toMap()
-    private val plots = grid.values.toSet().map { it.getPlots() }
+    private val plots = grid.values.toSet().flatMap { it.getPlots() }
 
     private fun Set<Point2D>.area() = this.size
 
@@ -62,9 +62,9 @@ class Day12(
         return plots
     }
 
-    fun part1() = plots.sumOf { it.sumOf { plot -> plot.area() * plot.perimeter() } }
+    fun part1() = plots.sumOf { it.area() * it.perimeter() }
 
-    fun part2() = plots.sumOf { it.sumOf { plot -> plot.area() * plot.sides() } }
+    fun part2() = plots.sumOf { it.area() * it.sides() }
 }
 
 fun day12() {
