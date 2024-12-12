@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.benchmark
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -14,7 +15,7 @@ class Day12(
             .flatMapIndexed { row, line ->
                 line.mapIndexed { col, value -> Point2D(row, col) to value }
             }.toMap()
-    private val plants = grid.values.toSet()
+    private val plots = grid.values.toSet().map { it.getPlots() }
 
     private fun Set<Point2D>.area() = this.size
 
@@ -31,11 +32,11 @@ class Day12(
         for (point in this) {
             for (ns in listOf(Direction.North, Direction.South)) {
                 for (ew in listOf(Direction.East, Direction.West)) {
-                    val nsIn = point + ns in this
-                    val ewIn = point + ew in this
-                    if (!nsIn && !ewIn) {
+                    val nsTouching = (point + ns) in this
+                    val ewTouching = (point + ew) in this
+                    if (!(nsTouching || ewTouching)) {
                         corners += 1
-                    } else if (nsIn && ewIn && point + ns + ew !in this) {
+                    } else if (nsTouching && ewTouching && (point + ns + ew) !in this) {
                         corners += 1
                     }
                 }
@@ -51,6 +52,7 @@ class Day12(
         val toVisit = grid.filterValues { it == char }.keys.toMutableSet()
         val queue = ArrayDeque<Point2D>()
         while (toVisit.isNotEmpty()) {
+            // Flood fill from this point, and remove all points touching it
             queue.add(toVisit.first())
             val bucket = mutableSetOf<Point2D>()
             while (queue.isNotEmpty()) {
@@ -65,12 +67,14 @@ class Day12(
         return plots
     }
 
-    fun part1() = plants.map { it.getPlots() }.sumOf { it.sumOf { plot -> plot.area() * plot.perimeter() } }
+    fun part1() = plots.sumOf { it.sumOf { plot -> plot.area() * plot.perimeter() } }
 
-    fun part2() = plants.map { it.getPlots() }.sumOf { it.sumOf { plot -> plot.area() * plot.sides() } }
+    fun part2() = plots.sumOf { it.sumOf { plot -> plot.area() * plot.sides() } }
 }
 
 fun day12() {
     val day = Day12(DataFile.Part1)
     report(2024, 12, day.part1(), day.part2())
 }
+
+fun main() = println(benchmark({ Day12(DataFile.Part1) }, { it.part1() }, { it.part2() }, warmup = 100))
