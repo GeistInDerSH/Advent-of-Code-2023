@@ -1,6 +1,8 @@
 package com.geistindersh.aoc.helper.files
 
-import java.io.File
+import kotlin.io.path.Path
+import kotlin.io.path.inputStream
+import kotlin.io.path.readText
 
 enum class DataFile(
     private val fileName: String,
@@ -22,7 +24,7 @@ enum class DataFile(
  * @param fileName The name of the file to read
  * @return The contents of the file as a string
  */
-fun fileToString(fileName: String) = File(fileName).readText()
+fun fileToString(fileName: String) = Path(fileName).readText()
 
 /**
  * Read the contents of the file into a string
@@ -59,7 +61,7 @@ fun fileToStream(
  * @return An iterable sequence of strings
  */
 fun fileToStream(fileName: String) =
-    File(fileName)
+    Path(fileName)
         .inputStream()
         .bufferedReader()
         .lineSequence()
