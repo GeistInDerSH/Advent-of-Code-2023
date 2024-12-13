@@ -13,3 +13,17 @@ fun determinant(
     c: Long,
     d: Long,
 ) = (a * d) - (b * c)
+
+/**
+ * Calculate the determinant of a 2x2 matrix.
+ *
+ * Reference: [https://en.wikipedia.org/wiki/Determinant](https://en.wikipedia.org/wiki/Determinant)
+ *
+ * @return A scalar value for the determinant
+ */
+fun determinant(
+    a: Double,
+    b: Double,
+    c: Double,
+    d: Double,
+) = (a * d) - (b * c)

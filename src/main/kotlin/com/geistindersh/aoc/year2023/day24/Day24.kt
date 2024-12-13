@@ -2,6 +2,7 @@ package com.geistindersh.aoc.year2023.day24
 
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.math.determinant
 import com.geistindersh.aoc.helper.report
 
 data class Vector(
@@ -40,9 +41,9 @@ data class Vector(
             return null
         }
 
-        val div = a * other.b - b * other.a
-        val x = (c * other.b - b * other.c) / div
-        val y = (a * other.c - c * other.a) / div
+        val div = determinant(a, b, other.a, other.b)
+        val x = determinant(c, b, other.c, other.b) / div
+        val y = determinant(a, c, other.a, other.c) / div
 
         return if (isPositive(x, y) && other.isPositive(x, y)) {
             Pair(x, y)
