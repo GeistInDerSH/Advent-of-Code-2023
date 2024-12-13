@@ -14,13 +14,13 @@ class Day13(
             .toList()
 
     private data class Button(
-        val x: Int,
-        val y: Int,
+        val x: Long,
+        val y: Long,
     )
 
     private data class Prize(
-        val x: Int,
-        val y: Int,
+        val x: Long,
+        val y: Long,
     )
 
     private data class ClawMachine(
@@ -43,6 +43,21 @@ class Day13(
             return null
         }
 
+        private fun determinate(
+            a: Long,
+            b: Long,
+            c: Long,
+            d: Long,
+        ) = (a * d) - (b * c)
+
+        fun tryGetPrizeNoLimit(): Pair<Long, Long>? {
+            val div = determinate(a.x, a.y, b.x, b.y)
+            val x = determinate(prize.x, b.x, prize.y, b.y)
+            val y = determinate(a.x, prize.x, a.y, prize.y)
+            if (x % div != 0L || y % div != 0L) return null
+            return (x / div) to (y / div)
+        }
+
         companion object {
             private val NUMBER_REGEX = "[0-9]+".toRegex()
 
@@ -51,19 +66,19 @@ class Day13(
                 val a =
                     NUMBER_REGEX
                         .findAll(lines[0])
-                        .map { it.value.toInt() }
+                        .map { it.value.toLong() }
                         .toList()
                         .let { Button(it[0], it[1]) }
                 val b =
                     NUMBER_REGEX
                         .findAll(lines[1])
-                        .map { it.value.toInt() }
+                        .map { it.value.toLong() }
                         .toList()
                         .let { Button(it[0], it[1]) }
                 val prize =
                     NUMBER_REGEX
                         .findAll(lines[2])
-                        .map { it.value.toInt() }
+                        .map { it.value.toLong() }
                         .toList()
                         .let { Prize(it[0], it[1]) }
                 return ClawMachine(a, b, prize)
@@ -77,7 +92,12 @@ class Day13(
             .map { (a, b) -> a * 3 + b }
             .sumOf { it }
 
-    fun part2() = 0
+    fun part2() =
+        data
+            .map { it.copy(prize = Prize(it.prize.x + 10000000000000L, it.prize.y + 10000000000000L)) }
+            .mapNotNull { it.tryGetPrizeNoLimit() }
+            .map { (a, b) -> a * 3 + b }
+            .sumOf { it }
 }
 
 fun day13() {
