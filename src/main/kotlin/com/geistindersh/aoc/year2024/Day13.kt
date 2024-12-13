@@ -2,6 +2,7 @@ package com.geistindersh.aoc.year2024
 
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
+import com.geistindersh.aoc.helper.math.determinant
 import com.geistindersh.aoc.helper.report
 
 class Day13(
@@ -21,13 +22,6 @@ class Day13(
         val px: Long,
         val py: Long,
     ) {
-        private fun determinate(
-            a: Long,
-            b: Long,
-            c: Long,
-            d: Long,
-        ) = (a * d) - (b * c)
-
         fun tryGetPrize(): Pair<Long, Long> {
             val (x, y) = tryGetPrizeNoLimit()
             if (x > 100 || y > 100) return 0L to 0L
@@ -35,9 +29,9 @@ class Day13(
         }
 
         fun tryGetPrizeNoLimit(): Pair<Long, Long> {
-            val div = determinate(ax, ay, bx, by)
-            val x = determinate(px, bx, py, by)
-            val y = determinate(ax, px, ay, py)
+            val div = determinant(ax, ay, bx, by)
+            val x = determinant(px, bx, py, by)
+            val y = determinant(ax, px, ay, py)
             if (x % div != 0L || y % div != 0L) return 0L to 0L
             return (x / div) to (y / div)
         }
