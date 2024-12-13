@@ -11,7 +11,7 @@ class Day13(
     private val games =
         fileToString(2024, 13, dataFile)
             .split("\n\n")
-            .map { ClawMachine.from(it) }
+            .map(ClawMachine::from)
             .toList()
 
     private data class ClawMachine(
@@ -22,18 +22,12 @@ class Day13(
         val px: Long,
         val py: Long,
     ) {
-        fun tryGetPrize(): Pair<Long, Long> {
-            val (x, y) = tryGetPrizeNoLimit()
-            if (x > 100 || y > 100) return 0L to 0L
-            return x to y
-        }
-
-        fun tryGetPrizeNoLimit(): Pair<Long, Long> {
+        fun getScore(): Long {
             val div = determinant(ax, ay, bx, by)
             val x = determinant(px, bx, py, by)
             val y = determinant(ax, px, ay, py)
-            if (x % div != 0L || y % div != 0L) return 0L to 0L
-            return (x / div) to (y / div)
+            if (x % div != 0L || y % div != 0L) return 0L
+            return (x / div) * 3 + (y / div)
         }
 
         companion object {
@@ -48,14 +42,12 @@ class Day13(
         }
     }
 
-    private fun Pair<Long, Long>.score() = this.first * 3 + this.second
-
-    fun part1() = games.sumOf { it.tryGetPrize().score() }
+    fun part1() = games.sumOf { it.getScore() }
 
     fun part2() =
         games
             .map { it.copy(px = it.px + 10000000000000L, py = it.py + 10000000000000L) }
-            .sumOf { it.tryGetPrizeNoLimit().score() }
+            .sumOf { it.getScore() }
 }
 
 fun day13() {
