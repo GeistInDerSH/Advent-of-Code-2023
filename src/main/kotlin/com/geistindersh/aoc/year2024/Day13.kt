@@ -39,12 +39,11 @@ class Day13(
         companion object {
             private val NUMBER_REGEX = "[0-9]+".toRegex()
 
-            fun from(str: String): ClawMachine =
+            fun from(str: String) =
                 NUMBER_REGEX
                     .findAll(str)
-                    .map {
-                        it.value.toLong()
-                    }.toList()
+                    .map { it.value.toLong() }
+                    .toList()
                     .let { ClawMachine(it[0], it[1], it[2], it[3], it[4], it[5]) }
         }
     }
