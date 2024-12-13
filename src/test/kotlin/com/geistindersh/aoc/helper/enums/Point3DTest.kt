@@ -1,7 +1,7 @@
 package com.geistindersh.aoc.helper.enums
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class Point3DTest {
     @Test

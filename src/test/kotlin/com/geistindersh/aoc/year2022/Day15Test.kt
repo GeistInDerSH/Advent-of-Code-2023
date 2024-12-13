@@ -1,10 +1,10 @@
 package com.geistindersh.aoc.year2022
 
 import com.geistindersh.aoc.helper.files.DataFile
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
 import java.util.concurrent.TimeUnit
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class Day15Test {
     @Test

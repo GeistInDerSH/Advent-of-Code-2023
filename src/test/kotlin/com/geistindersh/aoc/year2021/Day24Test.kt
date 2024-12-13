@@ -1,7 +1,7 @@
 package com.geistindersh.aoc.year2021
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class Day24Test {
     @Test

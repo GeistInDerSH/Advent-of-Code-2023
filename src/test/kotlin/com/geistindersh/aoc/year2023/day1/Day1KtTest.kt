@@ -1,15 +1,31 @@
 package com.geistindersh.aoc.year2023.day1
 
 import com.geistindersh.aoc.helper.files.DataFile
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class Day1KtTest {
     private val numericOnly = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
     private val nameAndNumeric =
         listOf(
-            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-            "1", "2", "3", "4", "5", "6", "7", "8", "9",
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
         )
 
     @Test

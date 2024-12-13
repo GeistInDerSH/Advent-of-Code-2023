@@ -1,8 +1,8 @@
 package com.geistindersh.aoc.year2023.day20
 
 import com.geistindersh.aoc.helper.files.DataFile
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class PropagationTest {
     private val exampleInput = Propagation.parseInput(DataFile.Example)

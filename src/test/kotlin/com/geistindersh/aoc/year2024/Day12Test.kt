@@ -1,8 +1,8 @@
 package com.geistindersh.aoc.year2024
 
 import com.geistindersh.aoc.helper.files.DataFile
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class Day12Test {
     @Test

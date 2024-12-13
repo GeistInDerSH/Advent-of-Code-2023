@@ -1,7 +1,7 @@
 package com.geistindersh.aoc.year2023.day21
 
 import com.geistindersh.aoc.helper.files.DataFile
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class GridTest {
