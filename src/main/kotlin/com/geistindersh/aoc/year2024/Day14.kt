@@ -11,8 +11,10 @@ class Day14(
     private val robots = fileToStream(2024, 14, dataFile).map(Robot::from).toList()
 
     private data class Robot(
-        val position: Pair<Int, Int>,
-        val velocity: Pair<Int, Int>,
+        val col: Int,
+        val row: Int,
+        val colVelocity: Int,
+        val rowVelocity: Int,
         val height: Int = 103,
         val width: Int = 101,
     ) {
@@ -21,10 +23,10 @@ class Day14(
 
         fun quadrant() =
             when {
-                position.first == widthMid || position.second == heightMid -> null
-                position.first < widthMid && position.second < heightMid -> 0
-                position.first > widthMid && position.second < heightMid -> 1
-                position.first < widthMid -> 2
+                col == widthMid || row == heightMid -> null
+                col < widthMid && row < heightMid -> 0
+                col > widthMid && row < heightMid -> 1
+                col < widthMid -> 2
                 else -> 3
             }
 
@@ -32,11 +34,8 @@ class Day14(
 
         fun next(steps: Int) =
             this.copy(
-                position =
-                    Pair(
-                        (position.first + steps * velocity.first).floorModulo(width),
-                        (position.second + steps * velocity.second).floorModulo(height),
-                    ),
+                col = (col + steps * colVelocity).floorModulo(width),
+                row = (row + steps * rowVelocity).floorModulo(height),
             )
 
         companion object {
@@ -44,7 +43,7 @@ class Day14(
 
             fun from(line: String) =
                 NUMBER_REGEX.findAll(line).map { it.value.toInt() }.toList().let {
-                    Robot(it[0] to it[1], it[2] to it[3])
+                    Robot(it[0], it[1], it[2], it[3])
                 }
         }
     }
@@ -70,7 +69,7 @@ class Day14(
         height: Int,
         width: Int,
     ) = generateSequence(0 to robotsWithBounds(height, width)) { (round, bots) -> round + 1 to bots.map { it.next() } }
-        .first { (_, bots) -> bots.map { it.position }.toSet().size == robots.size }
+        .first { (_, bots) -> bots.map { it.row to it.col }.toSet().size == robots.size }
         .first
 
     fun part2() = part2(height = 103, width = 101)
