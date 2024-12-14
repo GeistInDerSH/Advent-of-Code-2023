@@ -1,6 +1,6 @@
 package com.geistindersh.aoc.helper.iterators
 
-import com.geistindersh.aoc.helper.math.positiveModulo
+import com.geistindersh.aoc.helper.math.floorModulo
 
 fun <T> Collection<T>.pairCombinations() =
     sequence {
@@ -111,7 +111,7 @@ fun <T> List<T>.rotateRight(n: Int): List<T> {
     val new = this.toMutableList()
 
     this.indices.forEach { i ->
-        val pos = (i - n).positiveModulo(this.size)
+        val pos = (i - n).floorModulo(this.size)
         new[i] = this[pos]
     }
 
@@ -122,7 +122,7 @@ fun <T> List<T>.rotateRight(n: Int): List<T> {
 fun IntArray.rotateRight(n: Int): IntArray {
     val new = this.clone()
     this.indices.forEach { i ->
-        val pos = (i - n).positiveModulo(this.size)
+        val pos = (i - n).floorModulo(this.size)
         new[i] = this[pos]
     }
     return new
@@ -132,7 +132,7 @@ fun IntArray.rotateRight(n: Int): IntArray {
 fun LongArray.rotateRight(n: Int): LongArray {
     val new = this.clone()
     this.indices.forEach { i ->
-        val pos = (i - n).positiveModulo(this.size)
+        val pos = (i - n).floorModulo(this.size)
         new[i] = this[pos]
     }
     return new

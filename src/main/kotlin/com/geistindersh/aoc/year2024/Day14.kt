@@ -2,6 +2,7 @@ package com.geistindersh.aoc.year2024
 
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.math.floorModulo
 import com.geistindersh.aoc.helper.report
 
 class Day14(
@@ -33,8 +34,8 @@ class Day14(
             this.copy(
                 position =
                     Pair(
-                        Math.floorMod(position.first + steps * velocity.first, width),
-                        Math.floorMod(position.second + steps * velocity.second, height),
+                        (position.first + steps * velocity.first).floorModulo(width),
+                        (position.second + steps * velocity.second).floorModulo(height),
                     ),
             )
 

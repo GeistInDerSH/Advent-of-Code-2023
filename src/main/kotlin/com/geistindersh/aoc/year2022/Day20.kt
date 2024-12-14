@@ -3,7 +3,7 @@ package com.geistindersh.aoc.year2022
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.cycle
-import com.geistindersh.aoc.helper.math.positiveModulo
+import com.geistindersh.aoc.helper.math.floorModulo
 import com.geistindersh.aoc.helper.report
 
 class Day20(
@@ -25,7 +25,7 @@ class Day20(
 
             // I originally wrote this in Clojure, which handles modulo of negative values
             // differently than Kotlin. Because of that, replicate the behavior here
-            val newIndex = (prevIndex + data[index]).positiveModulo(div)
+            val newIndex = (prevIndex + data[index]).floorModulo(div.toLong())
 
             for (i in values.indices) {
                 values[i] =
