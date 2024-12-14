@@ -27,6 +27,8 @@ class Day14(
                 else -> 3
             }
 
+        fun next() = next(1)
+
         fun next(steps: Int) =
             this.copy(
                 position =
@@ -46,11 +48,16 @@ class Day14(
         }
     }
 
+    private fun robotsWithBounds(
+        height: Int,
+        width: Int,
+    ) = robots.map { it.copy(height = height, width = width) }
+
     fun part1(
         height: Int,
         width: Int,
-    ) = robots
-        .mapNotNull { it.copy(height = height, width = width).next(100).quadrant() }
+    ) = robotsWithBounds(height, width)
+        .mapNotNull { it.next(100).quadrant() }
         .groupingBy { it }
         .eachCount()
         .values
@@ -58,7 +65,14 @@ class Day14(
 
     fun part1() = part1(height = 103, width = 101)
 
-    fun part2() = 0
+    fun part2(
+        height: Int,
+        width: Int,
+    ) = generateSequence(0 to robotsWithBounds(height, width)) { (round, bots) -> round + 1 to bots.map { it.next() } }
+        .first { (_, bots) -> bots.map { it.position }.toSet().size == robots.size }
+        .first
+
+    fun part2() = part2(height = 103, width = 101)
 }
 
 fun day14() {
