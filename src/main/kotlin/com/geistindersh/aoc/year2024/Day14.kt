@@ -68,9 +68,11 @@ class Day14(
     fun part2(
         height: Int,
         width: Int,
-    ) = generateSequence(0 to robotsWithBounds(height, width)) { (round, bots) -> round + 1 to bots.map { it.next() } }
-        .first { (_, bots) -> bots.map { it.row to it.col }.toSet().size == robots.size }
-        .first
+    ) = generateSequence(0 to robotsWithBounds(height, width)) { (round, bots) -> (round + 1) to bots.map(Robot::next) }
+        .first { (_, bots) ->
+            val unique = mutableSetOf<Pair<Int, Int>>()
+            bots.all { unique.add(it.row to it.col) }
+        }.first
 
     fun part2() = part2(height = 103, width = 101)
 }
