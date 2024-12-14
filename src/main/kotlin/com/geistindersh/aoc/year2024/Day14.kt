@@ -7,16 +7,18 @@ import com.geistindersh.aoc.helper.report
 
 class Day14(
     dataFile: DataFile,
+    width: Int = 101,
+    height: Int = 103,
 ) {
-    private val robots = fileToStream(2024, 14, dataFile).map(Robot::from).toList()
+    private val robots = fileToStream(2024, 14, dataFile).map { Robot.from(it, height, width) }.toList()
 
     private data class Robot(
         val col: Int,
         val row: Int,
         val colVelocity: Int,
         val rowVelocity: Int,
-        val height: Int = 103,
-        val width: Int = 101,
+        val height: Int,
+        val width: Int,
     ) {
         val heightMid = height.floorDiv(2)
         val widthMid = width.floorDiv(2)
@@ -41,40 +43,30 @@ class Day14(
         companion object {
             private val NUMBER_REGEX = "-?[0-9]+".toRegex()
 
-            fun from(line: String) =
-                NUMBER_REGEX.findAll(line).map { it.value.toInt() }.toList().let {
-                    Robot(it[0], it[1], it[2], it[3])
-                }
+            fun from(
+                line: String,
+                height: Int,
+                width: Int,
+            ) = NUMBER_REGEX.findAll(line).map { it.value.toInt() }.toList().let {
+                Robot(it[0], it[1], it[2], it[3], height, width)
+            }
         }
     }
 
-    private fun robotsWithBounds(
-        height: Int,
-        width: Int,
-    ) = robots.map { it.copy(height = height, width = width) }
+    fun part1() =
+        robots
+            .mapNotNull { it.next(100).quadrant() }
+            .groupingBy { it }
+            .eachCount()
+            .values
+            .reduce(Int::times)
 
-    fun part1(
-        height: Int,
-        width: Int,
-    ) = robotsWithBounds(height, width)
-        .mapNotNull { it.next(100).quadrant() }
-        .groupingBy { it }
-        .eachCount()
-        .values
-        .reduce(Int::times)
-
-    fun part1() = part1(height = 103, width = 101)
-
-    fun part2(
-        height: Int,
-        width: Int,
-    ) = generateSequence(0 to robotsWithBounds(height, width)) { (round, bots) -> (round + 1) to bots.map(Robot::next) }
-        .first { (_, bots) ->
-            val unique = mutableSetOf<Pair<Int, Int>>()
-            bots.all { unique.add(it.row to it.col) }
-        }.first
-
-    fun part2() = part2(height = 103, width = 101)
+    fun part2() =
+        generateSequence(0 to robots) { (round, bots) -> (round + 1) to bots.map(Robot::next) }
+            .first { (_, bots) ->
+                val unique = mutableSetOf<Pair<Int, Int>>()
+                bots.all { unique.add(it.row to it.col) }
+            }.first
 }
 
 fun day14() {

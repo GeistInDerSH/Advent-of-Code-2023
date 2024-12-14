@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 class Day14Test {
     @Test
     fun part1() {
-        assertEquals(12, Day14(DataFile.Example).part1(7, 11))
+        assertEquals(12, Day14(DataFile.Example, 7, 11).part1())
     }
 
     @Test
