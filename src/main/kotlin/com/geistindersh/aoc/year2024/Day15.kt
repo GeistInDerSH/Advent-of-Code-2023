@@ -118,6 +118,10 @@ class Day15(
                 val rhs: Point2D,
             ) : Obstacle() {
                 fun toPair() = lhs to rhs
+
+                companion object {
+                    fun from(pair: Pair<Point2D, Point2D>) = Box(pair.first, pair.second)
+                }
             }
         }
 
@@ -128,7 +132,7 @@ class Day15(
          *
          * @return The unique [Obstacle]s a [Obstacle.Box] may encounter when moving in that [Direction]
          */
-        private fun Pair<Point2D, Point2D>.getTouchingObstacles(move: Direction): Set<Obstacle> {
+        private fun Pair<Point2D, Point2D>.getTouchingAllObstacles(move: Direction): Set<Obstacle> {
             val (left, right) = this
             val newLeft = left + move
             val newRight = right + move
@@ -150,48 +154,23 @@ class Day15(
         }
 
         /**
-         * Determine if pushing the point will cause it to impact any [Obstacle.Wall]s when being pushed
-         * in the [move] [Direction]. This will check all boxes touching the starting box, recursively.
-         *
-         * @param move The [Direction] the box is being pushed
-         * @return If the box can be pushed in that direction
-         */
-        private fun Pair<Point2D, Point2D>.canMove(move: Direction): Boolean {
-            val queue = ArrayDeque<Pair<Point2D, Point2D>>().apply { add(this@canMove) }
-            while (queue.isNotEmpty()) {
-                val point = queue.removeFirst()
-                for (touch in point.getTouchingObstacles(move)) {
-                    when (touch) {
-                        is Obstacle.Wall -> return false
-                        is Obstacle.Box -> queue.add(touch.toPair())
-                        is Obstacle.Empty -> continue
-                    }
-                }
-            }
-            return true
-        }
-
-        /**
-         * Get all [Obstacle.Box] as [Pair]s of [Point2D] that are touching the current point, in the [Direction].
-         * This should only be used after [canMove] has been called for the point.
+         * Get all [Obstacle]s that are touching the current point, in the [Direction] recursively
          *
          * @param move The direction that the boxes are going to be moved
          *
          * @return All boxes touching the initial box in the direction
          */
-        private fun Pair<Point2D, Point2D>.getTouchingBoxes(move: Direction): List<Pair<Point2D, Point2D>> {
-            val queue = ArrayDeque<Pair<Point2D, Point2D>>().apply { add(this@getTouchingBoxes) }
-            val boxes = mutableListOf(this@getTouchingBoxes)
+        private fun Pair<Point2D, Point2D>.getTouchingObstacles(move: Direction): List<Obstacle> {
+            val queue = ArrayDeque<Pair<Point2D, Point2D>>().apply { add(this@getTouchingObstacles) }
+            val boxes: MutableList<Obstacle> = mutableListOf(Obstacle.Box.from(this@getTouchingObstacles))
             while (queue.isNotEmpty()) {
                 val point = queue.removeFirst()
-                for (touch in point.getTouchingObstacles(move)) {
+                for (touch in point.getTouchingAllObstacles(move)) {
+                    boxes.add(touch)
                     when (touch) {
                         is Obstacle.Wall -> continue
-                        is Obstacle.Box -> {
-                            queue.add(touch.toPair())
-                            boxes.add(touch.toPair())
-                        }
                         is Obstacle.Empty -> continue
+                        is Obstacle.Box -> queue.add(touch.toPair())
                     }
                 }
             }
@@ -208,6 +187,8 @@ class Day15(
                     ExpandedGrid(newGrid, newPosition)
                 }
                 '[', ']' -> {
+                    // We can push East/West without needing the check for half-boxes. So, similar logic to
+                    // Grid.next can be used
                     if (move == Direction.East || move == Direction.West) {
                         var nextPos = newPosition + move
                         while (nextPos in grid && (grid[nextPos]!! == '[' || grid[nextPos]!! == ']')) nextPos += move
@@ -226,17 +207,22 @@ class Day15(
                             else -> this
                         }
                     } else {
+                        // If we are moving North/South, we need to check to see where we are pushing the box
+                        // as we may be pushing multiple boxes fanning out from our starting box
                         val box =
                             if (newGrid[newPosition] == '[') {
                                 newPosition to newPosition + Direction.East
                             } else {
                                 newPosition + Direction.West to newPosition
                             }
-                        if (!box.canMove(move)) {
+                        // If any of the touching are a wall, we can't push any further
+                        val touching = box.getTouchingObstacles(move)
+                        if (touching.any { it is Obstacle.Wall }) {
                             this
                         } else {
-                            val touching = box.getTouchingBoxes(move).reversed()
-                            for ((lhs, rhs) in touching) {
+                            // Reverse the boxes to avoid clobbering an earlier box when moving
+                            val boxes = touching.filterIsInstance<Obstacle.Box>().map { it.toPair() }.reversed()
+                            for ((lhs, rhs) in boxes) {
                                 newGrid[lhs + move] = '['
                                 newGrid[rhs + move] = ']'
                                 newGrid[lhs] = '.'
