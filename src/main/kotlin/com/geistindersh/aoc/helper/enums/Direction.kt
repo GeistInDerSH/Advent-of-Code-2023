@@ -52,5 +52,14 @@ enum class Direction(
                 "S", "D", "1" -> South
                 else -> null
             }
+
+        fun tryFromArrow(c: Char): Direction? =
+            when (c) {
+                '^' -> North
+                'v' -> South
+                '<' -> West
+                '>' -> East
+                else -> null
+            }
     }
 }
