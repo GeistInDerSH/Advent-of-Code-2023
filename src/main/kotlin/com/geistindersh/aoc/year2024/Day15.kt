@@ -19,8 +19,11 @@ class Day15(
             .flatMapIndexed { row, line -> line.mapIndexed { col, char -> Point2D(row, col) to char } }
             .toMap()
             .let { grid ->
+                // Remove the cursor from the map so that it doesn't interfere with the
+                // movement. This allows for a speedup in the general case of no objects being pushed
                 val start = grid.filterValues { it == '@' }.firstNotNullOf { it.key }
-                Grid(grid, start)
+                val withoutCursor = grid.toMutableMap().apply { set(start, '.') }
+                Grid(withoutCursor, start)
             }
     private val moves = rawMoves.mapNotNull { Direction.tryFromArrow(it) }
     private val expandedGrid = ExpandedGrid.from(grid)
@@ -53,14 +56,12 @@ class Day15(
 
         override fun next(move: Direction): Grid {
             val newPosition = position + move
-            val newGrid = grid.toMutableMap()
             return when (grid[newPosition]!!) {
-                '.' -> {
-                    newGrid[position] = '.'
-                    newGrid[newPosition] = '@'
-                    Grid(newGrid, newPosition)
-                }
+                // General case, we don't push anything. Because we don't keep the cursor in the map, just update
+                // the position
+                '.' -> copy(position = newPosition)
                 'O' -> {
+                    val newGrid = grid.toMutableMap()
                     var nextPos = newPosition + move
                     while (nextPos in grid && grid[nextPos]!! == 'O') nextPos += move
                     when (grid[nextPos]!!) {
@@ -89,6 +90,7 @@ class Day15(
             for ((k, v) in grid) {
                 buff[k.row][k.col] = v
             }
+            buff[position.row][position.col] = '@'
             return buff.joinToString("\n") { it.joinToString("") }
         }
 
@@ -179,13 +181,10 @@ class Day15(
 
         override fun next(move: Direction): ExpandedGrid {
             val newPosition = position + move
-            val newGrid = grid.toMutableMap()
             return when (grid[newPosition]!!) {
-                '.' -> {
-                    newGrid[position] = '.'
-                    newGrid[newPosition] = '@'
-                    ExpandedGrid(newGrid, newPosition)
-                }
+                // General case, we don't push anything. Because we don't keep the cursor in the map, just update
+                // the position
+                '.' -> copy(position = newPosition)
                 '[', ']' -> {
                     // We can push East/West without needing the check for half-boxes. So, similar logic to
                     // Grid.next can be used
@@ -194,6 +193,7 @@ class Day15(
                         while (nextPos in grid && (grid[nextPos]!! == '[' || grid[nextPos]!! == ']')) nextPos += move
                         when (grid[nextPos]!!) {
                             '.' -> {
+                                val newGrid = grid.toMutableMap()
                                 var moving = nextPos
                                 while (moving != position) {
                                     val prev = moving - move
@@ -210,7 +210,7 @@ class Day15(
                         // If we are moving North/South, we need to check to see where we are pushing the box
                         // as we may be pushing multiple boxes fanning out from our starting box
                         val box =
-                            if (newGrid[newPosition] == '[') {
+                            if (grid[newPosition] == '[') {
                                 newPosition to newPosition + Direction.East
                             } else {
                                 newPosition + Direction.West to newPosition
@@ -220,6 +220,7 @@ class Day15(
                         if (touching.any { it is Obstacle.Wall }) {
                             this
                         } else {
+                            val newGrid = grid.toMutableMap()
                             // Reverse the boxes to avoid clobbering an earlier box when moving
                             val boxes = touching.filterIsInstance<Obstacle.Box>().map { it.toPair() }.reversed()
                             for ((lhs, rhs) in boxes) {
@@ -228,8 +229,6 @@ class Day15(
                                 newGrid[lhs] = '.'
                                 newGrid[rhs] = '.'
                             }
-                            newGrid[newPosition] = '@'
-                            newGrid[position] = '.'
 
                             ExpandedGrid(newGrid, newPosition)
                         }
@@ -251,8 +250,10 @@ class Day15(
                         .split("\n")
                         .flatMapIndexed { row, line -> line.mapIndexed { col, char -> Point2D(row, col) to char } }
                         .toMap()
+                        .toMutableMap()
                 val start = newGrid.filterValues { it == '@' }.keys.first()
-                return ExpandedGrid(newGrid, start)
+                newGrid[start] = '.'
+                return ExpandedGrid(newGrid.toMap(), start)
             }
         }
     }
