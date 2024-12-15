@@ -23,19 +23,35 @@ class Day15(
                 Grid(grid, start)
             }
     private val moves = rawMoves.mapNotNull { Direction.tryFromArrow(it) }
-    private val largeGrid = ExpandedGrid.from(grid)
+    private val expandedGrid = ExpandedGrid.from(grid)
+
+    private interface Warehouse {
+        /**
+         * Generate the next state of the [Warehouse] when applying the given [move]
+         *
+         * @param move The direction to move the cursor
+         *
+         * @return The new [Warehouse]
+         */
+        fun next(move: Direction): Warehouse
+
+        /**
+         * @return The score of the [Warehouse]
+         */
+        fun score(): Long
+    }
 
     data class Grid(
         val grid: Map<Point2D, Char>,
         val position: Point2D,
-    ) {
+    ) : Warehouse {
         fun maxRow() = grid.keys.maxOf { it.row }
 
         fun maxCol() = grid.keys.maxOf { it.col }
 
-        fun score() = grid.filterValues { it == 'O' }.keys.sumOf { it.row * 100L + it.col }
+        override fun score() = grid.filterValues { it == 'O' }.keys.sumOf { it.row * 100L + it.col }
 
-        fun next(move: Direction): Grid {
+        override fun next(move: Direction): Grid {
             val newPosition = position + move
             val newGrid = grid.toMutableMap()
             return when (grid[newPosition]!!) {
@@ -85,12 +101,8 @@ class Day15(
     data class ExpandedGrid(
         val grid: Map<Point2D, Char>,
         val position: Point2D,
-    ) {
-        fun maxRow() = grid.keys.maxOf { it.row }
-
-        fun maxCol() = grid.keys.maxOf { it.col }
-
-        fun score() = grid.filterValues { it == '[' }.keys.sumOf { it.row * 100L + it.col }
+    ) : Warehouse {
+        override fun score() = grid.filterValues { it == '[' }.keys.sumOf { it.row * 100L + it.col }
 
         private sealed class Obstacle {
             data class Empty(
@@ -109,6 +121,13 @@ class Day15(
             }
         }
 
+        /**
+         * Get all [Obstacle] touching the given pair of points in the given [Direction].
+         *
+         * @param move The direction to check for [Obstacle]s in
+         *
+         * @return The unique [Obstacle]s a [Obstacle.Box] may encounter when moving in that [Direction]
+         */
         private fun Pair<Point2D, Point2D>.getTouchingObstacles(move: Direction): Set<Obstacle> {
             val (left, right) = this
             val newLeft = left + move
@@ -130,6 +149,13 @@ class Day15(
             return touchingLeft + touchingRight
         }
 
+        /**
+         * Determine if pushing the point will cause it to impact any [Obstacle.Wall]s when being pushed
+         * in the [move] [Direction]. This will check all boxes touching the starting box, recursively.
+         *
+         * @param move The [Direction] the box is being pushed
+         * @return If the box can be pushed in that direction
+         */
         private fun Pair<Point2D, Point2D>.canMove(move: Direction): Boolean {
             val queue = ArrayDeque<Pair<Point2D, Point2D>>().apply { add(this@canMove) }
             while (queue.isNotEmpty()) {
@@ -145,6 +171,14 @@ class Day15(
             return true
         }
 
+        /**
+         * Get all [Obstacle.Box] as [Pair]s of [Point2D] that are touching the current point, in the [Direction].
+         * This should only be used after [canMove] has been called for the point.
+         *
+         * @param move The direction that the boxes are going to be moved
+         *
+         * @return All boxes touching the initial box in the direction
+         */
         private fun Pair<Point2D, Point2D>.getTouchingBoxes(move: Direction): List<Pair<Point2D, Point2D>> {
             val queue = ArrayDeque<Pair<Point2D, Point2D>>().apply { add(this@getTouchingBoxes) }
             val boxes = mutableListOf(this@getTouchingBoxes)
@@ -164,7 +198,7 @@ class Day15(
             return boxes
         }
 
-        fun next(move: Direction): ExpandedGrid {
+        override fun next(move: Direction): ExpandedGrid {
             val newPosition = position + move
             val newGrid = grid.toMutableMap()
             return when (grid[newPosition]!!) {
@@ -201,8 +235,7 @@ class Day15(
                         if (!box.canMove(move)) {
                             this
                         } else {
-                            var touching = box.getTouchingBoxes(move)
-                            touching = if (move == Direction.North) touching.reversed() else touching.reversed()
+                            val touching = box.getTouchingBoxes(move).reversed()
                             for ((lhs, rhs) in touching) {
                                 newGrid[lhs + move] = '['
                                 newGrid[rhs + move] = ']'
@@ -218,21 +251,6 @@ class Day15(
                 }
                 else -> this
             }
-        }
-
-        override fun toString(): String {
-            val rowMax = maxRow()
-            val colMax = maxCol()
-            val buff = Array(rowMax + 1) { Array(colMax + 1) { ' ' } }
-            for ((k, v) in grid) {
-                buff[k.row][k.col] = v
-            }
-            return buff.joinToString("\n") { it.joinToString("") }
-        }
-
-        @Suppress("unused")
-        fun print() {
-            println(this.toString())
         }
 
         companion object {
@@ -253,20 +271,16 @@ class Day15(
         }
     }
 
-    fun part1() =
-        generateSequence(0 to grid) { (i, g) -> if (i > moves.lastIndex) null else i + 1 to g.next(moves[i]) }
+    private fun moveBoxes(warehouse: Warehouse) =
+        generateSequence(0 to warehouse) { (i, g) -> if (i > moves.lastIndex) null else i + 1 to g.next(moves[i]) }
             .takeWhile { true }
             .last()
             .second
             .score()
 
-    fun part2() =
-        generateSequence(0 to largeGrid) { (i, g) -> if (i > moves.lastIndex) null else i + 1 to g.next(moves[i]) }
-            .drop(1)
-            .takeWhile { true }
-            .last()
-            .second
-            .score()
+    fun part1() = moveBoxes(grid)
+
+    fun part2() = moveBoxes(expandedGrid)
 }
 
 fun day15() {
