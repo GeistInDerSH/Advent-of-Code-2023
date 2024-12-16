@@ -6,7 +6,7 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 import com.geistindersh.aoc.helper.strings.toGrid2D
-import kotlin.math.min
+import java.util.PriorityQueue
 
 class Day16(
     dataFile: DataFile,
@@ -17,54 +17,62 @@ class Day16(
 
     private data class Path(
         val position: Point2D,
-        val direction: Direction,
-        val path: Set<Point2D>,
-        val score: Long,
+        val direction: Direction = Direction.East,
+        val score: Long = 0,
+        val path: List<Point2D> = emptyList(),
     )
 
-    private fun traversePath(): Set<Path> {
-        val queue = ArrayDeque<Path>().apply { add(Path(start, Direction.East, emptySet(), 0)) }
-        val seen = mutableMapOf<Point2D, Long>()
-        val pathReachingEnd = mutableSetOf<Path>()
-
+    private fun shortestPathScore(): Long {
+        val queue = PriorityQueue<Path>(compareBy { it.score }).apply { add(Path(start)) }
+        val seen = mutableSetOf<Pair<Point2D, Direction>>()
         while (queue.isNotEmpty()) {
-            val path = queue.removeFirst()
-            if (path.position == end) {
-                pathReachingEnd.add(path.copy(path = path.path + end))
-                seen[end] = min(path.score, seen.getOrDefault(path.position, Long.MAX_VALUE))
-                queue.removeIf { it.score > seen[end]!! }
-                continue
-            }
-            if (end in seen && seen[end]!! < path.score) continue
-            if (path.position in seen && seen[path.position]!! < path.score) continue
-            seen[path.position] = path.score
+            val path = queue.poll()
+            if (path.position == end) return path.score
+            if (!seen.add(path.position to path.direction)) continue
 
-            val reverse = path.direction.turnAround()
-            val validDirections = Direction.entries.filter { it != reverse }
-            val newPath = path.path + path.position
-            for (dir in validDirections) {
-                val next = path.position + dir
-                if (next in newPath) continue
-                if (data[next]!! == '#') continue
-                if (dir != path.direction) {
-                    seen[path.position] = path.score + 1000
-                }
-                val newScore = path.score + if (dir == path.direction) 1 else 1001
-                queue.add(Path(next, dir, newPath, newScore))
+            val next = path.position + path.direction
+            if (next in data && data[next]!! != '#') {
+                queue.add(path.copy(position = next, score = path.score + 1))
+            }
+
+            for (dir in listOf(path.direction.turnLeft(), path.direction.turnRight())) {
+                queue.add(path.copy(direction = dir, score = path.score + 1000))
             }
         }
-
-        val minScore = pathReachingEnd.minOf { it.score }
-        return pathReachingEnd.filter { it.score == minScore }.toSet()
+        return -1L
     }
 
-    fun part1() = traversePath().minOf { it.score }
+    private fun pointsForShortestPaths(): Set<Point2D> {
+        val minScore = shortestPathScore()
+        val queue = ArrayDeque<Path>().apply { add(Path(start)) }
+        val visited = mutableMapOf<Pair<Point2D, Direction>, Long>()
+        val shortestPathPoints = mutableSetOf<Point2D>(end)
+        while (queue.isNotEmpty()) {
+            val path = queue.removeFirst()
+            if (path.score > minScore) continue
+            val key = path.position to path.direction
+            if (key in visited && visited[key]!! < path.score) continue
+            visited[key] = path.score
+            if (path.position == end && path.score == minScore) {
+                shortestPathPoints.addAll(path.path)
+                continue
+            }
 
-    fun part2() =
-        traversePath()
-            .flatMap { it.path }
-            .toSet()
-            .count()
+            val next = path.position + path.direction
+            if (next in data && data[next]!! != '#') {
+                queue.add(path.copy(position = next, score = path.score + 1, path = path.path + path.position))
+            }
+
+            for (dir in listOf(path.direction.turnLeft(), path.direction.turnRight())) {
+                queue.add(path.copy(direction = dir, score = path.score + 1000))
+            }
+        }
+        return shortestPathPoints
+    }
+
+    fun part1() = shortestPathScore()
+
+    fun part2() = pointsForShortestPaths().count()
 }
 
 fun day16() {
