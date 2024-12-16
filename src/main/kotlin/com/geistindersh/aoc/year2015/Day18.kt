@@ -34,6 +34,7 @@ class Day18(
             }
         }
 
+    @Suppress("unused")
     private fun Map<Point2D, Char>.print() {
         val rows = this.keys.maxOf { it.row }
         val cols = this.keys.maxOf { it.col }
