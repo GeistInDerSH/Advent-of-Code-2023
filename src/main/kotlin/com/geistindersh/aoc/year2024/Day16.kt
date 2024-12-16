@@ -40,7 +40,7 @@ class Day16(
             seen[path.position] = path.score
 
             val reverse = path.direction.turnAround()
-            val validDirections = Direction.entries.filter { it != reverse }.reversed()
+            val validDirections = Direction.entries.filter { it != reverse }
             val newPath = path.path + path.position
             for (dir in validDirections) {
                 val next = path.position + dir
