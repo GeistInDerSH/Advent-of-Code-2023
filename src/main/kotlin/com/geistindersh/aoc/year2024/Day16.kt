@@ -22,7 +22,16 @@ class Day16(
         val path: List<Point2D> = emptyList(),
     )
 
-    private fun shortestPathScore(): Long {
+    /**
+     * Get the minimum score required to traverse from [start] to [end]
+     * @param start The starting point
+     * @param end The ending point
+     * @return The minimum score from [start] to [end]
+     */
+    private fun getScoreOfShortestPath(
+        start: Point2D,
+        end: Point2D,
+    ): Long {
         val queue = PriorityQueue<Path>(compareBy { it.score }).apply { add(Path(start)) }
         val seen = mutableSetOf<Pair<Point2D, Direction>>()
         while (queue.isNotEmpty()) {
@@ -42,11 +51,20 @@ class Day16(
         return -1L
     }
 
-    private fun pointsForShortestPaths(): Set<Point2D> {
-        val minScore = shortestPathScore()
+    /**
+     * Get all possible shortest paths from [start] to [end]
+     * @param start The starting point
+     * @param end The ending point
+     * @return The shortest paths
+     */
+    private fun getShortestPaths(
+        start: Point2D,
+        end: Point2D,
+    ): Set<List<Point2D>> {
+        val minScore = getScoreOfShortestPath(start, end)
         val queue = ArrayDeque<Path>().apply { add(Path(start)) }
         val visited = mutableMapOf<Pair<Point2D, Direction>, Long>()
-        val shortestPathPoints = mutableSetOf<Point2D>(end)
+        val shortestPathPoints = mutableSetOf(listOf(end))
         while (queue.isNotEmpty()) {
             val path = queue.removeFirst()
             if (path.score > minScore) continue
@@ -54,7 +72,7 @@ class Day16(
             if (key in visited && visited[key]!! < path.score) continue
             visited[key] = path.score
             if (path.position == end && path.score == minScore) {
-                shortestPathPoints.addAll(path.path)
+                shortestPathPoints.add(path.path)
                 continue
             }
 
@@ -70,9 +88,9 @@ class Day16(
         return shortestPathPoints
     }
 
-    fun part1() = shortestPathScore()
+    fun part1() = getScoreOfShortestPath(start, end)
 
-    fun part2() = pointsForShortestPaths().count()
+    fun part2() = getShortestPaths(start, end).flatMapTo(mutableSetOf<Point2D>()) { it }.count()
 }
 
 fun day16() {
