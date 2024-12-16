@@ -2,17 +2,14 @@ package com.geistindersh.aoc.year2024
 
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
-import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day10(
     dataFile: DataFile,
 ) {
-    private val trailMap =
-        fileToStream(2024, 10, dataFile)
-            .flatMapIndexed { row, line ->
-                line.mapIndexed { col, digit -> Point2D(row, col) to digit.digitToInt() }
-            }.toMap()
+    private val trailMap = fileToString(2024, 10, dataFile).toGrid2D(transform = { it.digitToInt() })
     private val paths = trailMap.filterValues { it == 0 }.keys.map { it.pathsToEnd() }
 
     private fun Point2D.pathsToEnd(): Set<Set<Point2D>> {

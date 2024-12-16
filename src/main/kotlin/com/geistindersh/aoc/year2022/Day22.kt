@@ -5,6 +5,7 @@ import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.toGrid2DRemoveNull
 
 class Day22(
     dataFile: DataFile,
@@ -12,15 +13,8 @@ class Day22(
     private val grid =
         fileToStream(2022, 22, dataFile)
             .takeWhile { it.isNotEmpty() }
-            .flatMapIndexed { row, line ->
-                line.mapIndexedNotNull { col, c ->
-                    if (c == ' ') {
-                        null
-                    } else {
-                        Point2D(row = row, col = col) to c
-                    }
-                }
-            }.associate { it }
+            .toList()
+            .toGrid2DRemoveNull { if (it == ' ') null else it }
     private val commands = Steps.parseLine(fileToStream(2022, 22, dataFile).last())
 
     private sealed class Steps {

@@ -1,19 +1,15 @@
 package com.geistindersh.aoc.year2024
 
-import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
-import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.iterators.pairCombinations
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day8(
     dataFile: DataFile,
 ) {
-    private val grid =
-        fileToStream(2024, 8, dataFile)
-            .flatMapIndexed { row, line ->
-                line.mapIndexed { col, c -> Point2D(row, col) to c }
-            }.toMap()
+    private val grid = fileToString(2024, 8, dataFile).toGrid2D()
     private val frequencies = grid.values.toSet().filterNot { it == '.' }
 
     private fun antinodes(node: Char) =

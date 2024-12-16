@@ -2,18 +2,15 @@ package com.geistindersh.aoc.year2021
 
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
-import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.toGrid2D
 import java.util.PriorityQueue
 
 class Day15(
     dataFile: DataFile,
 ) {
-    private val graph =
-        fileToStream(2021, 15, dataFile)
-            .flatMapIndexed { row, line ->
-                line.mapIndexed { col, value -> Point2D(row, col) to value.digitToInt() }
-            }.toMap()
+    private val graph = fileToString(2021, 15, dataFile).toGrid2D { it.digitToInt() }
 
     private data class Path(
         val current: Point2D,

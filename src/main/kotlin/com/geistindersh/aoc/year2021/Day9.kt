@@ -2,17 +2,14 @@ package com.geistindersh.aoc.year2021
 
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
-import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day9(
     dataFile: DataFile,
 ) {
-    private val heightMap =
-        fileToStream(2021, 9, dataFile)
-            .flatMapIndexed { row, s ->
-                s.mapIndexed { col, c -> Point2D(row, col) to c.digitToInt() }
-            }.toMap()
+    private val heightMap = fileToString(2021, 9, dataFile).toGrid2D { it.digitToInt() }
 
     private fun findLowPoints() =
         heightMap

@@ -2,17 +2,14 @@ package com.geistindersh.aoc.year2024
 
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
-import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day4(
     dataFile: DataFile,
 ) {
-    private val data =
-        fileToStream(2024, 4, dataFile)
-            .flatMapIndexed { row, line ->
-                line.mapIndexed { col, value -> Point2D(row, col) to value }
-            }.toMap()
+    private val data = fileToString(2024, 4, dataFile).toGrid2D()
 
     private fun Point2D.matchCount() =
         PART_1_OPTIONS

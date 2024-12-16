@@ -5,6 +5,7 @@ import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day15(
     rawGrid: String,
@@ -15,9 +16,7 @@ class Day15(
 
     private val grid =
         rawGrid
-            .split("\n")
-            .flatMapIndexed { row, line -> line.mapIndexed { col, char -> Point2D(row, col) to char } }
-            .toMap()
+            .toGrid2D()
             .let { grid ->
                 // Remove the cursor from the map so that it doesn't interfere with the
                 // movement. This allows for a speedup in the general case of no objects being pushed
@@ -247,9 +246,7 @@ class Day15(
                         .replace("O", "[]")
                         .replace(".", "..")
                         .replace("@", "@.")
-                        .split("\n")
-                        .flatMapIndexed { row, line -> line.mapIndexed { col, char -> Point2D(row, col) to char } }
-                        .toMap()
+                        .toGrid2D()
                         .toMutableMap()
                 val start = newGrid.filterValues { it == '@' }.keys.first()
                 newGrid[start] = '.'

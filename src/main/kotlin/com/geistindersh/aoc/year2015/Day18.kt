@@ -2,17 +2,14 @@ package com.geistindersh.aoc.year2015
 
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
-import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day18(
     dataFile: DataFile,
 ) {
-    private val points =
-        fileToStream(2015, 18, dataFile)
-            .flatMapIndexed { row, line ->
-                line.mapIndexedNotNull { col, c -> Point2D(row, col) to c }
-            }.toMap()
+    private val points = fileToString(2015, 18, dataFile).toGrid2D()
     private val stuckOn =
         points.let { map ->
             val rowMax = map.keys.maxOf { it.row }

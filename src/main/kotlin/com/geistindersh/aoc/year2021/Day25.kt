@@ -3,25 +3,22 @@ package com.geistindersh.aoc.year2021
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
-import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day25(
     dataFile: DataFile,
 ) {
     private val valley =
-        fileToStream(2021, 25, dataFile)
-            .flatMapIndexed { row, s ->
-                s.mapIndexed { col, c ->
-                    when (c) {
-                        '>' -> Point2D(row, col) to Direction.East
-
-                        'v' -> Point2D(row, col) to Direction.South
-                        else -> Point2D(row, col) to null
-                    }
+        fileToString(2021, 25, dataFile)
+            .toGrid2D {
+                when (it) {
+                    '>' -> Direction.East
+                    'v' -> Direction.South
+                    else -> null
                 }
-            }.toMap()
-            .let { Valley(it) }
+            }.let { Valley(it) }
 
     private data class Valley(
         val valley: Map<Point2D, Direction?>,

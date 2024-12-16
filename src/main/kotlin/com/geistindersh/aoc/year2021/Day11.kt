@@ -2,17 +2,16 @@ package com.geistindersh.aoc.year2021
 
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
-import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day11(
     dataFile: DataFile,
 ) {
     private val octopuses =
-        fileToStream(2021, 11, dataFile)
-            .flatMapIndexed { row, line ->
-                line.mapIndexed { col, power -> Point2D(row, col) to power.digitToInt() }
-            }.toMap()
+        fileToString(2021, 11, dataFile)
+            .toGrid2D { it.digitToInt() }
             .let {
                 Octopuses(0, it)
             }

@@ -6,6 +6,7 @@ import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day20(
     dataFile: DataFile,
@@ -13,12 +14,7 @@ class Day20(
     private val startingImage =
         fileToString(2021, 20, dataFile).let {
             val (lookupTable, rawImage) = it.split("\n\n")
-            val points =
-                rawImage
-                    .split("\n")
-                    .flatMapIndexed { row, line ->
-                        line.mapIndexed { col, char -> Point2D(row, col) to if (char == '#') 1 else 0 }
-                    }.toMap()
+            val points = rawImage.toGrid2D { if (it == '#') 1 else 0 }
             Image(points, lookupTable, 0)
         }
 

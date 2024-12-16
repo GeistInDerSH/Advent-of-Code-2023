@@ -3,25 +3,23 @@ package com.geistindersh.aoc.year2020
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
-import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.toGrid2DRemoveNull
 
 class Day11(
     dataFile: DataFile,
 ) {
     private val chart =
-        fileToStream(2020, 11, dataFile)
-            .flatMapIndexed { row, line ->
-                line.mapIndexedNotNull { col, c ->
-                    when (c) {
-                        '#' -> Point2D(row, col) to true
-                        'L' -> Point2D(row, col) to false
-                        else -> null
-                    }
+        fileToString(2020, 11, dataFile)
+            .toGrid2DRemoveNull {
+                when (it) {
+                    '#' -> true
+                    'L' -> false
+                    else -> null
                 }
-            }.toMap()
-            .let { chart ->
+            }.let { chart ->
                 val visibility = generateVisibilityMap(chart)
                 SeatingChart(chart, visibility)
             }
