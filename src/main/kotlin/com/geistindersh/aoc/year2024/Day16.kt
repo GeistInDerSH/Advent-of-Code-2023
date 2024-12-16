@@ -20,7 +20,9 @@ class Day16(
         val direction: Direction = Direction.East,
         val score: Long = 0,
         val path: List<Point2D> = emptyList(),
-    )
+    ) {
+        fun generateKey() = position to direction
+    }
 
     /**
      * Get the minimum score required to traverse from [start] to [end]
@@ -37,10 +39,10 @@ class Day16(
         while (queue.isNotEmpty()) {
             val path = queue.poll()
             if (path.position == end) return path.score
-            if (!seen.add(path.position to path.direction)) continue
+            if (!seen.add(path.generateKey())) continue
 
             val next = path.position + path.direction
-            if (next in data && data[next]!! != '#') {
+            if (data[next]!! != '#') {
                 queue.add(path.copy(position = next, score = path.score + 1))
             }
 
@@ -68,16 +70,18 @@ class Day16(
         while (queue.isNotEmpty()) {
             val path = queue.removeFirst()
             if (path.score > minScore) continue
-            val key = path.position to path.direction
-            if (key in visited && visited[key]!! < path.score) continue
-            visited[key] = path.score
+
+            val key = path.generateKey()
+            val value = visited[key]
+            if (value != null && path.score > value) continue
+            if (value == null || path.score < value) visited[key] = path.score
             if (path.position == end && path.score == minScore) {
                 shortestPathPoints.add(path.path)
                 continue
             }
 
             val next = path.position + path.direction
-            if (next in data && data[next]!! != '#') {
+            if (data[next]!! != '#') {
                 queue.add(path.copy(position = next, score = path.score + 1, path = path.path + path.position))
             }
 
