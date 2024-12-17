@@ -3,21 +3,21 @@ package com.geistindersh.aoc.year2024
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
-import kotlin.math.pow
 
 class Day17(
-    rawRegisters: List<String>,
-    rawProgram: String,
+    registers: Map<String, Long>,
+    private val program: List<Long>,
 ) {
+    constructor(rawRegisters: List<String>, rawProgram: String) : this(
+        rawRegisters.associate { line -> line.replace(":", "").split(" ").let { it[1] to it.last().toLong() } },
+        rawProgram.substringAfter(": ").split(",").map { it.toLong() },
+    )
     constructor(lines: List<String>) : this(lines.first().split("\n"), lines.last())
     constructor(dataFile: DataFile) : this(fileToString(2024, 17, dataFile).split("\n\n"))
 
-    private val registers =
-        rawRegisters.associate {
-            val parts = it.replace(":", "").split(" ")
-            parts[1] to parts.last().toLong()
-        }
-    private val program = rawProgram.substringAfter(": ").split(",").map { it.toLong() }
+    val a = registers.getOrDefault("A", 0L)
+    val b = registers.getOrDefault("B", 0L)
+    val c = registers.getOrDefault("C", 0L)
     private val opCodes = OpCodes.from(program)
 
     private sealed class OpCodes(
@@ -25,9 +25,7 @@ class Day17(
     ) {
         data class Adv(
             override val argument: Long,
-        ) : OpCodes(argument) {
-            fun value(registers: Map<String, Long>) = 2.0.pow(comboValue(registers).toDouble()).toLong()
-        }
+        ) : OpCodes(argument)
 
         data class Bxl(
             override val argument: Long,
@@ -51,24 +49,23 @@ class Day17(
 
         data class Bdv(
             override val argument: Long,
-        ) : OpCodes(argument) {
-            fun value(registers: Map<String, Long>) = 2.0.pow(comboValue(registers).toDouble()).toLong()
-        }
+        ) : OpCodes(argument)
 
         data class Cdv(
             override val argument: Long,
-        ) : OpCodes(argument) {
-            fun value(registers: Map<String, Long>) = 2.0.pow(comboValue(registers).toDouble()).toLong()
-        }
+        ) : OpCodes(argument)
 
-        fun comboValue(registers: Map<String, Long>) =
-            when (argument) {
-                0L, 1L, 2L, 3L -> argument
-                4L -> registers["A"]!!
-                5L -> registers["B"]!!
-                6L -> registers["C"]!!
-                else -> throw IllegalArgumentException("Unknown register $argument")
-            }
+        fun comboValue(
+            a: Long,
+            b: Long,
+            c: Long,
+        ) = when (argument) {
+            0L, 1L, 2L, 3L -> argument
+            4L -> a
+            5L -> b
+            6L -> c
+            else -> throw IllegalArgumentException("Unknown register $argument")
+        }
 
         companion object {
             fun from(nums: List<Long>) =
@@ -90,48 +87,48 @@ class Day17(
         }
     }
 
-    private fun List<OpCodes>.run(registers: Map<String, Long>): List<Long> {
-        val registers = registers.toMutableMap()
-        var rip = 0
+    private fun List<OpCodes>.run(
+        registerA: Long,
+        registerB: Long,
+        registerC: Long,
+    ): List<Long> {
         val output = mutableListOf<Long>()
+        var rip = 0
+        var ax = registerA
+        var bx = registerB
+        var cx = registerC
 
         while (rip < this.size) {
             when (val op = this[rip]) {
                 is OpCodes.Adv -> {
-                    val a = registers["A"]!!
-                    registers["A"] = a / op.value(registers)
+                    ax = ax shr op.comboValue(ax, bx, cx).toInt()
                     rip += 2
                 }
                 is OpCodes.Bxl -> {
-                    val b = registers["B"]!!
-                    registers["B"] = b xor op.argument
+                    bx = bx xor op.argument
                     rip += 2
                 }
                 is OpCodes.Bst -> {
-                    registers["B"] = op.comboValue(registers) % 8L
+                    bx = op.comboValue(ax, bx, cx) and 7L
                     rip += 2
                 }
                 is OpCodes.Jnz -> {
-                    rip = if (registers["A"]!! == 0L) rip + 2 else op.argument.toInt()
+                    rip = if (ax == 0L) rip + 2 else op.argument.toInt()
                 }
                 is OpCodes.Bxc -> {
-                    val b = registers["B"]!!
-                    val c = registers["C"]!!
-                    registers["B"] = b xor c
+                    bx = bx xor cx
                     rip += 2
                 }
                 is OpCodes.Out -> {
-                    output.add(op.comboValue(registers) % 8)
+                    output.add(op.comboValue(ax, bx, cx) and 7L)
                     rip += 2
                 }
                 is OpCodes.Bdv -> {
-                    val a = registers["A"]!!
-                    registers["B"] = a / op.value(registers)
+                    bx = ax shr op.comboValue(ax, bx, cx).toInt()
                     rip += 2
                 }
                 is OpCodes.Cdv -> {
-                    val a = registers["A"]!!
-                    registers["C"] = a / op.value(registers)
+                    cx = ax shr op.comboValue(ax, bx, cx).toInt()
                     rip += 2
                 }
             }
@@ -139,9 +136,7 @@ class Day17(
         return output
     }
 
-    private fun List<OpCodes>.run(aRegister: Long) = this.run(registers.toMutableMap().apply { put("A", aRegister) })
-
-    fun part1() = opCodes.run(registers).joinToString(",") { it.toString() }
+    fun part1() = opCodes.run(a, b, c).joinToString(",") { it.toString() }
 
     fun part2(): Long {
         var candidates = sortedSetOf(0L)
@@ -150,7 +145,7 @@ class Day17(
             for (candidate in candidates) {
                 val value = candidate shl 3
                 for (i in 0..<8) {
-                    val output = opCodes.run(value + i)
+                    val output = opCodes.run(value + i, b, c)
                     if (output.first() == instr) newCandidates.add(value + i)
                 }
             }
