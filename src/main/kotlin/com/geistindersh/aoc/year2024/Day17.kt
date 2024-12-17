@@ -18,6 +18,7 @@ class Day17(
             parts[1] to parts.last().toLong()
         }
     private val program = rawProgram.substringAfter(": ").split(",").map { it.toLong() }
+    private val opCodes = OpCodes.from(program)
 
     private sealed class OpCodes(
         open val argument: Long,
@@ -89,16 +90,16 @@ class Day17(
         }
     }
 
-    private fun List<OpCodes>.run(registers: Map<String, Long>): String {
+    private fun List<OpCodes>.run(registers: Map<String, Long>): List<Long> {
         val registers = registers.toMutableMap()
         var rip = 0
-        val output = mutableListOf<String>()
+        val output = mutableListOf<Long>()
 
         while (rip < this.size) {
             when (val op = this[rip]) {
                 is OpCodes.Adv -> {
                     val a = registers["A"]!!
-                    registers["A"] = (a / op.value(registers)).toInt().toLong()
+                    registers["A"] = a / op.value(registers)
                     rip += 2
                 }
                 is OpCodes.Bxl -> {
@@ -120,27 +121,43 @@ class Day17(
                     rip += 2
                 }
                 is OpCodes.Out -> {
-                    output.add((op.comboValue(registers) % 8).toString())
+                    output.add(op.comboValue(registers) % 8)
                     rip += 2
                 }
                 is OpCodes.Bdv -> {
                     val a = registers["A"]!!
-                    registers["B"] = (a / op.value(registers)).toInt().toLong()
+                    registers["B"] = a / op.value(registers)
                     rip += 2
                 }
                 is OpCodes.Cdv -> {
                     val a = registers["A"]!!
-                    registers["C"] = (a / op.value(registers)).toInt().toLong()
+                    registers["C"] = a / op.value(registers)
                     rip += 2
                 }
             }
         }
-        return output.joinToString(",")
+        return output
     }
 
-    fun part1() = OpCodes.from(program).run(registers)
+    private fun List<OpCodes>.run(aRegister: Long) = this.run(registers.toMutableMap().apply { put("A", aRegister) })
 
-    fun part2() = 0
+    fun part1() = opCodes.run(registers).joinToString(",") { it.toString() }
+
+    fun part2(): Long {
+        var candidates = sortedSetOf(0L)
+        for (instr in program.reversed()) {
+            val newCandidates = sortedSetOf<Long>()
+            for (candidate in candidates) {
+                val value = candidate shl 3
+                for (i in 0..<8) {
+                    val output = opCodes.run(value + i)
+                    if (output.first() == instr) newCandidates.add(value + i)
+                }
+            }
+            candidates = newCandidates
+        }
+        return candidates.first()
+    }
 }
 
 fun day17() {
