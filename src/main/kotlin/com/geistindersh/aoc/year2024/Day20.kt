@@ -1,6 +1,5 @@
 package com.geistindersh.aoc.year2024
 
-import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
@@ -19,6 +18,7 @@ class Day20(
         val position: Point2D,
         val score: Long,
         val path: List<Point2D>,
+        val cheatingCount: Int = 0,
     )
 
     private fun getShortestPath(
@@ -40,54 +40,69 @@ class Day20(
         return emptyList()
     }
 
-    private fun getDistancesWithCheats(
+    private fun getDistancesWithCheatsMax(
         start: Point2D,
         end: Point2D,
-    ): Map<Int, Int> {
+        maxSkip: Int,
+    ): Map<Int, Set<Pair<Point2D, Point2D>>> {
         val path = getShortestPath(start, end)
         val withoutCheats = path.count()
-        val cheatTimes = mutableMapOf<Int, Int>()
+        val cheatTimes = mutableMapOf<Int, MutableSet<Pair<Point2D, Point2D>>>()
         val memoryToEnd = path.withIndex().associate { (idx, point) -> point to path.count() - idx }.toMutableMap()
         memoryToEnd[end] = 0
         for ((idx, point) in path.withIndex()) {
             val fromStart = idx
 
-            for (dir in Direction.entries) {
-//                val next = point + dir
-//                if (track[next]!! != '#') continue
-                val land = point + dir + dir
-                if (land !in track) continue
-                if (track[land]!! == '#') continue
+            val seen = mutableSetOf<Point2D>()
+            val localQueue =
+                PriorityQueue<Path>(compareBy { it.cheatingCount })
+                    .apply { add(Path(point, 0, emptyList(), 0)) }
 
-                val toEnd =
-                    memoryToEnd.getOrPut(land) {
-                        val pathToEnd = getShortestPath(land, end)
-                        val count = pathToEnd.count()
-                        for ((i, point) in pathToEnd.withIndex()) {
-                            if (point in memoryToEnd) continue
-                            memoryToEnd[point] = count - i
+            while (localQueue.isNotEmpty()) {
+                val path = localQueue.poll()
+                if (path.position !in track) continue
+                if (path.cheatingCount > maxSkip) continue
+                if (!seen.add(path.position)) continue
+                if (track[path.position]!! != '#') {
+                    val toEnd =
+                        memoryToEnd.getOrPut(path.position) {
+                            val pathToEnd = getShortestPath(path.position, end)
+                            val count = pathToEnd.count()
+                            for ((i, point) in pathToEnd.withIndex()) {
+                                if (point in memoryToEnd) continue
+                                memoryToEnd[point] = count - i
+                            }
+                            count
                         }
-                        count
-                    }
 
-                val timeSaved = withoutCheats - (fromStart + toEnd + 2)
-                if (timeSaved <= 0) continue
-//                println("Jumping from $point to $land saved: ($timing)")
-                cheatTimes[timeSaved] = cheatTimes.getOrDefault(timeSaved, 0) + 1
+                    val timeSaved = withoutCheats - (fromStart + toEnd + path.cheatingCount)
+                    if (timeSaved > 0) {
+                        if (timeSaved !in cheatTimes) {
+                            cheatTimes[timeSaved] = mutableSetOf()
+                        }
+                        cheatTimes[timeSaved]!!.add(point to path.position)
+                    }
+                }
+                for (next in path.position.neighbors()) {
+                    localQueue.add(Path(next, path.score + 1, emptyList(), path.cheatingCount + 1))
+                }
             }
         }
 
         return cheatTimes
     }
 
-    init {
-        println(getShortestPath(start, end).count())
-        getDistancesWithCheats(start, end).toSortedMap().forEach { println("${it.value} saves of ${it.key}s") }
-    }
+    private fun solution(
+        cheatTime: Int,
+        savings: Int,
+    ) = getDistancesWithCheatsMax(start, end, cheatTime)
+        .filterKeys { it >= savings }
+        .values
+        .sumOf { it.count() }
 
-    fun part1() = getDistancesWithCheats(start, end).filterKeys { it >= 100 }.values.sum()
+    fun part1(savings: Int = 100) = solution(2, savings)
 
-    fun part2() = 0
+    fun part2(savings: Int = 100) = solution(20, savings)
 }
 
 fun day20() {
