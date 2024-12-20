@@ -16,16 +16,15 @@ class Day20(
 
     private data class Path(
         val position: Point2D,
-        val score: Long,
+        val score: Int,
         val path: List<Point2D>,
-        val cheatingCount: Int = 0,
     )
 
     private fun getShortestPath(
         start: Point2D,
         end: Point2D,
     ): List<Point2D> {
-        val queue = PriorityQueue<Path>(compareBy { it.score }).apply { add(Path(start, 0L, emptyList())) }
+        val queue = PriorityQueue<Path>(compareBy { it.score }).apply { add(Path(start, 0, emptyList())) }
         val seen = mutableSetOf<Point2D>()
         while (queue.isNotEmpty()) {
             val path = queue.poll()
@@ -48,20 +47,23 @@ class Day20(
         val path = getShortestPath(start, end)
         val withoutCheats = path.count()
         val cheatTimes = mutableMapOf<Int, MutableSet<Pair<Point2D, Point2D>>>()
-        val memoryToEnd = path.withIndex().associate { (idx, point) -> point to path.count() - idx }.toMutableMap()
-        memoryToEnd[end] = 0
+        val memoryToEnd =
+            path
+                .withIndex()
+                .associate { (idx, point) -> point to path.count() - idx }
+                .toMutableMap()
+                .apply { set(end, 0) }
+        val neighborsQueue = ArrayDeque<Path>()
         for ((idx, point) in path.withIndex()) {
             val fromStart = idx
 
             val seen = mutableSetOf<Point2D>()
-            val localQueue =
-                PriorityQueue<Path>(compareBy { it.cheatingCount })
-                    .apply { add(Path(point, 0, emptyList(), 0)) }
+            neighborsQueue.add(Path(point, 0, emptyList()))
 
-            while (localQueue.isNotEmpty()) {
-                val path = localQueue.poll()
+            while (neighborsQueue.isNotEmpty()) {
+                val path = neighborsQueue.removeFirst()
                 if (path.position !in track) continue
-                if (path.cheatingCount > maxSkip) continue
+                if (path.score > maxSkip) continue
                 if (!seen.add(path.position)) continue
                 if (track[path.position]!! != '#') {
                     val toEnd =
@@ -75,16 +77,15 @@ class Day20(
                             count
                         }
 
-                    val timeSaved = withoutCheats - (fromStart + toEnd + path.cheatingCount)
+                    val timeSaved = withoutCheats - (fromStart + toEnd + path.score)
                     if (timeSaved > 0) {
-                        if (timeSaved !in cheatTimes) {
-                            cheatTimes[timeSaved] = mutableSetOf()
-                        }
-                        cheatTimes[timeSaved]!!.add(point to path.position)
+                        val cheats = cheatTimes.getOrPut(timeSaved) { mutableSetOf() }
+                        cheats.add(point to path.position)
                     }
                 }
+
                 for (next in path.position.neighbors()) {
-                    localQueue.add(Path(next, path.score + 1, emptyList(), path.cheatingCount + 1))
+                    neighborsQueue.add(Path(next, path.score + 1, emptyList()))
                 }
             }
         }
