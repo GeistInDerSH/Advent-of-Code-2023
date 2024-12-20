@@ -8,10 +8,9 @@ import java.util.PriorityQueue
 class Day19(
     private val patterns: Set<String>,
     private val designs: List<String>,
-    private val debug: Boolean = false,
 ) {
-    constructor(dataFile: DataFile, debug: Boolean = false) : this(fileToString(2024, 19, dataFile), debug)
-    constructor(input: String, debug: Boolean = false) : this(
+    constructor(dataFile: DataFile) : this(fileToString(2024, 19, dataFile))
+    constructor(input: String) : this(
         input
             .substringBefore("\n")
             .split(',')
@@ -19,12 +18,10 @@ class Day19(
             .sortedByDescending { it.length }
             .toSet(),
         input.substringAfter("\n").split("\n").drop(1),
-        debug,
     )
 
     private fun String.isValid(): Boolean {
         if (this.isEmpty()) return true
-        if (debug) println(this)
 
         val queue = PriorityQueue<String>(compareBy { it.length }).apply { add(this@isValid) }
         val seen = mutableSetOf<String>()
@@ -33,7 +30,6 @@ class Day19(
             if (head.isBlank()) return true
             if (!seen.add(head)) continue
             if (head in patterns) return true
-            if (debug) println(head)
 
             for (pattern in patterns) {
                 if (!head.startsWith(pattern)) continue
@@ -44,18 +40,28 @@ class Day19(
         return false
     }
 
-    init {
-        println()
+    private fun String.validComboCount(): Long {
+        val queue = PriorityQueue<String>(compareByDescending { it.length }).apply { add(this@validComboCount) }
+        val memory = mutableMapOf<String, Long>(this to 1L)
+
+        while (queue.isNotEmpty()) {
+            val head = queue.poll()
+
+            for (pattern in patterns) {
+                if (!head.startsWith(pattern)) continue
+                val substring = head.substringAfter(pattern)
+                if (substring !in memory) {
+                    queue.add(substring)
+                }
+                memory[substring] = memory.getOrDefault(substring, 0L) + memory[head]!!
+            }
+        }
+        return memory.getOrDefault("", 0L)
     }
 
-    fun part1() =
-        designs.count {
-            val v = it.isValid()
-            println("$it: $v")
-            v
-        }
+    fun part1() = designs.count { it.isValid() }
 
-    fun part2() = 0
+    fun part2() = designs.filter { it.isValid() }.sumOf { it.validComboCount() }
 }
 
 fun day19() {
