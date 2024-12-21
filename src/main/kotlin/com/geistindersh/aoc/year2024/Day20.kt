@@ -47,6 +47,9 @@ class Day20(
         val path = getShortestPath(start, end)
         val withoutCheats = path.count()
         val cheatTimes = mutableMapOf<Int, MutableSet<Pair<Point2D, Point2D>>>()
+        // Because we found the shortest path, add those points to a map to note how far to the end from that point.
+        // Any new points on the map after the skip will be added, otherwise we look up the distance to the end. This
+        // saves from needing to recalculate that distance multiple times
         val memoryToEnd =
             path
                 .withIndex()
@@ -66,6 +69,9 @@ class Day20(
                 if (path.score > maxSkip) continue
                 if (!seen.add(path.position)) continue
                 if (track[path.position]!! != '#') {
+                    // We are at a position on the map that is a valid spot to race from
+                    // calculate the distance to the end, or look it up if we have already been there
+                    // and add the start->end point to the cheatTimes map.
                     val toEnd =
                         memoryToEnd.getOrPut(path.position) {
                             val pathToEnd = getShortestPath(path.position, end)
