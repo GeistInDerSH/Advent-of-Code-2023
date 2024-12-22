@@ -70,10 +70,7 @@ class Day21(
     fun part1() =
         inputs
             .map { it.toNumeric() to it.getShortestSequence() }
-            .sumOf { (num, score) ->
-                println("$num * $score")
-                num * score
-            }
+            .sumOf { (num, score) -> num * score }
 
     fun part2() = 0
 
