@@ -13,13 +13,12 @@ class Day21(
 ) {
     private val inputs = fileToStream(2024, 21, dataFile).toList()
 
-//    private val cache = mutableMapOf<Pair<String, Int>, Long>()
+    private val cache = mutableMapOf<Pair<String, Int>, Long>()
 
     private fun getCost(
         str: String,
         depth: Int,
         table: Map<Pair<Char, Char>, List<String>>,
-        cache: MutableMap<Pair<String, Int>, Long> = mutableMapOf(),
     ): Long =
         cache.getOrPut(str to depth) {
             "A$str".zipWithNext().sumOf { move ->
@@ -32,13 +31,7 @@ class Day21(
             }
         }
 
-    fun part1() =
-        inputs.sumOf {
-            val v = getCost(it, 2, NUMPAD_PATHS)
-            val q = it.dropLast(1).toLong()
-            println("$v * $q")
-            v * q
-        }
+    fun part1() = inputs.sumOf { getCost(it, 2, NUMPAD_PATHS) * it.dropLast(1).toLong() }
 
     fun part2() = 0
 
@@ -90,11 +83,11 @@ class Day21(
             var cost: Int? = null
             while (queue.isNotEmpty()) {
                 val (point, path) = queue.poll()
-                val count = path.count() + 1
+                val count = path.count()
                 if (cost != null && count > cost) return paths
                 if (point == end) {
                     cost = count
-                    paths.add(path.map { it.toChar() }.joinToString(""))
+                    paths.add(path.map { it.toChar() }.joinToString("") + "A")
                     continue
                 }
                 seen[point] = count
