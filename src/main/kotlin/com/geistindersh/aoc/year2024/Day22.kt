@@ -3,6 +3,7 @@ package com.geistindersh.aoc.year2024
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
+import kotlin.collections.buildList
 
 class Day22(
     dataFile: DataFile,
@@ -19,9 +20,29 @@ class Day22(
 
     private fun Long.generateBuyerNumber() = (0..<2000).fold(this) { acc, _ -> acc.nextSecret() }
 
+    private fun Long.generateBuyerCosts() =
+        buildList {
+            var secret = this@generateBuyerCosts
+            add(secret % 10)
+            repeat(2000) {
+                secret = secret.nextSecret()
+                add(secret % 10)
+            }
+        }
+
     fun part1() = numbers.sumOf { it.generateBuyerNumber() }
 
-    fun part2() = 0
+    fun part2() =
+        buildMap<List<Long>, Long> {
+            numbers.forEach { buyer ->
+                buyer
+                    .generateBuyerCosts()
+                    .windowed(5, 1)
+                    .map { window -> window.zipWithNext { a, b -> b - a } to window.last() }
+                    .distinctBy { it.first }
+                    .forEach { (key, value) -> this[key] = this.getOrDefault(key, 0L) + value }
+            }
+        }.maxOf { it.value }
 }
 
 fun day22() {
