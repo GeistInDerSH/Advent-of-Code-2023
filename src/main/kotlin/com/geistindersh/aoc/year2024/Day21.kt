@@ -33,7 +33,7 @@ class Day21(
 
     fun part1() = inputs.sumOf { getCost(it, 2, NUMPAD_PATHS) * it.dropLast(1).toLong() }
 
-    fun part2() = 0
+    fun part2() = inputs.sumOf { getCost(it, 25, NUMPAD_PATHS) * it.dropLast(1).toLong() }
 
     companion object {
         private val NUMPAD =
