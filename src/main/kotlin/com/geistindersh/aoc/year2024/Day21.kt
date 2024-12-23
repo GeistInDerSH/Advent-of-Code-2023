@@ -13,133 +13,98 @@ class Day21(
 ) {
     private val inputs = fileToStream(2024, 21, dataFile).toList()
 
-    private fun String.numpadEntrySequence(): Set<String> {
-        var sequences = mutableListOf<String>()
-        val positions = listOf(NUMPAD_GRID['A']) + this.map { NUMPAD_GRID[it]!! }
-        for (i in 0..<positions.lastIndex) {
-            val start = positions[i]
-            val end = positions[i + 1]
-            if (sequences.isEmpty()) {
-                sequences.addAll(NUMPAD_MAP_PATHS[start to end]!!)
-            } else {
-                val toAdd = mutableListOf<String>()
-                for (entry in sequences) {
-                    for (path in NUMPAD_MAP_PATHS[start to end]!!) {
-                        toAdd.add(entry + path)
-                    }
-                }
-                sequences = toAdd
-            }
-        }
-        return sequences.toSet()
-    }
+//    private val cache = mutableMapOf<Pair<String, Int>, Long>()
 
-    private fun String.directionalPadEntrySequence(): Set<String> {
-        val robotStart = DIRECTION_PAD_GRID['A']
-        val numpadStart = DIRECTION_PAD_GRID[this[0]]
-        var sequences = DIRECTION_PAD_MAP_PATHS[robotStart to numpadStart]!!.toSet()
-        val positions = this.map { DIRECTION_PAD_GRID[it]!! }
-        for (i in 0..<positions.lastIndex) {
-            val start = positions[i]
-            val end = positions[i + 1]
-            val route = start to end
-            val toAdd = mutableSetOf<String>()
-            for (entry in sequences) {
-                for (path in DIRECTION_PAD_MAP_PATHS[route]!!) {
-                    toAdd.add(entry + path)
+    private fun getCost(
+        str: String,
+        depth: Int,
+        table: Map<Pair<Char, Char>, List<String>>,
+        cache: MutableMap<Pair<String, Int>, Long> = mutableMapOf(),
+    ): Long =
+        cache.getOrPut(str to depth) {
+            "A$str".zipWithNext().sumOf { move ->
+                val paths = table.getValue(move)
+                if (depth == 0) {
+                    paths.minOf { it.length }.toLong()
+                } else {
+                    paths.minOf { getCost(it, depth - 1, DIRECTION_PAD_PATHS) }
                 }
             }
-            sequences = toAdd
         }
-        val shortestLength = sequences.minOf { it.length }
-        println(sequences.count())
-        return sequences.filter { it.length == shortestLength }.toSet()
-    }
-
-    private fun String.getShortestSequence() =
-        this
-            .numpadEntrySequence()
-            .flatMapTo(mutableSetOf()) { it.directionalPadEntrySequence() }
-            .flatMapTo(mutableSetOf()) { it.directionalPadEntrySequence() }
-            .minBy { it.length }
-            .count()
-            .toLong()
-
-    private fun String.toNumeric() = this.dropLast(1).toLong()
 
     fun part1() =
-        inputs
-            .map { it.toNumeric() to it.getShortestSequence() }
-            .sumOf { (num, score) -> num * score }
+        inputs.sumOf {
+            val v = getCost(it, 2, NUMPAD_PATHS)
+            val q = it.dropLast(1).toLong()
+            println("$v * $q")
+            v * q
+        }
 
     fun part2() = 0
 
     companion object {
-        private val NUMPAD_GRID =
+        private val NUMPAD =
             mapOf(
-                '7' to Point2D(0, 0),
-                '8' to Point2D(0, 1),
-                '9' to Point2D(0, 2),
-                '4' to Point2D(1, 0),
-                '5' to Point2D(1, 1),
-                '6' to Point2D(1, 2),
-                '1' to Point2D(2, 0),
-                '2' to Point2D(2, 1),
-                '3' to Point2D(2, 2),
-                '0' to Point2D(3, 1),
-                'A' to Point2D(3, 2),
+                Point2D(0, 0) to '7',
+                Point2D(0, 1) to '8',
+                Point2D(0, 2) to '9',
+                Point2D(1, 0) to '4',
+                Point2D(1, 1) to '5',
+                Point2D(1, 2) to '6',
+                Point2D(2, 0) to '1',
+                Point2D(2, 1) to '2',
+                Point2D(2, 2) to '3',
+                Point2D(3, 1) to '0',
+                Point2D(3, 2) to 'A',
             )
-        private val DIRECTION_PAD_GRID =
+        private val DIRECTION_PAD =
             mapOf(
-                '^' to Point2D(0, 1),
-                'A' to Point2D(0, 2),
-                '<' to Point2D(1, 0),
-                'v' to Point2D(1, 1),
-                '>' to Point2D(1, 2),
+                Point2D(0, 1) to '^',
+                Point2D(0, 2) to 'A',
+                Point2D(1, 0) to '<',
+                Point2D(1, 1) to 'v',
+                Point2D(1, 2) to '>',
             )
 
-        private val NUMPAD_MAP_PATHS = construct(NUMPAD_GRID.values.toSet())
-        private val DIRECTION_PAD_MAP_PATHS = construct(DIRECTION_PAD_GRID.values.toSet())
+        private val NUMPAD_PATHS = NUMPAD.generatePaths()
+        private val DIRECTION_PAD_PATHS = DIRECTION_PAD.generatePaths()
 
-        private fun shortest(
+        private fun <T> Collection<T>.generatePairs() = this.flatMap { start -> this.map { end -> start to end } }
+
+        private fun Map<Point2D, Char>.generatePaths() =
+            this.keys
+                .generatePairs()
+                .associate { (start, end) ->
+                    (this.getValue(start) to this.getValue(end)) to this.shortestPath(start, end)
+                }
+
+        private fun Map<Point2D, Char>.shortestPath(
             start: Point2D,
             end: Point2D,
-            keyMap: Set<Point2D>,
-        ): Set<List<Direction>> {
+        ): List<String> {
             val queue =
-                PriorityQueue<Triple<Point2D, List<Direction>, Set<Point2D>>>(compareBy { it.second.count() })
-                    .apply { add(Triple(start, emptyList(), setOf(start))) }
-            val routes = mutableSetOf<List<Direction>>()
+                PriorityQueue<Pair<Point2D, List<Direction>>>(compareBy { it.second.size })
+                    .apply { add(start to emptyList<Direction>()) }
+            val seen = mutableMapOf<Point2D, Int>()
+            val paths = mutableListOf<String>()
+            var cost: Int? = null
             while (queue.isNotEmpty()) {
-                val head = queue.poll()
-                if (head.first == end) {
-                    routes.add(head.second)
+                val (point, path) = queue.poll()
+                val count = path.count() + 1
+                if (cost != null && count > cost) return paths
+                if (point == end) {
+                    cost = count
+                    paths.add(path.map { it.toChar() }.joinToString(""))
                     continue
                 }
-                if (routes.isNotEmpty() && routes.any { it.size < head.second.size }) continue
+                seen[point] = count
                 for (dir in Direction.entries) {
-                    val next = head.first + dir
-                    if (next !in keyMap) continue
-                    if (next in head.third) continue
-                    queue.add(Triple(next, head.second + dir, head.third + next))
+                    val next = point + dir
+                    if (next !in this) continue
+                    queue.add(next to (path + dir))
                 }
             }
-            return routes
-        }
-
-        private fun construct(keyMap: Set<Point2D>): Map<Pair<Point2D, Point2D>, List<String>> {
-            val values = mutableMapOf<Pair<Point2D, Point2D>, List<String>>()
-            for (start in keyMap) {
-                values[start to start] = listOf("A")
-                for (end in keyMap) {
-                    val pair = start to end
-                    if (pair in values) continue
-                    val path =
-                        shortest(start, end, keyMap).map { it.joinToString("") { c -> c.toChar().toString() } + "A" }
-                    values[pair] = path
-                }
-            }
-            return values
+            return paths
         }
 
         private fun Direction.toChar() =
