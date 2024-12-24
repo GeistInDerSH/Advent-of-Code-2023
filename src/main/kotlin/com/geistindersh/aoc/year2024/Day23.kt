@@ -3,6 +3,7 @@ package com.geistindersh.aoc.year2024
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
+import jdk.internal.org.jline.utils.Colors.s
 import kotlin.collections.mutableSetOf
 
 class Day23(
@@ -20,7 +21,19 @@ class Day23(
                 map
             }
 
-    fun part1() = 0
+    private fun findConnectionsTo(node: String) =
+        lanConnections[node]!!
+            .toList()
+            .let { it.flatMapIndexed { i, start -> it.drop(i + 1).map { end -> start to end } } }
+            .filter { (s, e) -> e in lanConnections[s]!! }
+            .map { (s, e) -> setOf(s, e, node) }
+
+    fun part1() =
+        lanConnections.keys
+            .filter { it.startsWith("t") }
+            .flatMap { findConnectionsTo(it) }
+            .toSet()
+            .size
 
     fun part2() = 0
 }
