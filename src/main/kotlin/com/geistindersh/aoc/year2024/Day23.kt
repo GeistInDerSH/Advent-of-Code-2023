@@ -3,7 +3,6 @@ package com.geistindersh.aoc.year2024
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
-import jdk.internal.org.jline.utils.Colors.s
 import kotlin.collections.mutableSetOf
 
 class Day23(
@@ -28,6 +27,21 @@ class Day23(
             .filter { (s, e) -> e in lanConnections[s]!! }
             .map { (s, e) -> setOf(s, e, node) }
 
+    private fun largestConnection(a: Set<String>) = largestConnection(a, emptySet(), emptySet())
+
+    private fun largestConnection(
+        a: Set<String>,
+        b: Set<String>,
+        c: Set<String>,
+    ): Set<String> {
+        if (a.isEmpty() && c.isEmpty()) return b
+        val mostNeighbors = (a + c).maxBy { lanConnections[it]!!.size }
+        return (a - lanConnections[mostNeighbors]!!)
+            .map { it to lanConnections[it]!! }
+            .map { (k, vals) -> largestConnection(a.intersect(vals), b + k, c.intersect(vals)) }
+            .maxBy { it.size }
+    }
+
     fun part1() =
         lanConnections.keys
             .filter { it.startsWith("t") }
@@ -35,7 +49,7 @@ class Day23(
             .toSet()
             .size
 
-    fun part2() = 0
+    fun part2() = largestConnection(lanConnections.keys).sorted().joinToString(",")
 }
 
 fun day23() {
