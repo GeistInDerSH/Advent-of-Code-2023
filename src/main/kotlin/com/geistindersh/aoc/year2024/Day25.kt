@@ -18,7 +18,7 @@ class Day25(
 
     fun part1() = keys.sumOf { key -> locks.count { lock -> (key.intersect(lock)).isEmpty() } }
 
-    fun part2() = 0
+    fun part2() = "Deliver The Cronicle!"
 
     companion object {
         private val LOCK_BASE = listOf(Point2D(0, 0), Point2D(0, 1), Point2D(0, 2), Point2D(0, 3), Point2D(0, 4))
