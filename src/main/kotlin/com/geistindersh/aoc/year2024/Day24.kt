@@ -19,7 +19,7 @@ class Day24(
         val r1: String,
         val r2: String,
         val cmd: String,
-        val dest: String,
+        var dest: String,
     ) {
         fun call(registers: Map<String, Int>) = call(registers[r1]!!, registers[r2]!!)
 
@@ -56,19 +56,51 @@ class Day24(
         return registers
     }
 
-    fun part1(): Long {
-        val builder = StringBuilder()
-        val updatedRegisters = run(registers.toMutableMap(), instructions.toMutableList())
-        updatedRegisters.keys
-            .filter { it.startsWith('z') }
-            .sorted()
-            .reversed()
-            .forEach { builder.append(updatedRegisters[it]!!) }
+    private fun Map<String, Int>.output() = this.registerValue('z')
 
-        return builder.toString().toLong(2)
+    private fun Map<String, Int>.registerValue(startsWith: Char) =
+        StringBuilder().let { builder ->
+            this.keys
+                .filter { it.startsWith(startsWith) }
+                .sorted()
+                .reversed()
+                .forEach { builder.append(this[it]!!) }
+            builder.toString().toLong(2)
+        }
+
+    private fun findFirstOutput(name: String): String? {
+        val parentWires = instructions.filter { it.r1 == name || it.r2 == name }
+        val validOutWire = parentWires.find { it.dest.startsWith('z') }
+        if (validOutWire == null) return parentWires.firstNotNullOfOrNull { findFirstOutput(it.dest) }
+        return "z" + (validOutWire.dest.drop(1).toInt() - 1).toString().padStart(2, '0')
     }
 
-    fun part2() = 0
+    fun part1() = run(registers.toMutableMap(), instructions.toMutableList()).output()
+
+    fun part2(): String {
+        val instructions = instructions.toMutableList()
+        val badEndWires = instructions.filter { it.dest.startsWith('z') && it.cmd != "XOR" && it.dest != "z45" }
+        val xy = setOf('x', 'y')
+        val badMidWires =
+            instructions
+                .filter { it.cmd == "XOR" && !it.dest.startsWith('z') && it.r1.first() !in xy && it.r2.first() !in xy }
+        for (i in badMidWires.indices) {
+            val wire = badMidWires[i]
+            val switchWith = badEndWires.first { it.dest == findFirstOutput(wire.dest) }
+            val tmp = wire.dest
+            wire.dest = switchWith.dest
+            switchWith.dest = tmp
+        }
+
+        val xIn = registers.registerValue('x')
+        val yIn = registers.registerValue('y')
+        val updatedRegisters = run(registers.toMutableMap(), instructions.toMutableList())
+        val difference = xIn + yIn xor updatedRegisters.output()
+        val zBits = difference.countTrailingZeroBits().toString().padStart(2, '0')
+        val badCarryWires = instructions.filter { it.r1.endsWith(zBits) && it.r2.endsWith(zBits) }
+
+        return (badCarryWires + badMidWires + badEndWires).map { it.dest }.sorted().joinToString(",")
+    }
 }
 
 fun day24() {
