@@ -1,7 +1,7 @@
 # Advent of Code Solutions
 
 Order solved:
-2023 -> 2022 -> 2015 -> 2020 -> 2021
+2023 -> 2022 -> 2015 -> 2020 -> 2021 -> 2024
 
 ## 2015
 
@@ -33,3 +33,8 @@ be standard in Clojure.
 
 AoC 2023 was an excuse to sit down and learn Kotlin, so the
 solutions are very much non-object-oriented.
+
+## 2024
+
+Making good use of the, at this point, quite extensive amount of library
+code to make the days easier.
