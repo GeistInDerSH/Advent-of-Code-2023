@@ -17,6 +17,12 @@ fun <T> Collection<T>.pairCombinations() =
         }
     }
 
+/**
+ * Generate all possible pairs of the given collection, including duplicates
+ * @return A List of Pairs of the items in the collection
+ */
+fun <T> Collection<T>.generatePairs() = this.flatMap { i -> this.map { j -> Pair(i, j) } }
+
 fun <T> List<T>.pairCombinationsNonInvertible() =
     sequence {
         val seen = mutableSetOf<Pair<T, T>>()

@@ -4,6 +4,7 @@ import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.iterators.generatePairs
 import com.geistindersh.aoc.helper.report
 import java.util.PriorityQueue
 import kotlin.collections.count
@@ -61,8 +62,6 @@ class Day21(
 
         private val NUMPAD_PATHS = NUMPAD.generatePaths()
         private val DIRECTION_PAD_PATHS = DIRECTION_PAD.generatePaths()
-
-        private fun <T> Collection<T>.generatePairs() = this.flatMap { start -> this.map { end -> start to end } }
 
         private fun Map<Point2D, Char>.generatePaths() =
             this.keys
