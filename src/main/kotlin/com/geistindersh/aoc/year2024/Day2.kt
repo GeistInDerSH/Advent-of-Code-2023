@@ -21,22 +21,11 @@ class Day2(
     /**
      * Check all possible removal points in the worst case, or only one in the best case
      */
-    private fun List<Int>.canBeMadeSafe() =
-        this.indices.any {
-            this.toMutableList().apply { removeAt(it) }.isSafe()
-        }
+    private fun List<Int>.canBeMadeSafe() = this.indices.any { this.toMutableList().apply { removeAt(it) }.isSafe() }
 
     fun part1() = lines.count { it.isSafe() }
 
-    fun part2() =
-        lines
-            .map {
-                when {
-                    it.isSafe() -> 1
-                    it.canBeMadeSafe() -> 1
-                    else -> 0
-                }
-            }.sum()
+    fun part2() = lines.count { it.isSafe() || it.canBeMadeSafe() }
 }
 
 fun day2() {

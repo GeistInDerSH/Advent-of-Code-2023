@@ -13,7 +13,6 @@ class Day21(
     dataFile: DataFile,
 ) {
     private val inputs = fileToStream(2024, 21, dataFile).toList()
-
     private val cache = mutableMapOf<Pair<String, Int>, Long>()
 
     private fun getCost(

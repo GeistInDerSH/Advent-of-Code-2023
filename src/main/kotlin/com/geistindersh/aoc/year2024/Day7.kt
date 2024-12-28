@@ -8,10 +8,7 @@ import com.geistindersh.aoc.helper.report
 class Day7(
     dataFile: DataFile,
 ) {
-    private val data =
-        fileToStream(2024, 7, dataFile)
-            .map { Equation.from(it) }
-            .toList()
+    private val equations = fileToStream(2024, 7, dataFile).map { Equation.from(it) }.toList()
 
     private data class Equation(
         val answer: Long,
@@ -54,7 +51,7 @@ class Day7(
         }
     }
 
-    private fun solve(ops: List<(Long, Long) -> Long>) = data.filter { it.applyAndCheckMatchesAnswer(ops) }.sumOf { it.answer }
+    private fun solve(ops: List<(Long, Long) -> Long>) = equations.filter { it.applyAndCheckMatchesAnswer(ops) }.sumOf { it.answer }
 
     fun part1() = solve(Equation.PART_1_OPERATIONS)
 

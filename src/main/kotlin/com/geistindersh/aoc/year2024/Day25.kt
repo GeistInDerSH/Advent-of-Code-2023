@@ -16,7 +16,7 @@ class Day25(
     private val locks = lockAndKeys.filter { it.containsAll(LOCK_BASE) }
     private val keys = lockAndKeys.filter { it.containsAll(KEY_BASE) }
 
-    fun part1() = keys.sumOf { key -> locks.count { lock -> (key.intersect(lock)).isEmpty() } }
+    fun part1() = keys.sumOf { key -> locks.count { lock -> key.intersect(lock).isEmpty() } }
 
     fun part2() = "Deliver The Cronicle!"
 

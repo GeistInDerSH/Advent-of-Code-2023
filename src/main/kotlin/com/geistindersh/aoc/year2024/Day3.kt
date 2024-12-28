@@ -15,14 +15,14 @@ class Day3(
             .reduce(Long::times)
 
     fun part1() =
-        mulRegex
+        MUL_REGEX
             .findAll(input)
             .fold(0L) { acc, match -> acc + match.groups.reduceGroup() }
 
     fun part2(): Long {
         var isEnabled = true
         var total = 0L
-        for (match in doDontMulRegex.findAll(input)) {
+        for (match in DO_DONT_MUL_REGEX.findAll(input)) {
             when (match.value) {
                 "don't()" -> isEnabled = false
                 "do()" -> isEnabled = true
@@ -36,8 +36,8 @@ class Day3(
     }
 
     companion object {
-        private val mulRegex = """mul\((\d+),(\d+)\)""".toRegex()
-        private val doDontMulRegex = """(do\(\)|don't\(\)|mul\((\d+),(\d+)\))""".toRegex()
+        private val MUL_REGEX = """mul\((\d+),(\d+)\)""".toRegex()
+        private val DO_DONT_MUL_REGEX = """(do\(\)|don't\(\)|mul\((\d+),(\d+)\))""".toRegex()
     }
 }
 

@@ -14,12 +14,12 @@ class Day5(
                 run {
                     val map = mutableMapOf<Int, MutableSet<Int>>()
                     for (line in parts[0].split("\n")) {
-                        val k = line.substringBefore("|").toInt()
-                        val v = line.substringAfter("|").toInt()
-                        if (k in map) {
-                            map[k]!!.add(v)
+                        val key = line.substringBefore("|").toInt()
+                        val value = line.substringAfter("|").toInt()
+                        if (key in map) {
+                            map[key]!!.add(value)
                         } else {
-                            map[k] = mutableSetOf(v)
+                            map[key] = mutableSetOf(value)
                         }
                     }
                     map
@@ -37,12 +37,12 @@ class Day5(
     private fun List<Int>.hasCorrectOrder() =
         (0..<this.lastIndex)
             .all { i ->
-                val a = this[i]
-                val b = this[i + 1]
-                a in pages && b in pages[a]!!
+                val l = this[i]
+                val r = this[i + 1]
+                r in pages.getOrDefault(l, emptySet())
             }
 
-    private fun List<Int>.fixOrder() = this.sortedWith { a, b -> if (a in pages && b in pages[a]!!) -1 else 0 }
+    private fun List<Int>.fixOrder() = this.sortedWith { l, r -> if (r in pages.getOrDefault(l, emptySet())) -1 else 0 }
 
     fun part1() =
         updates

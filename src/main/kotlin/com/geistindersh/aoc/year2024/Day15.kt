@@ -75,9 +75,11 @@ class Day15(
 
                             Grid(newGrid, newPosition)
                         }
+
                         else -> this
                     }
                 }
+
                 else -> this
             }
         }
@@ -94,9 +96,7 @@ class Day15(
         }
 
         @Suppress("unused")
-        fun print() {
-            println(this.toString())
-        }
+        fun print() = println(this.toString())
     }
 
     data class ExpandedGrid(
@@ -203,6 +203,7 @@ class Day15(
 
                                 ExpandedGrid(newGrid, newPosition)
                             }
+
                             else -> this
                         }
                     } else {
@@ -233,6 +234,7 @@ class Day15(
                         }
                     }
                 }
+
                 else -> this
             }
         }
@@ -255,16 +257,16 @@ class Day15(
         }
     }
 
-    private fun moveBoxes(warehouse: Warehouse) =
-        generateSequence(0 to warehouse) { (i, g) -> if (i > moves.lastIndex) null else i + 1 to g.next(moves[i]) }
+    private fun Warehouse.moveBoxes() =
+        generateSequence(0 to this) { (i, g) -> if (i > moves.lastIndex) null else i + 1 to g.next(moves[i]) }
             .takeWhile { true }
             .last()
             .second
             .score()
 
-    fun part1() = moveBoxes(grid)
+    fun part1() = grid.moveBoxes()
 
-    fun part2() = moveBoxes(expandedGrid)
+    fun part2() = expandedGrid.moveBoxes()
 }
 
 fun day15() {

@@ -14,8 +14,8 @@ class Day8(
 
     private fun antinodes(node: Char) =
         sequence {
-            val points = grid.filterValues { it == node }.keys
-            for ((a, b) in points.pairCombinations()) {
+            val points = grid.filterValues { it == node }.keys.pairCombinations()
+            for ((a, b) in points) {
                 val p = a - b
                 yield(a + p)
                 yield(b - p)
@@ -45,14 +45,14 @@ class Day8(
 
     fun part1() =
         frequencies
-            .flatMap { antinodes(it) }
+            .flatMap(::antinodes)
             .filter { it in grid }
             .toSet()
             .size
 
     fun part2() =
         frequencies
-            .flatMap { antinodesRepeated(it) }
+            .flatMap(::antinodesRepeated)
             .toSet()
             .size
 }

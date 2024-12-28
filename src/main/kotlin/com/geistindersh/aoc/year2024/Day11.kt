@@ -10,8 +10,9 @@ import kotlin.math.pow
 class Day11(
     dataFile: DataFile,
 ) {
-    private val stones = fileToString(2024, 11, dataFile).split(" ").associate { it.toLong() to 1L }
+    // Pre-store 0L -> [1L] in the memory to avoid needing to add the check in the memoized function for speed reasons
     private val memoizedCore = memoize(::core, mapOf(0L to listOf(1L)))
+    private val stones = fileToString(2024, 11, dataFile).split(" ").associate { it.toLong() to 1L }
 
     private fun core(value: Long): List<Long> {
         val digits = value.digitCount()

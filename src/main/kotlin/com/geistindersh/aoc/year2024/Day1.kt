@@ -10,8 +10,8 @@ class Day1(
 ) {
     private val pairs =
         fileToStream(2024, 1, dataFile)
-            .map { it.split("   ") }
-            .map { (l, r) -> l.toInt() to r.toInt() }
+            .map { it.split("   ").map(String::toInt) }
+            .map { (l, r) -> l to r }
             .toList()
     private val left = pairs.map { it.first }.sorted()
     private val right = pairs.map { it.second }.sorted()
