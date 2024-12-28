@@ -3,6 +3,7 @@ package com.geistindersh.aoc.year2020
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day16(
     dataFile: DataFile,
@@ -19,20 +20,19 @@ class Day16(
                 .associate { line ->
                     val name = line.substringBefore(": ")
                     val ranges =
-                        NUMBER_REGEX
-                            .findAll(line)
-                            .map { it.value.toInt() }
+                        line
+                            .extractPositiveIntegers()
                             .windowed(2, 2) { it.first()..it.last() }
                             .flatMap { it.toSet() }
                             .toSet()
                     name to ranges
                 }
-        userTickets = NUMBER_REGEX.findAll(data[1]).map { it.value.toInt() }.toList()
+        userTickets = data[1].extractPositiveIntegers()
         nearbyTickets =
             data[2]
                 .split("\n")
                 .drop(1)
-                .map { line -> NUMBER_REGEX.findAll(line).map { it.value.toInt() }.toList() }
+                .map(String::extractPositiveIntegers)
     }
 
     private fun invalidTickets() =
@@ -81,10 +81,6 @@ class Day16(
             .map { userTickets[it.value].toLong() }
             .toList()
             .reduce(Long::times)
-    }
-
-    companion object {
-        private val NUMBER_REGEX = "[0-9]+".toRegex()
     }
 }
 

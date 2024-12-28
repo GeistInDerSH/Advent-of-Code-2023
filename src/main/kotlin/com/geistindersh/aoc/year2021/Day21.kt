@@ -3,6 +3,7 @@ package com.geistindersh.aoc.year2021
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day21(
     dataFile: DataFile,
@@ -10,7 +11,7 @@ class Day21(
     private val game =
         fileToStream(2021, 21, dataFile)
             .map { line ->
-                val (index, start) = "[0-9]+".toRegex().findAll(line).map { it.value.toInt() }.toList()
+                val (index, start) = line.extractPositiveIntegers()
                 Player(index, start, 0)
             }.toList()
             .sortedBy { it.index }

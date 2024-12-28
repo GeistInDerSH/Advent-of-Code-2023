@@ -4,6 +4,7 @@ import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day13(
     dataFile: DataFile,
@@ -12,7 +13,7 @@ class Day13(
         fileToStream(2021, 13, dataFile)
             .takeWhile(String::isNotBlank)
             .map { line ->
-                val (col, row) = "[0-9]+".toRegex().findAll(line).map { it.value.toInt() }.toList()
+                val (col, row) = line.extractPositiveIntegers()
                 Point2D(row, col)
             }.toSet()
     private val foldInstructions =

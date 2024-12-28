@@ -4,6 +4,7 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.math.combinations
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractIntegers
 
 class Day15(
     dataFile: DataFile,
@@ -12,7 +13,7 @@ class Day15(
         fileToStream(2015, 15, dataFile)
             .map { line ->
                 val name = line.substringBefore(": ")
-                val nums = "-?[0-9]+".toRegex().findAll(line).map { it.value.toInt() }.toList()
+                val nums = line.extractIntegers()
                 Ingredient(name, nums[0], nums[1], nums[2], nums[3], nums[4])
             }.sortedBy { it.name }
             .toList()

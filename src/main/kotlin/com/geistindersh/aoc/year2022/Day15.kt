@@ -4,6 +4,7 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.pairCombinations
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractIntegers
 import kotlin.math.absoluteValue
 
 class Day15(
@@ -13,23 +14,12 @@ class Day15(
     private val beacons: Set<Pair<Int, Int>>
 
     init {
-        val matcher = "-?\\d+".toRegex()
         val data =
             fileToStream(2022, 15, dataFile)
                 .map { line ->
                     val (start, end) = line.split(":", limit = 2)
-                    val sensor =
-                        matcher
-                            .findAll(start)
-                            .map { it.value.toInt() }
-                            .toList()
-                            .let { Pair(it[0], it[1]) }
-                    val beacon =
-                        matcher
-                            .findAll(end)
-                            .map { it.value.toInt() }
-                            .toList()
-                            .let { Pair(it[0], it[1]) }
+                    val sensor = start.extractIntegers().let { Pair(it[0], it[1]) }
+                    val beacon = end.extractIntegers().let { Pair(it[0], it[1]) }
                     val dist =
                         (sensor.first - beacon.first).absoluteValue +
                             (sensor.second - beacon.second).absoluteValue

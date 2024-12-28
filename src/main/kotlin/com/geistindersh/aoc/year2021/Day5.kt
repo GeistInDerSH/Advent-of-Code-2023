@@ -6,6 +6,7 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day5(
     dataFile: DataFile,
@@ -14,10 +15,8 @@ class Day5(
         fileToStream(2021, 5, dataFile)
             .map { line ->
                 val (start, end) =
-                    "[0-9]+"
-                        .toRegex()
-                        .findAll(line)
-                        .map { it.value.toInt() }
+                    line
+                        .extractPositiveIntegers()
                         .windowed(2, 2)
                         .map { Point2D(it[0], it[1]) }
                         .toList()

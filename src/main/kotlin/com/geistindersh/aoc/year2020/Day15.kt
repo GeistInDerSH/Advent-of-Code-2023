@@ -3,16 +3,12 @@ package com.geistindersh.aoc.year2020
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day15(
     dataFile: DataFile,
 ) {
-    private val numbers =
-        "[0-9]+"
-            .toRegex()
-            .findAll(fileToString(2020, 15, dataFile))
-            .map { it.value.toInt() }
-            .toList()
+    private val numbers = fileToString(2020, 15, dataFile).extractPositiveIntegers()
 
     private fun List<Int>.valueAtTurn(targetTurn: Int): Int {
         val history = this.associateWith { n -> this.indexOf(n) + 1 }.toMutableMap()

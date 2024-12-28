@@ -3,15 +3,12 @@ package com.geistindersh.aoc.year2015
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day2(
     dataFile: DataFile,
 ) {
-    private val data =
-        fileToStream(2015, 2, dataFile)
-            .map { line ->
-                "[0-9]+".toRegex().findAll(line).map { it.value }.map(String::toInt).toList().sorted()
-            }.toList()
+    private val data = fileToStream(2015, 2, dataFile).map { it.extractPositiveIntegers().sorted() }.toList()
 
     private fun surfaceArea(
         l: Int,

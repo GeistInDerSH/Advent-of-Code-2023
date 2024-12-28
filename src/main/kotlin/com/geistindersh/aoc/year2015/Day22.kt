@@ -3,17 +3,12 @@ package com.geistindersh.aoc.year2015
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day22(
     dataFile: DataFile,
 ) {
-    private val boss =
-        "[0-9]+"
-            .toRegex()
-            .findAll(fileToString(2015, 22, dataFile))
-            .map { it.value.toInt() }
-            .toList()
-            .let { (hp, dmg) -> Boss(hp, dmg) }
+    private val boss = fileToString(2015, 22, dataFile).extractPositiveIntegers().let { (hp, dmg) -> Boss(hp, dmg) }
 
     private data class Spell(
         val name: String,

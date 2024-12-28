@@ -5,6 +5,7 @@ import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.ranges.hasOverlap
 import com.geistindersh.aoc.helper.ranges.intersection
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractIntegers
 
 class Day22(
     dataFile: DataFile,
@@ -14,10 +15,8 @@ class Day22(
             .map { line ->
                 val isOn = line.substringBefore(' ') == "on"
                 val (x, y, z) =
-                    "-?[0-9]+"
-                        .toRegex()
-                        .findAll(line)
-                        .map { it.value.toInt() }
+                    line
+                        .extractIntegers()
                         .windowed(2, 2) { (start, end) -> start..end }
                         .toList()
                 RebootCube(isOn, x, y, z)

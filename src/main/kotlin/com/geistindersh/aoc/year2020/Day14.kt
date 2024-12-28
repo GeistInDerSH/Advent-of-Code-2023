@@ -4,6 +4,7 @@ import com.geistindersh.aoc.helper.binary.setBit
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveLongs
 
 class Day14(
     dataFile: DataFile,
@@ -64,8 +65,6 @@ class Day14(
         ) : Program()
 
         companion object {
-            private val NUMBER_REGEX = "[0-9]+".toRegex()
-
             fun from(line: String): Program =
                 if (line.startsWith("mask = ")) {
                     val bitSetLocation =
@@ -77,11 +76,7 @@ class Day14(
                             .map { it.index to it.value.digitToInt().toLong() }
                     Mask(bitSetLocation)
                 } else {
-                    val (position, value) =
-                        NUMBER_REGEX
-                            .findAll(line)
-                            .map { it.value.toLong() }
-                            .toList()
+                    val (position, value) = line.extractPositiveLongs()
                     Memory(position, value)
                 }
         }

@@ -3,21 +3,16 @@ package com.geistindersh.aoc.year2024
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 import kotlin.math.absoluteValue
 
 class Day2(
     dataFile: DataFile,
 ) {
-    private val lines =
-        fileToStream(2024, 2, dataFile)
-            .map { line -> "[0-9]+".toRegex().findAll(line).map { it.value.toInt() }.toList() }
-            .toList()
+    private val lines = fileToStream(2024, 2, dataFile).map(String::extractPositiveIntegers).toList()
 
     private fun List<Int>.isSafe(): Boolean {
-        val inRange =
-            this
-                .windowed(2) { (l, r) -> (l - r).absoluteValue }
-                .all { it in 1..3 }
+        val inRange = this.zipWithNext { l, r -> (l - r).absoluteValue }.all { it in 1..3 }
         if (!inRange) return false
         val sorted = this.sorted()
         return sorted == this || sorted == this.reversed()

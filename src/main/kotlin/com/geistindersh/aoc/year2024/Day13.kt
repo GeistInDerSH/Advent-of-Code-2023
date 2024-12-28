@@ -4,6 +4,7 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.math.determinant
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveLongs
 
 class Day13(
     dataFile: DataFile,
@@ -31,14 +32,7 @@ class Day13(
         }
 
         companion object {
-            private val NUMBER_REGEX = "[0-9]+".toRegex()
-
-            fun from(str: String) =
-                NUMBER_REGEX
-                    .findAll(str)
-                    .map { it.value.toLong() }
-                    .toList()
-                    .let { ClawMachine(it[0], it[1], it[2], it[3], it[4], it[5]) }
+            fun from(str: String) = str.extractPositiveLongs().let { ClawMachine(it[0], it[1], it[2], it[3], it[4], it[5]) }
         }
     }
 

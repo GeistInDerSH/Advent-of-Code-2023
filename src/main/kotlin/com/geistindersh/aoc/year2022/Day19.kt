@@ -3,6 +3,7 @@ package com.geistindersh.aoc.year2022
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 import java.util.PriorityQueue
 import kotlin.math.ceil
 import kotlin.math.max
@@ -35,7 +36,7 @@ class Day19(
     private val blueprints =
         fileToStream(2022, 19, dataFile)
             .map {
-                val nums = "[0-9]+".toRegex().findAll(it).map { i -> i.value }.map(String::toInt).toList()
+                val nums = it.extractPositiveIntegers()
                 val oreRobot = Robot(oreCost = nums[1], oreRobots = 1)
                 val clayRobot = Robot(oreCost = nums[2], clayRobots = 1)
                 val obsidianRobot = Robot(oreCost = nums[3], clayCost = nums[4], obsidianRobots = 1)

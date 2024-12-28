@@ -3,6 +3,7 @@ package com.geistindersh.aoc.year2015
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day14(
     dataFile: DataFile,
@@ -11,7 +12,7 @@ class Day14(
         fileToStream(2015, 14, dataFile)
             .map { line ->
                 val name = line.substringBefore(" ")
-                val (speed, time, sleep) = "[0-9]+".toRegex().findAll(line).map { it.value.toInt() }.toList()
+                val (speed, time, sleep) = line.extractPositiveIntegers()
                 Reindeer(name, speed, time, sleep)
             }.toList()
 

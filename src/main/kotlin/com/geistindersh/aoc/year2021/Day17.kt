@@ -5,15 +5,14 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractIntegers
 
 class Day17(
     dataFile: DataFile,
 ) {
     private val targetArea =
-        "-?[0-9]+"
-            .toRegex()
-            .findAll(fileToString(2021, 17, dataFile))
-            .map { it.value.toInt() }
+        fileToString(2021, 17, dataFile)
+            .extractIntegers()
             .windowed(2, 2) { it.sorted() }
             .map { (start, end) -> (start..end) }
             .toList()

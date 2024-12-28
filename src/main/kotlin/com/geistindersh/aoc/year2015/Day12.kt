@@ -3,6 +3,7 @@ package com.geistindersh.aoc.year2015
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractIntegers
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -40,7 +41,7 @@ class Day12(
             else -> 0 to false
         }
 
-    fun part1() = "-?[0-9]+".toRegex().findAll(data).sumOf { it.value.toInt() }
+    fun part1() = data.extractIntegers().sum()
 
     fun part2() =
         Json

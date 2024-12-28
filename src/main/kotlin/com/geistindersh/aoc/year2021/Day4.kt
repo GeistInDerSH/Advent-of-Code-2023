@@ -4,6 +4,7 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day4(
     dataFile: DataFile,
@@ -14,8 +15,7 @@ class Day4(
             .split("\n\n")
             .drop(1)
             .map { chunk ->
-                val re = "[0-9]+".toRegex()
-                val values = chunk.split("\n").map { line -> re.findAll(line).map { it.value.toInt() }.toList() }
+                val values = chunk.split("\n").map { it.extractPositiveIntegers() }
                 BingoBoard(values)
             }
 

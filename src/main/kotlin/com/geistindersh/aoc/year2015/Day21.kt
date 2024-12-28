@@ -5,16 +5,14 @@ import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.iterators.cycle
 import com.geistindersh.aoc.helper.iterators.pairCombinations
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day21(
     dataFile: DataFile,
 ) {
     private val boss =
-        "[0-9]+"
-            .toRegex()
-            .findAll(fileToString(2015, 21, dataFile))
-            .map { it.value.toInt() }
-            .toList()
+        fileToString(2015, 21, dataFile)
+            .extractPositiveIntegers()
             .let { (hp, dmg, amr) -> Character(hp, dmg, amr, 0) }
     private val shop =
         mapOf(

@@ -4,6 +4,7 @@ import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.math.floorModulo
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.helper.strings.extractIntegers
 
 class Day14(
     dataFile: DataFile,
@@ -41,15 +42,11 @@ class Day14(
             )
 
         companion object {
-            private val NUMBER_REGEX = "-?[0-9]+".toRegex()
-
             fun from(
                 line: String,
                 height: Int,
                 width: Int,
-            ) = NUMBER_REGEX.findAll(line).map { it.value.toInt() }.toList().let {
-                Robot(it[0], it[1], it[2], it[3], height, width)
-            }
+            ) = line.extractIntegers().let { Robot(it[0], it[1], it[2], it[3], height, width) }
         }
     }
 
