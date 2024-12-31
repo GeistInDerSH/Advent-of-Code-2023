@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
@@ -10,7 +11,8 @@ class Day18(
     dataFile: DataFile,
     private val gridMaxRow: Int = 70,
     private val gridMaxCol: Int = 70,
-) {
+    private val part1ByteCount: Int = 1024,
+) : AoC<Int, Point2D> {
     private val bytePoints =
         fileToStream(2024, 18, dataFile)
             .map { it.split(",").map(String::toInt) }
@@ -38,9 +40,9 @@ class Day18(
         return -1
     }
 
-    fun part1(byteCount: Int = 1024) = bytePoints.take(byteCount).toSet().traverse()
+    override fun part1() = bytePoints.take(part1ByteCount).toSet().traverse()
 
-    fun part2() =
+    override fun part2() =
         generateSequence(bytePoints.count() to bytePoints) { (it.first - 1) to bytePoints.take(it.first) }
             .first { it.second.toSet().traverse() != -1 }
             .first

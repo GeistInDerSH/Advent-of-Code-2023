@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day9(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val heightMap = fileToString(2021, 9, dataFile).toGrid2D { it.digitToInt() }
 
     private fun findLowPoints() =
@@ -21,9 +22,9 @@ class Day9(
                     .minBy { it } > value
             }
 
-    fun part1() = findLowPoints().sumOf { it.value + 1 }
+    override fun part1() = findLowPoints().sumOf { it.value + 1 }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val lowPoints = findLowPoints().map { it.key }
         val basinSizes = mutableListOf<Int>()
 

@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -10,7 +11,7 @@ import com.geistindersh.aoc.helper.strings.toGrid2D
 class Day15(
     rawGrid: String,
     rawMoves: String,
-) {
+) : AoC<Long, Long> {
     constructor(sections: List<String>) : this(sections.first(), sections.last())
     constructor(dataFile: DataFile) : this(fileToString(2024, 15, dataFile).split("\n\n"))
 
@@ -264,9 +265,9 @@ class Day15(
             .second
             .score()
 
-    fun part1() = grid.moveBoxes()
+    override fun part1() = grid.moveBoxes()
 
-    fun part2() = expandedGrid.moveBoxes()
+    override fun part2() = expandedGrid.moveBoxes()
 }
 
 fun day15() {

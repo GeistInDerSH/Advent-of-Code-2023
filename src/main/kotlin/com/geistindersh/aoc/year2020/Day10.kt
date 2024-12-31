@@ -1,16 +1,17 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day10(
     dataFile: DataFile,
-) {
+) : AoC<Int, Long> {
     private val jolts = fileToStream(2020, 10, dataFile).map(String::toInt).toList()
     private val joltsSet = jolts.toSet()
 
-    fun part1(): Int {
+    override fun part1(): Int {
         // Start at 1, with a default value of 1 to skip the 0 state
         val options = mutableMapOf<Int, Int>().withDefault { 1 }
         var current = 1
@@ -29,7 +30,7 @@ class Day10(
         return options.getValue(1) * options.getValue(3)
     }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val jolts = jolts.sorted().let { it + listOf(it.last() + 3) }
         val counter = mutableMapOf(0 to 1L)
 

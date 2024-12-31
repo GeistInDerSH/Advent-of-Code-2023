@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day7(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val commands =
         fileToStream(2022, 7, dataFile)
             .map {
@@ -103,7 +104,7 @@ class Day7(
         return size
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val fs = directoryWalk()
         return fs
             .map { (_, value) -> sumSize(fs, value) }
@@ -111,7 +112,7 @@ class Day7(
             .sum()
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val spaceNeeded = 30000000
         val fs = directoryWalk()
         val spaceUsed = sumSize(fs, fs["/"]!!)

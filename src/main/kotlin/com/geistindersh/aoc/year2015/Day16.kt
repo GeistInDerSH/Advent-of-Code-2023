@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day16(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val aunts =
         fileToStream(2015, 16, dataFile)
             .map { it.replace(",", "").replace(":", "") }
@@ -29,14 +30,14 @@ class Day16(
             "perfumes" to 1,
         )
 
-    fun part1() =
+    override fun part1() =
         aunts
             .filter { (_, v) ->
                 knownInfo.all { (entry, value) -> v.getOrDefault(entry, value) == value }
             }.keys
             .first()
 
-    fun part2() =
+    override fun part2() =
         aunts
             .filter { (_, v) ->
                 knownInfo.all { (entry, value) ->

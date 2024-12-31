@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day24(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val rawInput = fileToStream(2021, 24, dataFile).toList()
     private val instructions =
         rawInput
@@ -155,9 +156,9 @@ class Day24(
         return registers["z"]!! == 0
     }
 
-    fun part1() = getModelNumber(true)
+    override fun part1() = getModelNumber(true)
 
-    fun part2() = getModelNumber(false)
+    override fun part2() = getModelNumber(false)
 }
 
 fun day24() {

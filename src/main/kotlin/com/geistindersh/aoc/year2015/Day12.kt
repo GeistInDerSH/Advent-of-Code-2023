@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
@@ -11,7 +12,7 @@ import kotlinx.serialization.json.intOrNull
 
 class Day12(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val data = fileToString(2015, 12, dataFile)
 
     private fun filterInts(value: Any?): Pair<Int, Boolean> =
@@ -41,9 +42,9 @@ class Day12(
             else -> 0 to false
         }
 
-    fun part1() = data.extractIntegers().sum()
+    override fun part1() = data.extractIntegers().sum()
 
-    fun part2() =
+    override fun part2() =
         Json
             .parseToJsonElement(data)
             .let {

@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.iterators.rotateLeft
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day23(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val cups = Cups.from(fileToString(2020, 23, dataFile))
 
     private data class Cups(
@@ -78,13 +79,13 @@ class Day23(
                 .drop(1)
     }
 
-    fun part1() =
+    override fun part1() =
         generateSequence(cups) { it.next() }
             .take(101)
             .last()
             .score()
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val allCups = List(1_000_001) { Cup(it) }
 
         cups

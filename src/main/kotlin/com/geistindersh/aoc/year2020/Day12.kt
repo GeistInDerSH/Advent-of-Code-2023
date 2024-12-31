@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -9,7 +10,7 @@ import kotlin.math.absoluteValue
 
 class Day12(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val ship =
         fileToStream(2020, 12, dataFile)
             .map { Action.from(it) }
@@ -141,9 +142,9 @@ class Day12(
         }
     }
 
-    fun part1() = ship.navigate()
+    override fun part1() = ship.navigate()
 
-    fun part2() = ship.navigateWithWaypoint()
+    override fun part2() = ship.navigateWithWaypoint()
 }
 
 fun day12() {

@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -10,7 +11,7 @@ import kotlin.math.max
 
 class Day19(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private data class Robot(
         val oreCost: Int = 0,
         val clayCost: Int = 0,
@@ -112,9 +113,9 @@ class Day19(
         return best
     }
 
-    fun part1() = blueprints.sumOf { it.id * best(it, 24) }
+    override fun part1() = blueprints.sumOf { it.id * best(it, 24) }
 
-    fun part2() =
+    override fun part2() =
         blueprints
             .take(3)
             .map { best(it, 32) }

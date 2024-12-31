@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.cycle
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day20(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val data = fileToStream(2022, 20, dataFile).map(String::toLong).toList()
     private val dataIndices = data.indices.toList()
 
@@ -60,13 +61,13 @@ class Day20(
             .take(4)
             .reduce(Long::plus)
 
-    fun part1(): Long {
+    override fun part1(): Long {
         val positions = getUpdatedPositions(data, dataIndices, dataIndices)
         val values = getValues(data, positions)
         return solution(values)
     }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val data = data.map { it * 811589153 }
         val indices = (0..<10).flatMap { dataIndices }
         val positions = getUpdatedPositions(data, dataIndices, indices)

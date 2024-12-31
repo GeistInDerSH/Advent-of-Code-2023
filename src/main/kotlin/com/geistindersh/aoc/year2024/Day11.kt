@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.binary.digitCount
 import com.geistindersh.aoc.helper.caching.memoize
 import com.geistindersh.aoc.helper.files.DataFile
@@ -9,7 +10,7 @@ import kotlin.math.pow
 
 class Day11(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     // Pre-store 0L -> [1L] in the memory to avoid needing to add the check in the memoized function for speed reasons
     private val memoizedCore = memoize(::core, mapOf(0L to listOf(1L)))
     private val stones = fileToString(2024, 11, dataFile).split(" ").associate { it.toLong() to 1L }
@@ -37,9 +38,9 @@ class Day11(
             .values
             .sum()
 
-    fun part1() = stones.blink(25)
+    override fun part1() = stones.blink(25)
 
-    fun part2() = stones.blink(75)
+    override fun part2() = stones.blink(75)
 }
 
 fun day11() {

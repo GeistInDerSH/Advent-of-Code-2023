@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
@@ -9,7 +10,8 @@ import java.util.PriorityQueue
 
 class Day20(
     dataFile: DataFile,
-) {
+    private val savings: Int,
+) : AoC<Int, Int> {
     private val track = fileToString(2024, 20, dataFile).toGrid2D()
     private val start = track.filterValues { it == 'S' }.keys.first()
     private val end = track.filterValues { it == 'E' }.keys.first()
@@ -107,12 +109,12 @@ class Day20(
         .values
         .sumOf { it.count() }
 
-    fun part1(savings: Int = 100) = solution(2, savings)
+    override fun part1() = solution(2, savings)
 
-    fun part2(savings: Int = 100) = solution(20, savings)
+    override fun part2() = solution(20, savings)
 }
 
 fun day20() {
-    val day = Day20(DataFile.Part1)
+    val day = Day20(DataFile.Part1, 100)
     report(2024, 20, day.part1(), day.part2())
 }

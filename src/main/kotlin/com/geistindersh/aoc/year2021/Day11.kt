@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day11(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val octopuses =
         fileToString(2021, 11, dataFile)
             .toGrid2D { it.digitToInt() }
@@ -48,13 +49,13 @@ class Day11(
         }
     }
 
-    fun part1() =
+    override fun part1() =
         generateSequence(octopuses) { it.next() }
             .drop(100)
             .first()
             .totalFlashes
 
-    fun part2() =
+    override fun part2() =
         generateSequence(octopuses) { it.next() }
             .dropWhile { it.newFlashes != it.octopuses.size }
             .first()

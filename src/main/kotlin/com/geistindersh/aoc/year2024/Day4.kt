@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day4(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val data = fileToString(2024, 4, dataFile).toGrid2D()
 
     private fun Point2D.matchCount() =
@@ -28,13 +29,13 @@ class Day4(
                     .all { it.first in data && data[it.first] == it.second }
             }
 
-    fun part1() =
+    override fun part1() =
         data
             .filter { it.value == 'X' }
             .keys
             .sumOf { it.matchCount() }
 
-    fun part2() =
+    override fun part2() =
         data
             .filter { it.value == 'A' }
             .keys

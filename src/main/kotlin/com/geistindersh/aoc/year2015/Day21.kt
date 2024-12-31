@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.iterators.cycle
@@ -9,7 +10,8 @@ import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day21(
     dataFile: DataFile,
-) {
+    private val hp: Int,
+) : AoC<Int, Int> {
     private val boss =
         fileToString(2015, 21, dataFile)
             .extractPositiveIntegers()
@@ -101,13 +103,13 @@ class Day21(
         }
     }
 
-    fun part1(hp: Int) =
+    override fun part1() =
         generateCharacters(hp)
             .filter(::isWinner)
             .minBy { it.cost }
             .cost
 
-    fun part2(hp: Int) =
+    override fun part2() =
         generateCharacters(hp)
             .filterNot(::isWinner)
             .maxBy { it.cost }
@@ -115,6 +117,6 @@ class Day21(
 }
 
 fun day21() {
-    val day = Day21(DataFile.Part1)
-    report(2015, 21, day.part1(100), day.part2(100))
+    val day = Day21(DataFile.Part1, 100)
+    report(2015, 21, day.part1(), day.part2())
 }

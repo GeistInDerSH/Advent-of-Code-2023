@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -10,7 +11,7 @@ import com.geistindersh.aoc.helper.strings.toGrid2DRemoveNull
 
 class Day11(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val chart =
         fileToString(2020, 11, dataFile)
             .toGrid2DRemoveNull {
@@ -133,7 +134,7 @@ class Day11(
         }
     }
 
-    fun part1() =
+    override fun part1() =
         generateSequence(chart) { it.next() }
             .drop(1)
             .takeWhileInclusive { it.changed > 0 }
@@ -142,7 +143,7 @@ class Day11(
             .values
             .count { it }
 
-    fun part2() =
+    override fun part2() =
         generateSequence(chart.copy(neighborThreshold = 4)) { it.nextWithVisibility() }
             .drop(1)
             .takeWhileInclusive { it.changed > 0 }

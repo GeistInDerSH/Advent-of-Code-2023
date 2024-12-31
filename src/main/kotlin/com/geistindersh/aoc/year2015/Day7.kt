@@ -1,12 +1,14 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day7(
     dataFile: DataFile,
-) {
+    private val wire: String,
+) : AoC<UShort, UShort> {
     private val operations =
         fileToStream(2015, 7, dataFile)
             .map { Operation.from(it) }
@@ -124,12 +126,12 @@ class Day7(
         return value
     }
 
-    fun part1(wire: String): UShort {
+    override fun part1(): UShort {
         val expressions = operations.associateBy { it.name }.toMutableMap()
         return eval(expressions, wire).value
     }
 
-    fun part2(wire: String): UShort {
+    override fun part2(): UShort {
         val expressions = operations.associateBy { it.name }.toMutableMap()
         val wireValue = eval(expressions, wire)
         val updatedExpressions = operations.associateBy { it.name }.toMutableMap().apply { set("b", wireValue) }
@@ -138,6 +140,6 @@ class Day7(
 }
 
 fun day7() {
-    val day = Day7(DataFile.Part1)
-    report(2015, 7, day.part1("a"), day.part2("a"))
+    val day = Day7(DataFile.Part1, "a")
+    report(2015, 7, day.part1(), day.part2())
 }

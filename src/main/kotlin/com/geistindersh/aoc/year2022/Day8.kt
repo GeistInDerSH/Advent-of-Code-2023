@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day8(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val rowMajor =
         fileToStream(2022, 8, dataFile)
             .map { line ->
@@ -71,14 +72,14 @@ class Day8(
             }
         }
 
-    fun part1(): Int =
+    override fun part1(): Int =
         rowMajor
             .indices
             .flatMap { row ->
                 columnMajor.indices.map { isVisible(row, it) }
             }.count { it }
 
-    fun part2(): Int =
+    override fun part2(): Int =
         rowMajor
             .indices
             .flatMap { row ->

@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -8,7 +9,7 @@ import kotlin.math.absoluteValue
 
 class Day2(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val lines = fileToStream(2024, 2, dataFile).map(String::extractPositiveIntegers).toList()
 
     private fun List<Int>.isSafe(): Boolean {
@@ -23,9 +24,9 @@ class Day2(
      */
     private fun List<Int>.canBeMadeSafe() = this.indices.any { this.toMutableList().apply { removeAt(it) }.isSafe() }
 
-    fun part1() = lines.count { it.isSafe() }
+    override fun part1() = lines.count { it.isSafe() }
 
-    fun part2() = lines.count { it.isSafe() || it.canBeMadeSafe() }
+    override fun part2() = lines.count { it.isSafe() || it.canBeMadeSafe() }
 }
 
 fun day2() {

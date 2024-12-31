@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 class Day24(
     rawRegisters: List<String>,
     rawInstructions: List<String>,
-) {
+) : AoC<Long, String> {
     constructor(rawInput: String) : this(
         rawInput.substringBefore("\n\n").split("\n"),
         rawInput.substringAfter("\n\n").split("\n"),
@@ -75,9 +76,9 @@ class Day24(
         return "z" + (validOutWire.dest.drop(1).toInt() - 1).toString().padStart(2, '0')
     }
 
-    fun part1() = run(registers.toMutableMap(), instructions.toMutableList()).output()
+    override fun part1() = run(registers.toMutableMap(), instructions.toMutableList()).output()
 
-    fun part2(): String {
+    override fun part2(): String {
         val instructions = instructions.toMutableList()
         val badEndWires = instructions.filter { it.dest.startsWith('z') && it.cmd != "XOR" && it.dest != "z45" }
         val xy = setOf('x', 'y')

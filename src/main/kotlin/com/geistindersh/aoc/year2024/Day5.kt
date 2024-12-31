@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day5(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val data =
         run {
             val parts = fileToString(2024, 5, dataFile).split("\n\n")
@@ -44,13 +45,13 @@ class Day5(
 
     private fun List<Int>.fixOrder() = this.sortedWith { l, r -> if (r in pages.getOrDefault(l, emptySet())) -1 else 0 }
 
-    fun part1() =
+    override fun part1() =
         updates
             .filter { it.hasCorrectOrder() }
             .map { it[it.lastIndex / 2] }
             .reduce(Int::plus)
 
-    fun part2() =
+    override fun part2() =
         updates
             .filterNot { it.hasCorrectOrder() }
             .map { it.fixOrder() }

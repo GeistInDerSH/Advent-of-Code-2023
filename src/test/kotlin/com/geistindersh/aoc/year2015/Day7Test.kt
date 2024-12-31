@@ -7,11 +7,11 @@ import kotlin.test.assertEquals
 class Day7Test {
     @Test
     fun part1() {
-        assertEquals(65079u, Day7(DataFile.Example).part1("i").toUInt())
+        assertEquals(65079u, Day7(DataFile.Example, "i").part1().toUInt())
     }
 
     @Test
     fun part2() {
-        assertEquals(65079u, Day7(DataFile.Example).part2("i").toUInt())
+        assertEquals(65079u, Day7(DataFile.Example, "i").part2().toUInt())
     }
 }

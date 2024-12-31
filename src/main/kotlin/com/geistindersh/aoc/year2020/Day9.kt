@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 class Day9(
     dataFile: DataFile,
     private val windowSize: Int,
-) {
+) : AoC<Long, Long> {
     private val numbers = fileToStream(2020, 9, dataFile).map(String::toLong).toList()
 
     private fun firstMissingSumInWindow() =
@@ -22,9 +23,9 @@ class Day9(
                 }
             }.first { it != null }!!
 
-    fun part1() = firstMissingSumInWindow()
+    override fun part1() = firstMissingSumInWindow()
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val target = firstMissingSumInWindow()
         for (start in numbers.indices) {
             var sum = numbers[start]

@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day1(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val calories =
         fileToString(2022, 1, dataFile)
             .split("\n\n")
@@ -17,9 +18,9 @@ class Day1(
                     .reduce(Int::plus)
             }
 
-    fun part1() = calories.max()
+    override fun part1() = calories.max()
 
-    fun part2() =
+    override fun part2() =
         calories
             .sorted()
             .reversed()

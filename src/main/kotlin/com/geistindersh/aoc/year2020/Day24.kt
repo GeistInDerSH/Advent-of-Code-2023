@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point3D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day24(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val lines = fileToStream(2020, 24, dataFile).map { Line(it) }.toList()
 
     private data class Line(
@@ -56,9 +57,9 @@ class Day24(
                 }
             }.toSet()
 
-    fun part1() = lines.flipTiles().size
+    override fun part1() = lines.flipTiles().size
 
-    fun part2() =
+    override fun part2() =
         generateSequence(lines.flipTiles()) { it.next() }
             .drop(100)
             .first()

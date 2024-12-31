@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day21(
     dataFile: DataFile,
-) {
+) : AoC<Int, Long> {
     private val game =
         fileToStream(2021, 21, dataFile)
             .map { line ->
@@ -62,7 +63,7 @@ class Day21(
         }
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val die = Die()
         val end =
             generateSequence(game) { it.next(die.next()) }
@@ -73,7 +74,7 @@ class Day21(
         return loser.score * die.totalRolls()
     }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val frequency = mapOf(3 to 1, 4 to 3, 5 to 6, 6 to 7, 7 to 6, 8 to 3, 9 to 1)
         val history = mutableMapOf<Game, Pair<Long, Long>>()
 

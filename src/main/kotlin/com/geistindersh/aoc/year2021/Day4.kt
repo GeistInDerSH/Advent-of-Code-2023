@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.files.fileToString
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day4(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val numbers = fileToStream(2021, 4, dataFile).first().split(",").map(String::toInt)
     private val boards =
         fileToString(2021, 4, dataFile)
@@ -50,7 +51,7 @@ class Day4(
                     }.reduce(Int::plus)
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         for (number in numbers) {
             for (board in boards) {
                 board.update(number)
@@ -60,7 +61,7 @@ class Day4(
         return 0
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val boards = boards.toMutableList()
         for (number in numbers) {
             val toRemove = mutableListOf<BingoBoard>()

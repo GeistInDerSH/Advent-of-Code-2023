@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import kotlin.math.ceil
 
 class Day14(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val template = fileToStream(2021, 14, dataFile).first()
     private val mapping =
         fileToStream(2021, 14, dataFile)
@@ -86,9 +87,9 @@ class Day14(
                 max - min
             }
 
-    fun part1() = generatePolymer(10)
+    override fun part1() = generatePolymer(10)
 
-    fun part2() = generatePolymer(40)
+    override fun part2() = generatePolymer(40)
 }
 
 fun day14() {

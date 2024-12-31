@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day3(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val data =
         fileToString(2015, 3, dataFile)
             .mapNotNull {
@@ -21,13 +22,13 @@ class Day3(
             }.toList()
     private val start = listOf(Pair(0, 0))
 
-    fun part1() =
+    override fun part1() =
         data
             .fold(start) { acc, direction -> acc + (direction + acc.last()) }
             .toSet()
             .count()
 
-    fun part2() =
+    override fun part2() =
         data
             .foldIndexed(start) { index, acc, direction ->
                 val pos = if (index == 0) acc.last() else acc[acc.lastIndex - 1]

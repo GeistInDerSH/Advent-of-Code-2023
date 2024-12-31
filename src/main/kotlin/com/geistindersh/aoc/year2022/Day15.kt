@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.pairCombinations
@@ -9,7 +10,8 @@ import kotlin.math.absoluteValue
 
 class Day15(
     dataFile: DataFile,
-) {
+    private val part1RowNumber: Int,
+) : AoC<Int, Long> {
     private val sensors: List<Pair<Pair<Int, Int>, Int>>
     private val beacons: Set<Pair<Int, Int>>
 
@@ -104,14 +106,14 @@ class Day15(
                 pointDistance < dist
             }
 
-    fun part1(rowNumber: Int): Int =
+    override fun part1(): Int =
         sensors
             .asSequence()
-            .flatMap { rowCoverageCount(rowNumber, it) }
+            .flatMap { rowCoverageCount(part1RowNumber, it) }
             .toSet()
             .count { it !in beacons }
 
-    fun part2(): Long =
+    override fun part2(): Long =
         getIntersectionCount()
             .filterValues { it >= 4 }
             .filterKeys { !isInside(it) }
@@ -122,6 +124,6 @@ class Day15(
 }
 
 fun day15() {
-    val day = Day15(DataFile.Part1)
-    report(2022, 15, day.part1(2000000), "skipped")
+    val day = Day15(DataFile.Part1, 2000000)
+    report(2022, 15, day.part1(), "skipped")
 }

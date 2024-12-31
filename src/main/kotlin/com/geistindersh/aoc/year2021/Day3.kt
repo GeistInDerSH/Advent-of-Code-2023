@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.binary.bitAt
 import com.geistindersh.aoc.helper.binary.setBit
 import com.geistindersh.aoc.helper.files.DataFile
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day3(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val bits = fileToStream(2021, 3, dataFile).map { line -> line.map { it } }.toList()
 
     private fun List<List<Char>>.getZerosAndOnesInColumn(column: Int) =
@@ -60,9 +61,9 @@ class Day3(
             filter.filterByCommonBit(index + 1, nextBit, maximize)
         }
 
-    fun part1() = getGammaAndEpsilon().toList().reduce(Int::times)
+    override fun part1() = getGammaAndEpsilon().toList().reduce(Int::times)
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val gamma = getGammaAndEpsilon().first
         val (mostSig, leastSig) = if (gamma.bitAt(bits[0].size - 1) == 1) '1' to '0' else '0' to '1'
         val o2 = bits.filterByCommonBit(0, mostSig, true)

@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,8 @@ import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day14(
     dataFile: DataFile,
-) {
+    private val seconds: Int,
+) : AoC<Int, Int> {
     private val data =
         fileToStream(2015, 14, dataFile)
             .map { line ->
@@ -49,14 +51,14 @@ class Day14(
 
     private fun fly() = generateSequence(Round(1, data, data.associate { it.name to it.speed })) { it.next() }
 
-    fun part1(seconds: Int) =
+    override fun part1() =
         fly()
             .drop(seconds - 1)
             .first()
             .distances
             .maxOf { it.value }
 
-    fun part2(seconds: Int) =
+    override fun part2() =
         fly()
             .take(seconds)
             .flatMap { round ->
@@ -68,6 +70,6 @@ class Day14(
 }
 
 fun day14() {
-    val day = Day14(DataFile.Part1)
-    report(2015, 14, day.part1(2503), day.part2(2503))
+    val day = Day14(DataFile.Part1, 2503)
+    report(2015, 14, day.part1(), day.part2())
 }

@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day7(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val target = "shiny gold"
     private val bags =
         fileToStream(2020, 7, dataFile)
@@ -85,7 +86,7 @@ class Day7(
         return count
     }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val reachable = mutableMapOf<String, Boolean>()
         for (bag in bags) {
             isReachable(bag.key, reachable)
@@ -93,7 +94,7 @@ class Day7(
         return reachable.entries.filter { it.key != target }.count { it.value }
     }
 
-    fun part2() = bagCount(target, mutableMapOf())
+    override fun part2() = bagCount(target, mutableMapOf())
 }
 
 fun day7() {

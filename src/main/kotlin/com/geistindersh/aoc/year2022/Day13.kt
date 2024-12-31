@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import java.util.Stack
 
 class Day13(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val packets =
         fileToStream(2022, 13, dataFile)
             .filter { it.isNotEmpty() }
@@ -88,7 +89,7 @@ class Day13(
         }
     }
 
-    fun part1(): Int =
+    override fun part1(): Int =
         packets
             .windowed(2, 2)
             .mapIndexed { i, (left, right) ->
@@ -100,7 +101,7 @@ class Day13(
                 }
             }.sum()
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val d1 = listOf(listOf(2))
         val d2 = listOf(listOf(6))
         val withDecoders =

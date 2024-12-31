@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day6(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val responses =
         fileToString(2020, 6, dataFile)
             .split("\n\n")
@@ -19,9 +20,9 @@ class Day6(
         val yesAnswers = people.flatMap { it.toSet() }.groupingBy { it }.eachCount()
     }
 
-    fun part1() = responses.sumOf { it.yesAnswers.size }
+    override fun part1() = responses.sumOf { it.yesAnswers.size }
 
-    fun part2() =
+    override fun part2() =
         responses
             .flatMap { resp -> resp.yesAnswers.entries.filter { it.value == resp.people.size } }
             .count()

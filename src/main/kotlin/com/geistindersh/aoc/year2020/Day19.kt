@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day19(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val grammar =
         fileToString(2020, 19, dataFile).let { data ->
             val (rules, input) = data.split("\n\n")
@@ -92,9 +93,9 @@ class Day19(
         }
     }
 
-    fun part1() = grammar.matchCount()
+    override fun part1() = grammar.matchCount()
 
-    fun part2() =
+    override fun part2() =
         grammar
             .copy(
                 rules =

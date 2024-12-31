@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day2(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val data = fileToStream(2015, 2, dataFile).map { it.extractPositiveIntegers().sorted() }.toList()
 
     private fun surfaceArea(
@@ -32,9 +33,9 @@ class Day2(
         w: Int,
     ) = l * h * w
 
-    fun part1() = data.sumOf { (l, h, w) -> surfaceArea(l, h, w) + areaOfSmallestSide(l, h, w) }
+    override fun part1() = data.sumOf { (l, h, w) -> surfaceArea(l, h, w) + areaOfSmallestSide(l, h, w) }
 
-    fun part2() = data.sumOf { perimeter(it) + ribbonLength(it) }
+    override fun part2() = data.sumOf { perimeter(it) + ribbonLength(it) }
 }
 
 fun day2() {

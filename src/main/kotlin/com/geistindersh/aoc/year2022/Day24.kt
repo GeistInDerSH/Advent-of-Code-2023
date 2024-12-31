@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day24(
     lines: List<String>,
-) {
+) : AoC<Int, Int> {
     constructor(dataFile: DataFile) : this(fileToStream(2022, 24, dataFile).toList())
 
     private val storms =
@@ -74,9 +75,9 @@ class Day24(
         }
     }
 
-    fun part1(): Int = navigate(start, end, storms).first
+    override fun part1(): Int = navigate(start, end, storms).first
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val (t1, s1) = navigate(start, end, storms)
         val (t2, s2) = navigate(end, start, s1)
         val t3 = navigate(start, end, s2).first

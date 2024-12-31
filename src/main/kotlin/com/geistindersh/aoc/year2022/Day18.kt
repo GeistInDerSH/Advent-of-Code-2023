@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -9,7 +10,7 @@ import kotlin.math.min
 
 class Day18(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val allCubes =
         fileToStream(2022, 18, dataFile)
             .map {
@@ -96,9 +97,9 @@ class Day18(
         return pockets
     }
 
-    fun part1() = calculateSurfaceAreaOfCubes(allCubes)
+    override fun part1() = calculateSurfaceAreaOfCubes(allCubes)
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val ranges = getRanges()
         val waterPockets = getWaterPockets(ranges)
         val lavaPockets = getLavaPockets(waterPockets, ranges)

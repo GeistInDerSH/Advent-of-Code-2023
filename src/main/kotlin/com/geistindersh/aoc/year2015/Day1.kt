@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day1(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val floors =
         fileToString(2015, 1, dataFile)
             .mapNotNull {
@@ -17,9 +18,9 @@ class Day1(
                 }
             }.toList()
 
-    fun part1() = floors.sum()
+    override fun part1() = floors.sum()
 
-    fun part2(): Int {
+    override fun part2(): Int {
         var floor = 0
         floors.forEachIndexed { idx, value ->
             floor += value

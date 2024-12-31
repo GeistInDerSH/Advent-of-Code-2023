@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.strings.toGrid2DRemoveNull
 
 class Day25(
     dataFile: DataFile,
-) {
+) : AoC<Int, String> {
     private val lockAndKeys =
         fileToString(2024, 25, dataFile)
             .split("\n\n")
@@ -16,9 +17,9 @@ class Day25(
     private val locks = lockAndKeys.filter { it.containsAll(LOCK_BASE) }
     private val keys = lockAndKeys.filter { it.containsAll(KEY_BASE) }
 
-    fun part1() = keys.sumOf { key -> locks.count { lock -> key.intersect(lock).isEmpty() } }
+    override fun part1() = keys.sumOf { key -> locks.count { lock -> key.intersect(lock).isEmpty() } }
 
-    fun part2() = "Deliver The Cronicle!"
+    override fun part2() = "Deliver The Cronicle!"
 
     companion object {
         private val LOCK_BASE = listOf(Point2D(0, 0), Point2D(0, 1), Point2D(0, 2), Point2D(0, 3), Point2D(0, 4))

@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -10,7 +11,7 @@ import java.util.PriorityQueue
 
 class Day16(
     dataFile: DataFile,
-) {
+) : AoC<Long, Int> {
     private val data = fileToString(2024, 16, dataFile).toGrid2D()
     private val start = data.filterValues { it == 'S' }.keys.first()
     private val end = data.filterValues { it == 'E' }.keys.first()
@@ -92,9 +93,9 @@ class Day16(
         return shortestPathPoints
     }
 
-    fun part1() = getScoreOfShortestPath(start, end)
+    override fun part1() = getScoreOfShortestPath(start, end)
 
-    fun part2() = getShortestPaths(start, end).flatMapTo(mutableSetOf<Point2D>()) { it }.count()
+    override fun part2() = getShortestPaths(start, end).flatMapTo(mutableSetOf<Point2D>()) { it }.count()
 }
 
 fun day16() {

@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day6(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val instructions = fileToStream(2015, 6, dataFile).map { Action.from(it) }.toList()
 
     private sealed class Action(
@@ -115,9 +116,9 @@ class Day6(
         return enabledLights
     }
 
-    fun part1() = followInstructions().count()
+    override fun part1() = followInstructions().count()
 
-    fun part2() = followInstructionsBrightness().values.sum()
+    override fun part2() = followInstructionsBrightness().values.sum()
 }
 
 fun day6() {

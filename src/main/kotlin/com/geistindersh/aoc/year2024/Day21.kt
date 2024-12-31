@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -11,7 +12,7 @@ import kotlin.collections.count
 
 class Day21(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val inputs = fileToStream(2024, 21, dataFile).toList()
     private val cache = mutableMapOf<Pair<String, Int>, Long>()
 
@@ -31,9 +32,9 @@ class Day21(
             }
         }
 
-    fun part1() = inputs.sumOf { getCost(it, 2, NUMPAD_PATHS) * it.dropLast(1).toLong() }
+    override fun part1() = inputs.sumOf { getCost(it, 2, NUMPAD_PATHS) * it.dropLast(1).toLong() }
 
-    fun part2() = inputs.sumOf { getCost(it, 25, NUMPAD_PATHS) * it.dropLast(1).toLong() }
+    override fun part2() = inputs.sumOf { getCost(it, 25, NUMPAD_PATHS) * it.dropLast(1).toLong() }
 
     companion object {
         private val NUMPAD =

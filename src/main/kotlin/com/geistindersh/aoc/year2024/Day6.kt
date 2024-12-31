@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -9,7 +10,7 @@ import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day6(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val grid = fileToString(2024, 6, dataFile).toGrid2D()
     private val start = grid.filterValues { it == '^' }.keys.first()
 
@@ -41,9 +42,9 @@ class Day6(
             .takeWhile { it in grid }
             .toSet()
 
-    fun part1() = traverse().count()
+    override fun part1() = traverse().count()
 
-    fun part2() =
+    override fun part2() =
         traverse()
             .parallelStream()
             .mapToInt { if (hasLoop(it)) 1 else 0 }

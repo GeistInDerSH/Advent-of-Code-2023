@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day6(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val noise = fileToString(2022, 6, dataFile)
 
     private fun getSignalOffset(windowSize: Int): Int =
@@ -22,9 +23,9 @@ class Day6(
                     }
                 }
 
-    fun part1() = getSignalOffset(4)
+    override fun part1() = getSignalOffset(4)
 
-    fun part2() = getSignalOffset(14)
+    override fun part2() = getSignalOffset(14)
 }
 
 fun day6() {

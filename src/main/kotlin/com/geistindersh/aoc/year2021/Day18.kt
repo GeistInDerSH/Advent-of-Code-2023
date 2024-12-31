@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.pairCombinationsNonInvertible
@@ -10,7 +11,7 @@ import kotlin.math.floor
 
 class Day18(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val rawLines = fileToStream(2021, 18, dataFile).toList()
 
     private fun parseLine(line: String): List<Any> {
@@ -173,14 +174,14 @@ class Day18(
         }
     }
 
-    fun part1() =
+    override fun part1() =
         rawLines
             .map(::parseLine)
             .map { Sailfish.from(it) }
             .reduce { acc, sailfish -> Sailfish.Group(acc, sailfish).reduce() }
             .magnitude()
 
-    fun part2() =
+    override fun part2() =
         rawLines
             .pairCombinationsNonInvertible()
             .map { pair -> pair.toList().map(::parseLine).map { Sailfish.from(it) } }

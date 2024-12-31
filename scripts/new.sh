@@ -29,15 +29,16 @@ mkdir -pv "$(dirname "$CODE_PATH")"
 cat > "$CODE_PATH" <<EOL
 package com.geistindersh.aoc.year${YEAR}
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
-class Day${DAY}(dataFile: DataFile) {
+class Day${DAY}(dataFile: DataFile): AoC<Int, Int> {
   private val data = fileToString(${YEAR}, ${DAY}, dataFile)
 
-  fun part1() = 0
-  fun part2() = 0
+  override fun part1() = 0
+  override fun part2() = 0
 }
 
 fun day${DAY}() {

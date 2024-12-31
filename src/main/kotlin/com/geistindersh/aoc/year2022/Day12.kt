@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import java.util.PriorityQueue
 
 class Day12(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val grid =
         fileToStream(2022, 12, dataFile)
             .map { line ->
@@ -93,9 +94,9 @@ class Day12(
         end: Pair<Int, Int>,
     ) = bfs(listOf(start), end)
 
-    fun part1(): Int = bfs(start, end)
+    override fun part1(): Int = bfs(start, end)
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val zeroPoints =
             grid
                 .indices

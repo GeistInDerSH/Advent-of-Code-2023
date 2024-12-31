@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 class Day17(
     registers: Map<String, Long>,
     private val program: List<Long>,
-) {
+) : AoC<String, Long> {
     constructor(rawRegisters: List<String>, rawProgram: String) : this(
         rawRegisters.associate { line -> line.replace(":", "").split(" ").let { it[1] to it.last().toLong() } },
         rawProgram.substringAfter(": ").split(",").map { it.toLong() },
@@ -136,9 +137,9 @@ class Day17(
         return output
     }
 
-    fun part1() = opCodes.run(a, b, c).joinToString(",") { it.toString() }
+    override fun part1() = opCodes.run(a, b, c).joinToString(",") { it.toString() }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         var candidates = sortedSetOf(0L)
         for (instr in program.reversed()) {
             val newCandidates = sortedSetOf<Long>()

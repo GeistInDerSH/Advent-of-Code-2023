@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.pairCombinationsNonInvertible
@@ -8,7 +9,7 @@ import kotlin.collections.mutableSetOf
 
 class Day23(
     dataFile: DataFile,
-) {
+) : AoC<Int, String> {
     private val lanConnections: Map<String, Set<String>> =
         fileToStream(2024, 23, dataFile)
             .flatMap { it.split("-").pairCombinationsNonInvertible() }
@@ -41,14 +42,14 @@ class Day23(
             .maxBy { it.size }
     }
 
-    fun part1() =
+    override fun part1() =
         lanConnections.keys
             .filter { it.startsWith("t") }
             .flatMap { findConnectionsTo(it) }
             .toSet()
             .size
 
-    fun part2() = largestConnection(lanConnections.keys).sorted().joinToString(",")
+    override fun part2() = largestConnection(lanConnections.keys).sorted().joinToString(",")
 }
 
 fun day23() {

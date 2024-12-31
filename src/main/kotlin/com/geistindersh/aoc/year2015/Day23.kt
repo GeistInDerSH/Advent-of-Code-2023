@@ -1,12 +1,14 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day23(
     dataFile: DataFile,
-) {
+    private val register: String,
+) : AoC<Int, Int> {
     private val instructions =
         fileToStream(2015, 23, dataFile)
             .map { it.replace(",", "") }
@@ -70,12 +72,12 @@ class Day23(
         return registers
     }
 
-    fun part1(register: String) = instructions.run(mutableMapOf("a" to 0, "b" to 0))[register]
+    override fun part1() = instructions.run(mutableMapOf("a" to 0, "b" to 0)).getValue(register)
 
-    fun part2(register: String) = instructions.run(mutableMapOf("a" to 1, "b" to 0))[register]
+    override fun part2() = instructions.run(mutableMapOf("a" to 1, "b" to 0)).getValue(register)
 }
 
 fun day23() {
-    val day = Day23(DataFile.Part1)
-    report(2015, 23, day.part1("b"), day.part2("b"))
+    val day = Day23(DataFile.Part1, "b")
+    report(2015, 23, day.part1(), day.part2())
 }

@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.ranges.size
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day9(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val blockSectors =
         fileToString(2024, 9, dataFile)
             .let {
@@ -147,13 +148,13 @@ class Day9(
         return fileArray
     }
 
-    fun part1() =
+    override fun part1() =
         blockSectors
             .toArray()
             .compactFragmenting()
             .foldIndexed(0L) { idx, acc, v -> if (v == -1) acc else acc + (idx * v) }
 
-    fun part2() =
+    override fun part2() =
         blockSectors
             .toCompactArrayContiguous()
             .foldIndexed(0L) { idx, acc, v -> if (v == -1) acc else acc + (idx * v) }

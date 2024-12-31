@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.binary.concat
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day7(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val equations = fileToStream(2024, 7, dataFile).map { Equation.from(it) }.toList()
 
     private data class Equation(
@@ -53,9 +54,9 @@ class Day7(
 
     private fun solve(ops: List<(Long, Long) -> Long>) = equations.filter { it.applyAndCheckMatchesAnswer(ops) }.sumOf { it.answer }
 
-    fun part1() = solve(Equation.PART_1_OPERATIONS)
+    override fun part1() = solve(Equation.PART_1_OPERATIONS)
 
-    fun part2() = solve(Equation.PART_2_OPERATIONS)
+    override fun part2() = solve(Equation.PART_2_OPERATIONS)
 }
 
 fun day7() {

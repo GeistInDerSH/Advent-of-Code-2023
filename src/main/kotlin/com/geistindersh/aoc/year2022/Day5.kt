@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day5(
     dataFile: DataFile,
-) {
+) : AoC<String, String> {
     private val parts = fileToString(2022, 5, dataFile).split("\n\n")
     private val cargo =
         run {
@@ -65,12 +66,12 @@ class Day5(
             applyMoves(latest, listOf(command), isPartTwo)
         }
 
-    fun part1() =
+    override fun part1() =
         applyMoves(cargo, commands, false)
             .map { it.last() }
             .joinToString("")
 
-    fun part2() =
+    override fun part2() =
         applyMoves(cargo, commands, true)
             .map { it.last() }
             .joinToString("")

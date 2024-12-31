@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -9,7 +10,7 @@ import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day25(
     dataFile: DataFile,
-) {
+) : AoC<Int, String> {
     private val valley =
         fileToString(2021, 25, dataFile)
             .toGrid2D {
@@ -80,12 +81,12 @@ class Day25(
         }
     }
 
-    fun part1() =
+    override fun part1() =
         generateSequence(valley) { it.next() }
             .takeWhile { it.moved != 0 }
             .count()
 
-    fun part2() = "Start the sleigh!"
+    override fun part2() = "Start the sleigh!"
 }
 
 fun day25() {

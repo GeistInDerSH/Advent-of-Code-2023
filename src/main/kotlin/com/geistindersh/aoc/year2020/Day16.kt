@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day16(
     dataFile: DataFile,
-) {
+) : AoC<Int, Long> {
     private val fields: Map<String, Set<Int>>
     private val userTickets: List<Int>
     private val nearbyTickets: List<List<Int>>
@@ -40,9 +41,9 @@ class Day16(
             .flatten()
             .filter { ticket -> fields.values.none { ticket in it } }
 
-    fun part1() = invalidTickets().reduce(Int::plus)
+    override fun part1() = invalidTickets().reduce(Int::plus)
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val invalid = invalidTickets().toSet()
         val validTickets =
             nearbyTickets

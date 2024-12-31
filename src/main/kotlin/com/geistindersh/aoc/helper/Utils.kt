@@ -47,8 +47,8 @@ fun <D, T, V> benchmarkColdStart(
  * @param part2Func A function that takes the DayN object, and returns the value for part2, e.g. `{ it.part2() }`
  * @param warmup The number of runs to do before measuring the time. Set to 0 to avoid warming up the JIT
  * @param count The number of runs to preform
- *
  * @param verbose If the times and values for each of the parts should be printed to standard out
+ *
  * @return The average duration of the [init], [part1Func], & [part2Func] across [count] number of runs
  */
 @Suppress("unused")

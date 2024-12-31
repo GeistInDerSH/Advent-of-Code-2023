@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day5(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val searches = fileToStream(2020, 5, dataFile).map { Zone(it) }.toList()
 
     private data class Zone(
@@ -52,9 +53,9 @@ class Day5(
         }
     }
 
-    fun part1() = searches.maxOf { it.getScore() }
+    override fun part1() = searches.maxOf { it.getScore() }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val seatingChart: MutableMap<Point2D, Int?> =
             (0..127)
                 .flatMap { row -> (0..7).map { Point2D(row, it) to null } }

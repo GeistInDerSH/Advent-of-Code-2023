@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day8(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val signals =
         fileToStream(2021, 8, dataFile)
             .map { line ->
@@ -63,7 +64,7 @@ class Day8(
             }
     }
 
-    fun part1() =
+    override fun part1() =
         signals
             .flatMap { signal -> signal.digitalOut }
             .count {
@@ -76,7 +77,7 @@ class Day8(
                 }
             }
 
-    fun part2() =
+    override fun part2() =
         signals
             .map { signal ->
                 val v =

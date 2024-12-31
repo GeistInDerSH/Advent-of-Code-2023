@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
@@ -8,7 +9,7 @@ import kotlin.math.sqrt
 
 class Day20(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val presentsCount = fileToString(2015, 20, dataFile).toInt()
 
     private fun deliverPresentsInfinite() =
@@ -35,13 +36,13 @@ class Day20(
             }
         }
 
-    fun part1() =
+    override fun part1() =
         deliverPresentsInfinite()
             .takeWhileInclusive { it.second < presentsCount }
             .last()
             .first
 
-    fun part2() =
+    override fun part2() =
         deliverPresentsLimit50()
             .takeWhileInclusive { it.second < presentsCount }
             .last()

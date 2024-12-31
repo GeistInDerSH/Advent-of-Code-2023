@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.binary.setBit
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.strings.extractPositiveLongs
 
 class Day14(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val instructions =
         fileToStream(2020, 14, dataFile)
             .map { Program.from(it) }
@@ -82,7 +83,7 @@ class Day14(
         }
     }
 
-    fun part1(): Long {
+    override fun part1(): Long {
         var mask: Program.Mask = instructions.first { it is Program.Mask } as Program.Mask
         val memory = mutableMapOf<Long, Long>()
         for (instruction in instructions) {
@@ -94,7 +95,7 @@ class Day14(
         return memory.values.sum()
     }
 
-    fun part2(): Long {
+    override fun part2(): Long {
         var mask: Program.Mask = instructions.first { it is Program.Mask } as Program.Mask
         val memory = mutableMapOf<Long, Long>()
         for (instruction in instructions) {

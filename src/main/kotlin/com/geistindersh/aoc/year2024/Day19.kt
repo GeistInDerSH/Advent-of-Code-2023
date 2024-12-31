@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
@@ -8,7 +9,7 @@ import java.util.PriorityQueue
 class Day19(
     private val patterns: Set<String>,
     private val designs: List<String>,
-) {
+) : AoC<Int, Long> {
     constructor(dataFile: DataFile) : this(fileToString(2024, 19, dataFile))
     constructor(input: String) : this(
         input
@@ -59,9 +60,9 @@ class Day19(
         return memory.getOrDefault("", 0L)
     }
 
-    fun part1() = designs.count { it.isValid() }
+    override fun part1() = designs.count { it.isValid() }
 
-    fun part2() = designs.filter { it.isValid() }.sumOf { it.validComboCount() }
+    override fun part2() = designs.filter { it.isValid() }.sumOf { it.validComboCount() }
 }
 
 fun day19() {

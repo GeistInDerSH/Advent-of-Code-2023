@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
@@ -9,7 +10,7 @@ import java.util.PriorityQueue
 
 class Day15(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val graph = fileToString(2021, 15, dataFile).toGrid2D { it.digitToInt() }
 
     private data class Path(
@@ -72,9 +73,9 @@ class Day15(
         return mut
     }
 
-    fun part1() = graph.getPathCost()
+    override fun part1() = graph.getPathCost()
 
-    fun part2() = graph.scale().getPathCost()
+    override fun part2() = graph.scale().getPathCost()
 }
 
 fun day15() {

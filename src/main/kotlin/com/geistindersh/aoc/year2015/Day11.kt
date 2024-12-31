@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day11(
     dataFile: DataFile,
-) {
+) : AoC<String, String> {
     private val data = fileToString(2015, 11, dataFile)
 
     private fun String.hasMonotonicAlphabeticSeq() =
@@ -59,9 +60,9 @@ class Day11(
             .dropWhile(::isInvalidPassword)
             .first()
 
-    fun part1() = data.nextValid()
+    override fun part1() = data.nextValid()
 
-    fun part2() = data.nextValid().nextValid()
+    override fun part2() = data.nextValid().nextValid()
 
     companion object {
         const val ALPHABET = "abcdefghijklmnopqrstuvwxyz"

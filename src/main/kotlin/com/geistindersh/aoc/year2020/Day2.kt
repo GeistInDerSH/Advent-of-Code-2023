@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day2(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val policies =
         fileToStream(2020, 2, dataFile)
             .map { PasswordPolicies.from(it) }
@@ -30,9 +31,9 @@ class Day2(
         }
     }
 
-    fun part1() = policies.count { it.hasCharCountInRange() }
+    override fun part1() = policies.count { it.hasCharCountInRange() }
 
-    fun part2() = policies.count { it.hasCharAtMinMaxPosition() }
+    override fun part2() = policies.count { it.hasCharAtMinMaxPosition() }
 }
 
 fun day2() {

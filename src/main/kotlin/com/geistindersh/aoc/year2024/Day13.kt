@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.math.determinant
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.strings.extractPositiveLongs
 
 class Day13(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val games =
         fileToString(2024, 13, dataFile)
             .split("\n\n")
@@ -36,9 +37,9 @@ class Day13(
         }
     }
 
-    fun part1() = games.sumOf { it.getScore() }
+    override fun part1() = games.sumOf { it.getScore() }
 
-    fun part2() =
+    override fun part2() =
         games
             .map { it.copy(px = it.px + 10000000000000L, py = it.py + 10000000000000L) }
             .sumOf { it.getScore() }

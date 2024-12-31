@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day13(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val numbers =
         fileToString(2020, 13, dataFile)
             .replace("\n", ",")
@@ -26,14 +27,14 @@ class Day13(
         fun meetsSchedule(time: Long) = (time + offset) % id == 0L
     }
 
-    fun part1() =
+    override fun part1() =
         validTimes
             .map { it to it - (departTimestamp % it) }
             .minBy { it.second }
             .toList()
             .reduce(Long::times)
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val slowestBus =
             validTimes
                 .maxBy { it }

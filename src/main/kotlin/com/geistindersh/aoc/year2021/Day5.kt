@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -10,7 +11,7 @@ import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day5(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val lines =
         fileToStream(2021, 5, dataFile)
             .map { line ->
@@ -40,7 +41,7 @@ class Day5(
                     .toList()
             }
 
-    fun part1() =
+    override fun part1() =
         lines
             .filter { (start, end) -> start.row == end.row || start.col == end.col }
             .fillInLines()
@@ -48,7 +49,7 @@ class Day5(
             .eachCount()
             .count { it.value > 1 }
 
-    fun part2() =
+    override fun part2() =
         lines
             .fillInLines()
             .groupingBy { it }

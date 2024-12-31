@@ -1,18 +1,19 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day7(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val data =
         fileToString(2021, 7, dataFile)
             .split(",")
             .map(String::toInt)
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val costMap = mutableMapOf<Int, Int>()
         for (num in data) {
             if (num in costMap) continue
@@ -24,7 +25,7 @@ class Day7(
         return costMap.minOf { it.value }
     }
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val costMap = mutableMapOf<Int, Int>()
         for (num in data) {
             if (num in costMap) continue

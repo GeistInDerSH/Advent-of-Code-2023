@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
@@ -9,7 +10,7 @@ import com.geistindersh.aoc.helper.strings.extractIntegers
 
 class Day17(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val targetArea =
         fileToString(2021, 17, dataFile)
             .extractIntegers()
@@ -74,12 +75,12 @@ class Day17(
         }
     }
 
-    fun part1() =
+    override fun part1() =
         (0..targetArea.colRange.last * 2)
             .mapNotNull { targetArea.maxHeightLandingInBoundsOrNull(start, colVelocity = it) }
             .maxOf { it }
 
-    fun part2() =
+    override fun part2() =
         targetArea
             .possibleRowVelocityRange()
             .flatMap { vRow ->

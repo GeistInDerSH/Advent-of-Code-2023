@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day2(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val commands =
         fileToStream(2021, 2, dataFile)
             .map { line ->
@@ -35,7 +36,7 @@ class Day2(
         ) : Command(distance)
     }
 
-    fun part1() =
+    override fun part1() =
         commands
             .fold(Pair(0, 0)) { (dep, fwd), cmd ->
                 when (cmd) {
@@ -46,7 +47,7 @@ class Day2(
             }.toList()
             .reduce(Int::times)
 
-    fun part2() =
+    override fun part2() =
         commands
             .fold(Triple(0, 0, 0)) { (dep, fwd, aim), cmd ->
                 when (cmd) {

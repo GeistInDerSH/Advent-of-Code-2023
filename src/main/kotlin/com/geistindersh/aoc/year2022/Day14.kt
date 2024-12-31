@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.takeWhileInclusive
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day14(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val data =
         fileToStream(2022, 14, dataFile)
             .map { line ->
@@ -86,13 +87,13 @@ class Day14(
             }
         }
 
-    fun part1(): Int =
+    override fun part1(): Int =
         pourSand(true)
             .drop(1)
             .takeWhileInclusive { it.isNotEmpty() }
             .count()
 
-    fun part2() =
+    override fun part2() =
         pourSand(false)
             .takeWhileInclusive { Pair(500, 0) !in it }
             .count()

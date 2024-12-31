@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day10(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val trailMap = fileToString(2024, 10, dataFile).toGrid2D(transform = { it.digitToInt() })
     private val paths = trailMap.filterValues { it == 0 }.keys.map { it.pathsToEnd() }
 
@@ -41,9 +42,9 @@ class Day10(
         return paths
     }
 
-    fun part1() = paths.sumOf { p -> p.flatMapTo(mutableSetOf()) { it }.count { trailMap[it]!! == 9 } }
+    override fun part1() = paths.sumOf { p -> p.flatMapTo(mutableSetOf()) { it }.count { trailMap[it]!! == 9 } }
 
-    fun part2() = paths.sumOf { it.size }
+    override fun part2() = paths.sumOf { it.size }
 }
 
 fun day10() {

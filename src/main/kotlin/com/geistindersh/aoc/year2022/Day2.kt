@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -53,7 +54,7 @@ enum class RPS(
 
 class Day2(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val plays =
         fileToStream(2022, 2, dataFile)
             .map {
@@ -62,12 +63,12 @@ class Day2(
                 Pair(play, parts[1])
             }.toList()
 
-    fun part1(): Int =
+    override fun part1(): Int =
         plays
             .map { (p1, p2) -> p1.getScores(p2).second }
             .fold(0, Int::plus)
 
-    fun part2(): Int =
+    override fun part2(): Int =
         plays
             .map { (p1, p2) ->
                 val ourMove =

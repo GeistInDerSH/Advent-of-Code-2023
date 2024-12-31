@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -10,7 +11,7 @@ import kotlin.collections.sumOf
 
 class Day12(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val grid = fileToString(2024, 12, dataFile).toGrid2D()
     private val plots = grid.values.toSet().flatMap { it.getPlots() }
 
@@ -68,9 +69,9 @@ class Day12(
         return plots
     }
 
-    fun part1() = plots.sumOf { it.area() * it.perimeter() }
+    override fun part1() = plots.sumOf { it.area() * it.perimeter() }
 
-    fun part2() = plots.sumOf { it.area() * it.vertices() }
+    override fun part2() = plots.sumOf { it.area() * it.vertices() }
 
     companion object {
         private val verticesToCheck =

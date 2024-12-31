@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.ranges.hasOverlap
@@ -9,7 +10,7 @@ import com.geistindersh.aoc.helper.strings.extractIntegers
 
 class Day22(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val cubes =
         fileToStream(2021, 22, dataFile)
             .map { line ->
@@ -53,12 +54,12 @@ class Day22(
         return cubes.sumOf { it.volume() }
     }
 
-    fun part1() =
+    override fun part1() =
         RebootCube(true, -50..50, -50..50, -50..50).let { cube ->
             cubes.filter { cube.hasOverlap(it) }.determineOverlap()
         }
 
-    fun part2() = cubes.determineOverlap()
+    override fun part2() = cubes.determineOverlap()
 }
 
 fun day22() {

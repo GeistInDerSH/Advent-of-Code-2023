@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.math.combinations
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.strings.extractIntegers
 
 class Day15(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val ingredients =
         fileToStream(2015, 15, dataFile)
             .map { line ->
@@ -55,9 +56,9 @@ class Day15(
             .map { ingredients.zip(it).toMap() }
             .map { Cookie(it) }
 
-    fun part1() = getCookies().maxOf { it.score() }
+    override fun part1() = getCookies().maxOf { it.score() }
 
-    fun part2() = getCookies().filter { it.calories() == 500 }.maxOf { it.score() }
+    override fun part2() = getCookies().filter { it.calories() == 500 }.maxOf { it.score() }
 }
 
 fun day15() {

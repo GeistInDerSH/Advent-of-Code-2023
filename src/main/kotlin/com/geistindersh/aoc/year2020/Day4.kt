@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day4(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val passports =
         fileToString(2020, 4, dataFile)
             .split("\n\n")
@@ -69,9 +70,9 @@ class Day4(
         }
     }
 
-    fun part1() = passports.count { it.hasRequiredFields() }
+    override fun part1() = passports.count { it.hasRequiredFields() }
 
-    fun part2() = passports.count { it.isValid() }
+    override fun part2() = passports.count { it.isValid() }
 }
 
 fun day4() {

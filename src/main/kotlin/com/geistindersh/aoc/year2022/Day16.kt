@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import kotlin.math.max
 
 class Day16(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val lines =
         fileToStream(2022, 16, dataFile)
             .map { "[\\s=;,]+".toRegex().split(it) }
@@ -68,9 +69,9 @@ class Day16(
         return localVisited
     }
 
-    fun part1() = visit("AA", 30, 0, 0, mutableMapOf()).values.max()
+    override fun part1() = visit("AA", 30, 0, 0, mutableMapOf()).values.max()
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val visited = visit("AA", 26, 0, 0, mutableMapOf())
         return visited.maxOf { (k1, v1) ->
             visited

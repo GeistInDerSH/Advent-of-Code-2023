@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -8,7 +9,7 @@ import kotlin.math.absoluteValue
 
 class Day23(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val rawInput =
         fileToStream(2021, 23, dataFile)
             .drop(1)
@@ -160,9 +161,9 @@ class Day23(
         throw Exception("No solution could be found")
     }
 
-    fun part1() = organize(diagram)
+    override fun part1() = organize(diagram)
 
-    fun part2() = organize(diagramTwo)
+    override fun part2() = organize(diagramTwo)
 }
 
 fun day23() {

@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day15(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val numbers = fileToString(2020, 15, dataFile).extractPositiveIntegers()
 
     private fun List<Int>.valueAtTurn(targetTurn: Int): Int {
@@ -32,9 +33,9 @@ class Day15(
         return latest
     }
 
-    fun part1() = numbers.valueAtTurn(2020)
+    override fun part1() = numbers.valueAtTurn(2020)
 
-    fun part2() = numbers.valueAtTurn(30000000)
+    override fun part2() = numbers.valueAtTurn(30000000)
 }
 
 fun day15() {

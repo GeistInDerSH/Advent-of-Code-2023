@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day13(
     dataFile: DataFile,
-) {
+) : AoC<Int, String> {
     private val points =
         fileToStream(2021, 13, dataFile)
             .takeWhile(String::isNotBlank)
@@ -24,7 +25,7 @@ class Day13(
             .map { (axis, line) -> axis to line.toInt() }
             .toList()
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val (axis, foldIndex) = foldInstructions.first()
         return points
             .mapNotNull { point ->
@@ -47,7 +48,7 @@ class Day13(
             .count()
     }
 
-    fun part2(): String {
+    override fun part2(): String {
         var points = points
         for ((axis, foldIndex) in foldInstructions) {
             val newPoints = mutableSetOf<Point2D>()

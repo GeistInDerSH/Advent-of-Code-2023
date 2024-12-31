@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day25(
     dataFile: DataFile,
-) {
+) : AoC<String, String> {
     private val decodeSum = fileToStream(2022, 25, dataFile).map(::decode).sum()
 
     private fun decode(line: String) =
@@ -23,9 +24,9 @@ class Day25(
             } // -2 to 2
             .reversed()
 
-    fun part1() = encode(decodeSum)
+    override fun part1() = encode(decodeSum)
 
-    fun part2() = "Push the button!"
+    override fun part2() = "Push the button!"
 
     companion object {
         val decodeLookupTable =

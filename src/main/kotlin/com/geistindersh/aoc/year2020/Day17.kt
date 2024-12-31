@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point3D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day17(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val gameOfLife =
         fileToStream(2020, 17, dataFile)
             .flatMapIndexed { x, line ->
@@ -77,7 +78,7 @@ class Day17(
         }
     }
 
-    fun part1() =
+    override fun part1() =
         generateSequence(gameOfLife) { it.next() }
             .drop(1) // Skip initial state
             .take(6)
@@ -85,7 +86,7 @@ class Day17(
             .enabledCubes
             .count()
 
-    fun part2() =
+    override fun part2() =
         generateSequence(ConwaysGameOfLife4D.from(gameOfLife)) { it.next() }
             .drop(1)
             .take(6)

@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.permutations
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day13(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val data =
         fileToStream(2015, 13, dataFile)
             .map { line ->
@@ -33,9 +34,9 @@ class Day13(
             }
         }
 
-    fun part1() = optimalSeatingHappiness(people, data)
+    override fun part1() = optimalSeatingHappiness(people, data)
 
-    fun part2(): Int {
+    override fun part2(): Int {
         val us = "Us"
         val data =
             data.toMutableMap().also {

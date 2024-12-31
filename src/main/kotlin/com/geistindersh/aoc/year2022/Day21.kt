@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day21(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     sealed class Fn {
         data class Const(
             val value: Long,
@@ -101,9 +102,9 @@ class Day21(
         }
     }
 
-    fun part1() = run("root")
+    override fun part1() = run("root")
 
-    fun part2(): Long {
+    override fun part2(): Long {
         val root = table["root"]!! as Fn.Func
         val (lhsOps, lhs) = findOps(root.left)
         val (rhsOps, rhs) = findOps(root.right)

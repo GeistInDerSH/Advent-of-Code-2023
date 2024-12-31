@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -8,7 +9,7 @@ import java.util.PriorityQueue
 
 class Day21(
     dataFile: DataFile,
-) {
+) : AoC<Int, String> {
     private val food =
         fileToStream(2020, 21, dataFile)
             .map { Food.from(it) }
@@ -54,14 +55,14 @@ class Day21(
         return known
     }
 
-    fun part1() =
+    override fun part1() =
         food
             .determineAllergens()
             .let { known ->
                 food.sumOf { f -> f.ingredients.count { it !in known.values } }
             }
 
-    fun part2() =
+    override fun part2() =
         food
             .determineAllergens()
             .toSortedMap()

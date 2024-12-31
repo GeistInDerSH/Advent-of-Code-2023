@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day8(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val instructions =
         fileToStream(2020, 8, dataFile)
             .map { Instruction.from(it) }
@@ -77,9 +78,9 @@ class Day8(
             }
         }
 
-    fun part1() = instructions.execute().first
+    override fun part1() = instructions.execute().first
 
-    fun part2() =
+    override fun part2() =
         instructions
             .executeWithInvert()
             .first { it.second }

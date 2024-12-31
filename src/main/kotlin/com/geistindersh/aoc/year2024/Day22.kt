@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import kotlin.collections.buildList
 
 class Day22(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val numbers = fileToStream(2024, 22, dataFile).map(String::toLong).toList()
 
     private fun Long.mixAndPrune(other: Long) = (this xor other) % 16777216
@@ -30,9 +31,9 @@ class Day22(
             }
         }
 
-    fun part1() = numbers.sumOf { it.generateBuyerNumber() }
+    override fun part1() = numbers.sumOf { it.generateBuyerNumber() }
 
-    fun part2() =
+    override fun part2() =
         buildMap<List<Long>, Long> {
             numbers.forEach { buyer ->
                 buyer

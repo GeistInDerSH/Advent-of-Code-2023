@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
@@ -8,7 +9,8 @@ import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day18(
     dataFile: DataFile,
-) {
+    private val steps: Int,
+) : AoC<Int, Int> {
     private val points = fileToString(2015, 18, dataFile).toGrid2D()
     private val stuckOn =
         points.let { map ->
@@ -47,14 +49,14 @@ class Day18(
         println()
     }
 
-    fun part1(steps: Int) =
+    override fun part1() =
         points
             .gameOfLife()
             .drop(steps)
             .first()
             .count { it.value == '#' }
 
-    fun part2(steps: Int) =
+    override fun part2() =
         points
             .toMutableMap()
             .also {
@@ -68,6 +70,6 @@ class Day18(
 }
 
 fun day18() {
-    val day = Day18(DataFile.Part1)
-    report(2015, 18, day.part1(100), day.part2(100))
+    val day = Day18(DataFile.Part1, 100)
+    report(2015, 18, day.part1(), day.part2())
 }

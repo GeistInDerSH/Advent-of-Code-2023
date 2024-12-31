@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.algorithms.toGraph
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day9(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val routes =
         fileToStream(2015, 9, dataFile)
             .map {
@@ -16,9 +17,9 @@ class Day9(
             }.toList()
             .toGraph()
 
-    fun part1() = routes.travelingSalesman()
+    override fun part1() = routes.travelingSalesman()
 
-    fun part2() = routes.travelingSalesman({ a, b -> a.coerceAtLeast(b) })
+    override fun part2() = routes.travelingSalesman({ a, b -> a.coerceAtLeast(b) })
 }
 
 fun day9() {

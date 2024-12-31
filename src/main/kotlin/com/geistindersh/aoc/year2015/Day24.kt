@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.iterators.subsetSum
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day24(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val weights = fileToStream(2015, 24, dataFile).map(String::toInt).toList()
 
     private data class Group(
@@ -53,9 +54,9 @@ class Day24(
             } != null
         }
 
-    fun part1() = findGroupOrNull(3)?.quantumEntanglement() ?: throw Exception("No solution")
+    override fun part1() = findGroupOrNull(3)?.quantumEntanglement() ?: throw Exception("No solution")
 
-    fun part2() = findGroupOrNull(4)?.quantumEntanglement() ?: throw Exception("No solution")
+    override fun part2() = findGroupOrNull(4)?.quantumEntanglement() ?: throw Exception("No solution")
 }
 
 fun day24() {

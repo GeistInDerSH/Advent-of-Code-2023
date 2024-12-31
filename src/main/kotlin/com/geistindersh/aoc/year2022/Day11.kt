@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import java.math.BigInteger
 
 class Day11(
     dataFile: DataFile,
-) {
+) : AoC<BigInteger, BigInteger> {
     private val monkeys =
         fileToString(2022, 11, dataFile)
             .split("\n\n")
@@ -140,14 +141,14 @@ class Day11(
         return monkeyMap.values.map { it.inspected }.sorted()
     }
 
-    fun part1(): BigInteger {
+    override fun part1(): BigInteger {
         val worryFunc = { x: BigInteger -> x / BigInteger.valueOf(3) }
         return trackMonkeys(20, worryFunc)
             .takeLast(2)
             .fold(BigInteger.ONE) { acc, it -> acc * it }
     }
 
-    fun part2(): BigInteger {
+    override fun part2(): BigInteger {
         val worryFunc = { x: BigInteger -> x.mod(lcm) }
         return trackMonkeys(10000, worryFunc)
             .takeLast(2)

@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day16(
     dataFile: DataFile,
-) {
+) : AoC<Int, Long> {
     private val data = fileToString(2021, 16, dataFile)
 
     private val lookupTable =
@@ -122,9 +123,9 @@ class Day16(
             .extractPacketsFromBinary()
             .first
 
-    fun part1() = data.extractPackets().sumVersions()
+    override fun part1() = data.extractPackets().sumVersions()
 
-    fun part2() = data.extractPackets().value()
+    override fun part2() = data.extractPackets().value()
 }
 
 fun day16() {

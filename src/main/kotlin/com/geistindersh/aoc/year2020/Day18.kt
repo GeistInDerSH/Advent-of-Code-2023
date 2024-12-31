@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import java.util.Stack
 
 class Day18(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val equations =
         fileToStream(2020, 18, dataFile)
             .map { Token.tokenize(it) }
@@ -217,9 +218,9 @@ class Day18(
         }
     }
 
-    fun part1() = equations.sumOf { it.eval() }
+    override fun part1() = equations.sumOf { it.eval() }
 
-    fun part2() = equations.sumOf { it.evalWithPrecedence() }
+    override fun part2() = equations.sumOf { it.evalWithPrecedence() }
 }
 
 fun day18() {

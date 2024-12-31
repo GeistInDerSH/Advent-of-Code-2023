@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day17(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val pattern = fileToString(2022, 17, dataFile)
 
     private data class Checkpoint(
@@ -135,9 +136,9 @@ class Day17(
         return pile.height().toLong()
     }
 
-    fun part1() = getTowerHeight(2022)
+    override fun part1() = getTowerHeight(2022)
 
-    fun part2() = getTowerHeight(1000000000000)
+    override fun part2() = getTowerHeight(1000000000000)
 }
 
 fun day17() {

@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import java.util.Stack
 
 class Day10(
     dataFile: DataFile,
-) {
+) : AoC<Int, Long> {
     private val chunks =
         fileToStream(2021, 10, dataFile)
             .map { it.toCharArray() }
@@ -99,12 +100,12 @@ class Day10(
         return sb.toString()
     }
 
-    fun part1() =
+    override fun part1() =
         chunks
             .mapNotNull(::findError)
             .sumOf { errorScoreTable[it]!! }
 
-    fun part2() =
+    override fun part2() =
         chunks
             .mapNotNull(::completeSequence)
             .map { seq -> seq.map { autocompleteScoreTable[it]!! }.reduce { acc, s -> acc * 5 + s } }

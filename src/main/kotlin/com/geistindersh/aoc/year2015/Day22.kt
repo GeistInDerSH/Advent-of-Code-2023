@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,9 @@ import com.geistindersh.aoc.helper.strings.extractPositiveIntegers
 
 class Day22(
     dataFile: DataFile,
-) {
+    private val hp: Int,
+    private val mp: Int,
+) : AoC<Int, Int> {
     private val boss = fileToString(2015, 22, dataFile).extractPositiveIntegers().let { (hp, dmg) -> Boss(hp, dmg) }
 
     private data class Spell(
@@ -121,24 +124,20 @@ class Day22(
         fun copy() = Game(player.copy(), boss.copy(), isHardMode, manaSpent, spellsInEffect.toMutableList())
     }
 
-    fun part1(
-        hp: Int,
-        mp: Int,
-    ) = Game(Player(hp, mp), boss, false)
-        .bestOrNull()
-        ?.manaSpent
-        ?: throw Exception("No solution")
+    override fun part1() =
+        Game(Player(hp, mp), boss, false)
+            .bestOrNull()
+            ?.manaSpent
+            ?: throw Exception("No solution")
 
-    fun part2(
-        hp: Int,
-        mp: Int,
-    ) = Game(Player(hp, mp), boss, true)
-        .bestOrNull()
-        ?.manaSpent
-        ?: throw Exception("No solution")
+    override fun part2() =
+        Game(Player(hp, mp), boss, true)
+            .bestOrNull()
+            ?.manaSpent
+            ?: throw Exception("No solution")
 }
 
 fun day22() {
-    val day = Day22(DataFile.Part1)
-    report(2015, 22, day.part1(50, 500), day.part2(50, 500))
+    val day = Day22(DataFile.Part1, 50, 500)
+    report(2015, 22, day.part1(), day.part2())
 }

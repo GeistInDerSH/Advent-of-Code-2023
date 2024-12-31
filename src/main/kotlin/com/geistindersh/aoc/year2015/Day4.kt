@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import java.security.MessageDigest
 
 class Day4(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val data = fileToString(2015, 4, dataFile)
 
     private fun hashWithData(i: Int) =
@@ -16,9 +17,9 @@ class Day4(
             .digest((data + i.toString()).toByteArray())
             .joinToString("") { "%02x".format(it) }
 
-    fun part1() = generateSequence(0) { it + 1 }.first { hashWithData(it).startsWith("00000") }
+    override fun part1() = generateSequence(0) { it + 1 }.first { hashWithData(it).startsWith("00000") }
 
-    fun part2() = generateSequence(0) { it + 1 }.first { hashWithData(it).startsWith("000000") }
+    override fun part2() = generateSequence(0) { it + 1 }.first { hashWithData(it).startsWith("000000") }
 }
 
 fun day4() {

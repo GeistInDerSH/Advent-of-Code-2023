@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day8(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val lines = fileToStream(2015, 8, dataFile).toList()
 
     private fun String.inMemoryLength(): Int {
@@ -46,9 +47,9 @@ class Day8(
         return len
     }
 
-    fun part1() = lines.sumOf { it.literalLength() - it.inMemoryLength() }
+    override fun part1() = lines.sumOf { it.literalLength() - it.inMemoryLength() }
 
-    fun part2() = lines.sumOf { it.encodeLength() - it.literalLength() }
+    override fun part2() = lines.sumOf { it.encodeLength() - it.literalLength() }
 }
 
 fun day8() {

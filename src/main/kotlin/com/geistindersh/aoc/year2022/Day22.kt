@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -9,7 +10,7 @@ import com.geistindersh.aoc.helper.strings.toGrid2DRemoveNull
 
 class Day22(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val grid =
         fileToStream(2022, 22, dataFile)
             .takeWhile { it.isNotEmpty() }
@@ -125,9 +126,9 @@ class Day22(
         }
     }
 
-    fun part1() = walk(::walkMap)
+    override fun part1() = walk(::walkMap)
 
-    fun part2() = walk(::walkMap3d)
+    override fun part2() = walk(::walkMap3d)
 }
 
 fun day22() {

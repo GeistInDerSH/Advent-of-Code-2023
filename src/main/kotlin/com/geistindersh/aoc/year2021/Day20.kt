@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.binary.setBit
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
@@ -10,7 +11,7 @@ import com.geistindersh.aoc.helper.strings.toGrid2D
 
 class Day20(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val startingImage =
         fileToString(2021, 20, dataFile).let {
             val (lookupTable, rawImage) = it.split("\n\n")
@@ -69,9 +70,9 @@ class Day20(
             .values
             .sum()
 
-    fun part1() = pixelsLitAfterSteps(2)
+    override fun part1() = pixelsLitAfterSteps(2)
 
-    fun part2() = pixelsLitAfterSteps(50)
+    override fun part2() = pixelsLitAfterSteps(50)
 }
 
 fun day20() {

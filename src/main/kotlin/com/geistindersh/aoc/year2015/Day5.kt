@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day5(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val data = fileToStream(2015, 5, dataFile).toList()
     private val vowels = setOf('a', 'e', 'i', 'o', 'u')
     private val notAllowedSubstrings = setOf("ab", "cd", "pq", "xy")
@@ -31,9 +32,9 @@ class Day5(
             .windowed(3)
             .any { it.first() == it.last() && it.first() != it[1] }
 
-    fun part1() = data.count(::isNice)
+    override fun part1() = data.count(::isNice)
 
-    fun part2() = data.count { hasDoubleLetterWithCenter(it) && containsNonTouchingDoubleLetter(it) }
+    override fun part2() = data.count { hasDoubleLetterWithCenter(it) && containsNonTouchingDoubleLetter(it) }
 }
 
 fun day5() {

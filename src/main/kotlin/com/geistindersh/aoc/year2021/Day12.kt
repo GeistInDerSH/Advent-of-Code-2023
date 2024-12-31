@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day12(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val graph =
         fileToStream(2021, 12, dataFile)
             .flatMap { line ->
@@ -80,9 +81,9 @@ class Day12(
         return count
     }
 
-    fun part1() = randomWalk(false)
+    override fun part1() = randomWalk(false)
 
-    fun part2() = randomWalk(true)
+    override fun part2() = randomWalk(true)
 }
 
 fun day12() {

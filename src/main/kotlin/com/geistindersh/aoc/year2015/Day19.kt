@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import java.util.PriorityQueue
 
 class Day19(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val molecule = fileToStream(2015, 19, dataFile).last()
     private val lookupTable =
         fileToStream(2015, 19, dataFile)
@@ -45,14 +46,14 @@ class Day19(
         }
     }
 
-    fun part1() =
+    override fun part1() =
         lookupTable
             .entries
             .flatMap { (k, v) -> v.flatMap { Molecule(molecule).replace(k, it) } }
             .toSet()
             .count()
 
-    fun part2(): Int {
+    override fun part2(): Int {
         var minSteps = Int.MAX_VALUE
 
         val queue =

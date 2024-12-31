@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day25(
     dataFile: DataFile,
-) {
+) : AoC<Long, String> {
     private val publicKeys = fileToStream(2020, 25, dataFile).map { it.toLong() }.toList()
     private val card = publicKeys.first()
     private val door = publicKeys.last()
@@ -20,9 +21,9 @@ class Day25(
             .drop(loopSize)
             .first()
 
-    fun part1() = card.getEncryptionKey(door.getLoopSize())
+    override fun part1() = card.getEncryptionKey(door.getLoopSize())
 
-    fun part2() = "Pay the Deposit!" // Man, this one feels much less exciting than the others...
+    override fun part2() = "Pay the Deposit!" // Man, this one feels much less exciting than the others...
 }
 
 fun day25() {

@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day10(
     dataFile: DataFile,
-) {
+) : AoC<Int, List<String>> {
     private val instructions =
         fileToStream(2022, 10, dataFile)
             .map {
@@ -71,9 +72,9 @@ class Day10(
         return output.toString()
     }
 
-    fun part1() = getSignals().sum()
+    override fun part1() = getSignals().sum()
 
-    fun part2(): List<String> {
+    override fun part2(): List<String> {
         val output = rasterizeSignal()
         return (0..<6).map { output.drop(it * 40).take(40) }
     }

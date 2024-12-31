@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
@@ -7,7 +8,7 @@ import kotlin.math.absoluteValue
 
 class Day9(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val moves =
         fileToStream(2022, 9, dataFile)
             .flatMap { line ->
@@ -90,9 +91,9 @@ class Day9(
         return tails
     }
 
-    fun part1() = trackTailOfChain(2).count()
+    override fun part1() = trackTailOfChain(2).count()
 
-    fun part2() = trackTailOfChain(10).count()
+    override fun part2() = trackTailOfChain(10).count()
 }
 
 fun day9() {

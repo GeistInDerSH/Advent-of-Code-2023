@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day22(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val players =
         fileToString(2020, 22, dataFile)
             .split("\n\n")
@@ -97,9 +98,9 @@ class Day22(
         return if (p1.hasCards) p1 else p2
     }
 
-    fun part1() = players.play().score()
+    override fun part1() = players.play().score()
 
-    fun part2() = players.playRecursive().score()
+    override fun part2() = players.playRecursive().score()
 }
 
 fun day22() {

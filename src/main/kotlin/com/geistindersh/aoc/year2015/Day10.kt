@@ -1,12 +1,13 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
 
 class Day10(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val numbers = fileToString(2015, 10, dataFile)
 
     private fun seeSay(nums: String) =
@@ -28,9 +29,9 @@ class Day10(
             .first()
             .length
 
-    fun part1() = seeSayTimes(40)
+    override fun part1() = seeSayTimes(40)
 
-    fun part2() = seeSayTimes(50)
+    override fun part2() = seeSayTimes(50)
 }
 
 fun day10() {

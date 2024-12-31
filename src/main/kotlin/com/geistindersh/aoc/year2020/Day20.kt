@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2020
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
@@ -8,7 +9,7 @@ import kotlin.math.sqrt
 
 class Day20(
     dataFile: DataFile,
-) {
+) : AoC<Long, Int> {
     private val tileSet =
         fileToString(2020, 20, dataFile)
             .split("\n\n")
@@ -243,9 +244,9 @@ class Day20(
         }
     }
 
-    fun part1() = tileSet.tilesWithUniqueEdges().map { it.title }.reduce(Long::times)
+    override fun part1() = tileSet.tilesWithUniqueEdges().map { it.title }.reduce(Long::times)
 
-    fun part2() = Image.from(tileSet).roughness()
+    override fun part2() = Image.from(tileSet).roughness()
 }
 
 fun day20() {

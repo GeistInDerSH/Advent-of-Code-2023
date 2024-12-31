@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Direction
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
@@ -9,7 +10,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day23(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val elves =
         fileToStream(2022, 23, dataFile)
             .flatMapIndexed { row, line ->
@@ -89,7 +90,7 @@ class Day23(
             }
         }
 
-    fun part1(): Int {
+    override fun part1(): Int {
         val elves = rounds().elementAt(10)
         val height = elves.maxOf { it.row } - elves.minOf { it.row } + 1
         val width = elves.maxOf { it.col } - elves.minOf { it.col } + 1
@@ -97,7 +98,7 @@ class Day23(
     }
 
     // Efficient? No! Functional? Yes!
-    fun part2() =
+    override fun part2() =
         rounds()
             .zipWithNext()
             .takeWhile { (prev, curr) -> prev != curr }

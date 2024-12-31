@@ -1,19 +1,20 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day3(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val lines = fileToStream(2022, 3, dataFile).toList()
     private val scores =
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
             .mapIndexed { index, c -> Pair(c, index + 1) }
             .toMap()
 
-    fun part1(): Int =
+    override fun part1(): Int =
         lines
             .flatMap { line ->
                 val midpoint = line.length / 2
@@ -22,7 +23,7 @@ class Day3(
                 s1.intersect(s2)
             }.fold(0) { acc, c -> acc + scores[c]!! }
 
-    fun part2(): Int =
+    override fun part2(): Int =
         lines
             .windowed(3, 3)
             .map { lst ->

@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.iterators.rotateLeft
@@ -7,7 +8,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day6(
     dataFile: DataFile,
-) {
+) : AoC<Long, Long> {
     private val lanternFish =
         fileToString(2021, 6, dataFile)
             .split(",")
@@ -29,9 +30,9 @@ class Day6(
             .first()
             .sum()
 
-    fun part1() = solution(80)
+    override fun part1() = solution(80)
 
-    fun part2() = solution(256)
+    override fun part2() = solution(256)
 }
 
 fun day6() {

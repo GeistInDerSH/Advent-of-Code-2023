@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2024
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.math.floorModulo
@@ -10,7 +11,7 @@ class Day14(
     dataFile: DataFile,
     width: Int = 101,
     height: Int = 103,
-) {
+) : AoC<Int, Int> {
     private val robots = fileToStream(2024, 14, dataFile).map { Robot.from(it, height, width) }.toList()
 
     private data class Robot(
@@ -50,7 +51,7 @@ class Day14(
         }
     }
 
-    fun part1() =
+    override fun part1() =
         robots
             .mapNotNull { it.next(100).quadrant() }
             .groupingBy { it }
@@ -58,7 +59,7 @@ class Day14(
             .values
             .reduce(Int::times)
 
-    fun part2() =
+    override fun part2() =
         generateSequence(0 to robots) { (round, bots) -> (round + 1) to bots.map(Robot::next) }
             .first { (_, bots) ->
                 val unique = mutableSetOf<Pair<Int, Int>>()

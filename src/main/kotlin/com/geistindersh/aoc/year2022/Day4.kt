@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2022
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.ranges.hasOverlap
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day4(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val pairs =
         fileToStream(2022, 4, dataFile)
             .map { line ->
@@ -27,9 +28,9 @@ class Day4(
                 }
             }.toList()
 
-    fun part1(): Int = pairs.count { (r1, r2) -> r1.isFullyContained(r2) }
+    override fun part1(): Int = pairs.count { (r1, r2) -> r1.isFullyContained(r2) }
 
-    fun part2(): Int = pairs.count { (r1, r2) -> r1.hasOverlap(r2) }
+    override fun part2(): Int = pairs.count { (r1, r2) -> r1.hasOverlap(r2) }
 }
 
 fun day4() {

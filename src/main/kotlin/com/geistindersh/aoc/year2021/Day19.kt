@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2021
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.iterators.pairCombinations
@@ -8,7 +9,7 @@ import kotlin.math.absoluteValue
 
 class Day19(
     dataFile: DataFile,
-) {
+) : AoC<Int, Int> {
     private val scanners =
         fileToString(2021, 19, dataFile)
             .split("\n\n")
@@ -100,9 +101,9 @@ class Day19(
         return start to foundScannerPoints
     }
 
-    fun part1() = getScannerPositions().first.beacons.size
+    override fun part1() = getScannerPositions().first.beacons.size
 
-    fun part2() =
+    override fun part2() =
         getScannerPositions()
             .second
             .toList()

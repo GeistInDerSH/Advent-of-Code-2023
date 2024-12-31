@@ -1,5 +1,6 @@
 package com.geistindersh.aoc.year2015
 
+import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
@@ -8,7 +9,7 @@ import com.geistindersh.aoc.helper.report
 
 class Day25(
     dataFile: DataFile,
-) {
+) : AoC<Long, String> {
     private val targetPoint =
         fileToString(2015, 25, dataFile)
             .replace(".", "")
@@ -29,13 +30,13 @@ class Day25(
         }
     }
 
-    fun part1() =
+    override fun part1() =
         generateSequence(Code(Point2D(1, 1), 20151125)) { it.next() }
             .takeWhileInclusive { it.point != targetPoint }
             .last()
             .code
 
-    fun part2() = "Push the button!"
+    override fun part2() = "Push the button!"
 }
 
 fun day25() {
