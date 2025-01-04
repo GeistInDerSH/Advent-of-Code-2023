@@ -11,9 +11,9 @@ class Graph<T : Comparable<T>>(
     fun neighbours(node: T) = weights.keys.filter { it.first == node }.map { it.second }
 
     private fun getCost(
-        from: T,
-        to: T,
-    ) = weights[from to to]!!
+        start: T,
+        end: T,
+    ) = weights[start to end]!!
 
     private fun assertContains(node: T) {
         if (node !in nodes) {
