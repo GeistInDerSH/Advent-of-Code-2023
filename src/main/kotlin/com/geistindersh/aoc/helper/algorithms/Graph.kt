@@ -26,9 +26,9 @@ class Graph<T : Comparable<T>>(
         end: T,
     ) = try {
         dfs(start, end)
-    } catch (ex: GraphExceptions.UnreachableNodeException) {
+    } catch (_: GraphExceptions.UnreachableNodeException) {
         null
-    } catch (ex: GraphExceptions.InvalidNodeException) {
+    } catch (_: GraphExceptions.InvalidNodeException) {
         null
     }
 
@@ -57,9 +57,9 @@ class Graph<T : Comparable<T>>(
         end: T,
     ) = try {
         bfs(start, end)
-    } catch (ex: GraphExceptions.UnreachableNodeException) {
+    } catch (_: GraphExceptions.UnreachableNodeException) {
         null
-    } catch (ex: GraphExceptions.InvalidNodeException) {
+    } catch (_: GraphExceptions.InvalidNodeException) {
         null
     }
 
@@ -110,14 +110,15 @@ class Graph<T : Comparable<T>>(
         return distances[end]!!
     }
 
+    @Suppress("unused")
     fun shortestPathOrNull(
         start: T,
         end: T,
     ) = try {
         shortestPath(start, end)
-    } catch (ex: GraphExceptions.UnreachableNodeException) {
+    } catch (_: GraphExceptions.UnreachableNodeException) {
         null
-    } catch (ex: GraphExceptions.InvalidNodeException) {
+    } catch (_: GraphExceptions.InvalidNodeException) {
         null
     }
 
@@ -148,7 +149,7 @@ class Graph<T : Comparable<T>>(
             val adjacencyMatrix = adjacency()
             var dest = start
 
-            for (i in 0..<nodes.size - 1) {
+            (0..<nodes.size - 1).forEach {
                 val value =
                     adjacencyMatrix[dest]
                         .filter { it > 0 }
