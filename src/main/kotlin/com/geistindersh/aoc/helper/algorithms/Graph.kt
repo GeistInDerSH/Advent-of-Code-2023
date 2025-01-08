@@ -44,9 +44,7 @@ class Graph<T : Comparable<T>>(
         while (queue.isNotEmpty()) {
             val (name, cost) = queue.removeFirst()
             if (name == end) return cost
-            if (name in visited) continue
-
-            visited.add(name)
+            if (!visited.add(name)) continue
             queue.addAll(neighbours(name).map { it to cost + getCost(name, it) })
         }
         throw GraphExceptions.UnreachableNodeException("Cannot reach $end from $start")
@@ -76,6 +74,7 @@ class Graph<T : Comparable<T>>(
         while (queue.isNotEmpty()) {
             val (name, cost) = queue.removeFirst()
             if (name == end) return cost
+            visited.add(name)
             val unvisited =
                 neighbours(name)
                     .filter { it !in visited }
