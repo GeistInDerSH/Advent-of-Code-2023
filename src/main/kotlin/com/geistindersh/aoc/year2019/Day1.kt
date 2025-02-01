@@ -15,18 +15,21 @@ class Day1(
 
     private fun cost(mass: Int) = (mass / 3) - 2
 
+    private tailrec fun fuelCost(
+        mass: Int,
+        totalMass: Int = 0,
+    ): Int {
+        val fuel = cost(mass)
+        return if (fuel > 0) {
+            fuelCost(fuel, totalMass + fuel)
+        } else {
+            totalMass
+        }
+    }
+
     override fun part1() = masses.sumOf(::cost)
 
-    override fun part2() =
-        masses.sumOf {
-            var mass = cost(it)
-            var totalFuel = 0
-            while (mass > 0) {
-                totalFuel += mass
-                mass = cost(mass)
-            }
-            totalFuel
-        }
+    override fun part2() = masses.sumOf(::fuelCost)
 }
 
 fun day1() {
