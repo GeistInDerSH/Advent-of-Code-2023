@@ -13,9 +13,20 @@ class Day1(
             .map(String::toInt)
             .toList()
 
-    override fun part1() = masses.sumOf { (it / 3) - 2 }
+    private fun cost(mass: Int) = (mass / 3) - 2
 
-    override fun part2() = 0
+    override fun part1() = masses.sumOf(::cost)
+
+    override fun part2() =
+        masses.sumOf {
+            var mass = cost(it)
+            var totalFuel = 0
+            while (mass > 0) {
+                totalFuel += mass
+                mass = cost(mass)
+            }
+            totalFuel
+        }
 }
 
 fun day1() {
