@@ -1,5 +1,7 @@
 package com.geistindersh.aoc.helper.enums
 
+import kotlin.math.absoluteValue
+
 data class Point2D(
     val row: Int,
     val col: Int,
@@ -29,4 +31,6 @@ data class Point2D(
             Direction.South + Direction.East,
             Direction.South + Direction.West,
         ).map { this + it }
+
+    fun manhattanDistance(other: Point2D) = (row - other.row).absoluteValue + (col - other.col).absoluteValue
 }
