@@ -6,34 +6,25 @@ import com.geistindersh.aoc.helper.enums.Point2D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
-import kotlin.math.absoluteValue
 
 class Day3(
     dataFile: DataFile,
 ) : AoC<Int, Int> {
     private val wires =
         fileToStream(2019, 3, dataFile)
-            .map { it.split(",") }
-            .toList()
-    private val expanded =
-        wires.map { wire ->
-            wire.flatMap {
-                val direction =
-                    when (it.first()) {
-                        'R' -> Direction.East
-                        'U' -> Direction.South
-                        'D' -> Direction.North
-                        'L' -> Direction.West
-                        else -> throw IllegalStateException("Unexpected direction: $it")
+            .map { line ->
+                line
+                    .split(",")
+                    .flatMap {
+                        val direction = Direction.tryFromChar(it.first()) ?: throw IllegalArgumentException("Invalid direction: $it")
+                        val count = it.drop(1).toInt()
+                        (0..<count).map { direction }
                     }
-                val count = it.drop(1).toInt()
-                (0..<count).map { direction }
-            }
-        }
+            }.toList()
 
-    private fun List<Direction>.getPath(): Set<Point2D> {
+    private fun List<Direction>.getPath(): List<Point2D> {
         var pos = START
-        val path = mutableSetOf<Point2D>()
+        val path = mutableListOf<Point2D>()
         for (dir in this) {
             pos += dir
             path.add(pos)
@@ -41,13 +32,18 @@ class Day3(
         return path
     }
 
-    override fun part1() =
-        expanded
-            .map { it.getPath() }
-            .reduce { a, b -> a.intersect(b) }
-            .minOf { it.row.absoluteValue + it.col.absoluteValue }
+    private fun List<List<Direction>>.getIntersection() = wires.map { it.getPath().toSet() }.reduce { a, b -> a.intersect(b) }
 
-    override fun part2() = 0
+    override fun part1() = wires.getIntersection().minOf { START.manhattanDistance(it) }
+
+    override fun part2() =
+        wires
+            .map { it.getPath() }
+            .let { paths ->
+                wires
+                    .getIntersection()
+                    .minOf { pos -> paths.sumOf { it.indexOf(pos) + 1 } }
+            }
 
     companion object {
         private val START = Point2D(0, 0)
