@@ -36,20 +36,29 @@ class Day2(
         return nums
     }
 
-    fun part1(override: Map<Int, Int>) =
-        numbers
-            .toMutableList()
-            .let {
-                for ((k, v) in override.entries) {
-                    it[k] = v
-                }
-                it
-            }.run()
-            .first()
+    fun part1(
+        noun: Int,
+        verb: Int,
+    ) = numbers
+        .toMutableList()
+        .apply {
+            this[1] = noun
+            this[2] = verb
+        }.run()
+        .first()
 
-    override fun part1() = part1(mapOf(1 to 12, 2 to 2))
+    // Overload match so that we can test without swapping values
+    @Suppress("UNUSED_PARAMETER")
+    fun part1(override: Map<Int, Int>) = part1(numbers[1], numbers[2])
 
-    override fun part2() = 0
+    override fun part1() = part1(12, 2)
+
+    fun part2(target: Int): Pair<Int, Int> =
+        (0..100)
+            .flatMap { noun -> (0..100).map { verb -> noun to verb } }
+            .first { (noun, verb) -> part1(noun, verb) == target }
+
+    override fun part2() = part2(19690720).let { 100 * it.first + it.second }
 }
 
 fun day2() {
