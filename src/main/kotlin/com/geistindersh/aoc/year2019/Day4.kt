@@ -12,11 +12,18 @@ class Day4(
 
     private fun String.hasAdjacentNumbers() = this.windowed(2).any { it[0] == it[1] }
 
+    private fun String.hasAdjacentNumbersStrict() =
+        this
+            .groupingBy { it }
+            .eachCount()
+            .values
+            .any { it == 2 }
+
     private fun String.isIncreasing() = this.windowed(2).all { it[0].code <= it[1].code }
 
     override fun part1() = range.asSequence().map { it.toString() }.count { it.isIncreasing() && it.hasAdjacentNumbers() }
 
-    override fun part2() = 0
+    override fun part2() = range.asSequence().map { it.toString() }.count { it.isIncreasing() && it.hasAdjacentNumbersStrict() }
 }
 
 fun day4() {
