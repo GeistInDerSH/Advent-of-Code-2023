@@ -4,4 +4,5 @@ enum class Signal {
     None,
     Halt,
     HasOutput,
+    NeedsInput,
 }

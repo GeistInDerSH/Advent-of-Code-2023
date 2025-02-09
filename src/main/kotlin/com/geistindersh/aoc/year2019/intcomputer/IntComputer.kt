@@ -13,6 +13,10 @@ class IntComputer(
         return out
     }
 
+    fun sendInput(value: Int) {
+        input.add(value)
+    }
+
     fun getMemory(): List<Int> = memory.toList()
 
     constructor(memory: List<Int>) : this(memory, emptyList())
@@ -101,9 +105,14 @@ class IntComputer(
                 Signal.None
             }
             is Instruction.Load -> {
-                val i = input.removeFirst()
-                storeValueAtPosition(instr.dest.value, i)
-                Signal.None
+                if (input.isEmpty()) {
+                    instructionPointer -= 2
+                    Signal.NeedsInput
+                } else {
+                    val i = input.removeFirst()
+                    storeValueAtPosition(instr.dest.value, i)
+                    Signal.None
+                }
             }
             is Instruction.Store -> {
                 output = decodeParameter(instr.param)
@@ -141,6 +150,14 @@ class IntComputer(
             }
             Instruction.Halt -> Signal.Halt
         }
+    }
+
+    fun runWhileSignal(signal: Signal): Signal {
+        var sig = step()
+        while (sig == signal) {
+            sig = step()
+        }
+        return sig
     }
 
     fun runUntilSignal(signal: Signal): IntComputer {

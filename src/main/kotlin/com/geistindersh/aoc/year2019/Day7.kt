@@ -6,6 +6,7 @@ import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.iterators.permutations
 import com.geistindersh.aoc.helper.report
 import com.geistindersh.aoc.year2019.intcomputer.IntComputer
+import com.geistindersh.aoc.year2019.intcomputer.Signal
 
 class Day7(
     dataFile: DataFile,
@@ -15,12 +16,35 @@ class Day7(
     fun List<Int>.chainedThrusterSignal(): Int =
         this.fold(0) { value, thruster -> IntComputer(input, listOf(thruster, value)).run().getOutput()!! }
 
-    override fun part1() = FULL_SET.toSet().permutations().maxOf { it.chainedThrusterSignal() }
+    fun List<Int>.chainedThrusterSignalWithFeedback(): Int {
+        val thrusters = this.map { IntComputer(input, listOf(it)) }
+        thrusters[0].sendInput(0)
 
-    override fun part2() = 0
+        var i = 0
+        var output: Int? = null
+        while (true) {
+            if (output != null) {
+                thrusters[i].sendInput(output)
+            }
+
+            val signal = thrusters[i].runWhileSignal(Signal.None)
+            if (signal == Signal.HasOutput) {
+                output = thrusters[i].getOutput()
+            } else if (signal == Signal.Halt && i == 4) {
+                return output!!
+            }
+
+            i = if (i + 1 >= thrusters.size) 0 else i + 1
+        }
+    }
+
+    override fun part1() = FULL_LOWER_SET.permutations().maxOf { it.chainedThrusterSignal() }
+
+    override fun part2() = FULL_UPPER_SET.permutations().maxOf { it.chainedThrusterSignalWithFeedback() }
 
     companion object {
-        private val FULL_SET = (0..4).toSet()
+        private val FULL_LOWER_SET = (0..4).toSet()
+        private val FULL_UPPER_SET = (5..9).toSet()
     }
 }
 
