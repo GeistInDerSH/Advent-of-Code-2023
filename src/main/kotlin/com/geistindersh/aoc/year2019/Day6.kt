@@ -1,20 +1,20 @@
 package com.geistindersh.aoc.year2019
 
 import com.geistindersh.aoc.helper.AoC
+import com.geistindersh.aoc.helper.algorithms.Graph
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
 import com.geistindersh.aoc.helper.report
 
 class Day6(
-    dataFile: DataFile,
+    val neighbors: Map<String, List<String>>,
+    val graph: Graph<String>,
 ) : AoC<Int, Int> {
-    private val data: Map<String, List<String>> =
-        fileToStream(2019, 6, dataFile)
-            .map { line -> line.split(')').let { it[0] to it[1] } }
-            .groupingBy { it.first }
-            .aggregate { _, children, pair, _ ->
-                children.orEmpty() + pair.second
-            }
+    constructor(dataFile: DataFile) : this(fileToStream(2019, 6, dataFile).map { it.split(")") }.map { (a, b) -> a to b }.toList())
+    constructor(lines: List<Pair<String, String>>) : this(
+        lines.groupingBy { it.first }.aggregate { _, children, pair, _ -> children.orEmpty() + pair.second },
+        lines.flatMap { (a, b) -> listOf(a to b, b to a) }.map { it to 1 }.let { Graph(it) },
+    )
 
     private fun Map<String, List<String>>.generateCostMap(): Map<Pair<String, String>, Int> {
         val com = "COM"
@@ -29,9 +29,11 @@ class Day6(
         return costMap
     }
 
-    override fun part1() = data.generateCostMap().values.sum()
+    private fun Map<String, List<String>>.findParentOf(child: String) = this.filterValues { child in it }.keys.first()
 
-    override fun part2() = 0
+    override fun part1() = neighbors.generateCostMap().values.sum()
+
+    override fun part2() = listOf("YOU", "SAN").map { neighbors.findParentOf(it) }.let { (start, end) -> graph.dfs(start, end) }
 }
 
 fun day6() {
