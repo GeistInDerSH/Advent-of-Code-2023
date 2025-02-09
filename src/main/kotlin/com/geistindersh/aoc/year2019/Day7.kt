@@ -3,6 +3,7 @@ package com.geistindersh.aoc.year2019
 import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
+import com.geistindersh.aoc.helper.iterators.permutations
 import com.geistindersh.aoc.helper.report
 import com.geistindersh.aoc.year2019.intcomputer.IntComputer
 
@@ -11,35 +12,10 @@ class Day7(
 ) : AoC<Int, Int> {
     private val input = fileToString(2019, 7, dataFile).split(',').map(String::toInt)
 
-    private data class ThrusterSequence(
-        val instructions: List<Int>,
-        val allThrusters: Set<Int>,
-        val tried: Set<Int> = emptySet(),
-        val value: Int = 0,
-    ) {
-        fun isFinished() = allThrusters == tried
+    fun List<Int>.chainedThrusterSignal(): Int =
+        this.fold(0) { value, thruster -> IntComputer(input, listOf(thruster, value)).run().getOutput()!! }
 
-        fun nextPossibleOptions() =
-            (allThrusters - tried)
-                .map {
-                    val newValue = IntComputer(instructions, listOf(it, value)).run().getOutput()!!
-                    this.copy(value = newValue, tried = tried + it)
-                }
-    }
-
-    override fun part1(): Int {
-        val queue = ArrayDeque(listOf(ThrusterSequence(input, FULL_SET)))
-        val finished = mutableListOf<ThrusterSequence>()
-        while (queue.isNotEmpty()) {
-            val head = queue.removeFirst()
-            if (head.isFinished()) {
-                finished.add(head)
-                continue
-            }
-            queue.addAll(head.nextPossibleOptions())
-        }
-        return finished.maxOf { it.value }
-    }
+    override fun part1() = FULL_SET.toSet().permutations().maxOf { it.chainedThrusterSignal() }
 
     override fun part2() = 0
 
