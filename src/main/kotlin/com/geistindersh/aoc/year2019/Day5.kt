@@ -17,7 +17,11 @@ class Day5(
         return computer.getOutput() ?: -1
     }
 
-    override fun part2() = 0
+    override fun part2(): Int {
+        val computer = IntComputer(numbers, listOf(5))
+        computer.run()
+        return computer.getOutput() ?: -1
+    }
 }
 
 fun day5() {

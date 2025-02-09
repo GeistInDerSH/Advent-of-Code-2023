@@ -48,12 +48,17 @@ class IntComputer(
 
     private fun getSingleParameter(opcode: Int): Parameter = fetchParameter(opcode % 10)
 
-    private fun getTripleParameter(opcode: Int): Triple<Parameter, Parameter, Parameter> {
+    private fun getDoubleParameter(opcode: Int): Pair<Parameter, Parameter> {
         var opcode = opcode
         val p1 = getSingleParameter(opcode)
         opcode /= 10
         val p2 = getSingleParameter(opcode)
-        opcode /= 10
+        return p1 to p2
+    }
+
+    private fun getTripleParameter(opcode: Int): Triple<Parameter, Parameter, Parameter> {
+        val (p1, p2) = getDoubleParameter(opcode)
+        var opcode = opcode / 100
         val p3 = getSingleParameter(opcode % 10)
         return Triple(p1, p2, p3)
     }
@@ -67,6 +72,10 @@ class IntComputer(
             2 -> Instruction.Mul(getTripleParameter(opcode))
             3 -> Instruction.Load(getSingleParameter(opcode))
             4 -> Instruction.Store(getSingleParameter(opcode))
+            5 -> Instruction.JumpIfTrue(getDoubleParameter(opcode))
+            6 -> Instruction.JumpIfFalse(getDoubleParameter(opcode))
+            7 -> Instruction.LessThan(getTripleParameter(opcode))
+            8 -> Instruction.Equals(getTripleParameter(opcode))
             99 -> Instruction.Halt
             else -> throw IllegalArgumentException("Invalid op $instr")
         }
@@ -97,6 +106,36 @@ class IntComputer(
             is Instruction.Store -> {
                 output = decodeParameter(instr.param)
                 Signal.HasOutput
+            }
+            is Instruction.JumpIfTrue -> {
+                val arg1 = decodeParameter(instr.params.first)
+                if (arg1 != 0) {
+                    instructionPointer = decodeParameter(instr.params.second)
+                }
+                Signal.None
+            }
+            is Instruction.JumpIfFalse -> {
+                val arg1 = decodeParameter(instr.params.first)
+                if (arg1 == 0) {
+                    instructionPointer = decodeParameter(instr.params.second)
+                }
+                Signal.None
+            }
+            is Instruction.LessThan -> {
+                val arg1 = decodeParameter(instr.params.first)
+                val arg2 = decodeParameter(instr.params.second)
+                val dest = instr.params.third
+                val value = if (arg1 < arg2) 1 else 0
+                storeValueAtPosition(dest.value, value)
+                Signal.None
+            }
+            is Instruction.Equals -> {
+                val arg1 = decodeParameter(instr.params.first)
+                val arg2 = decodeParameter(instr.params.second)
+                val dest = instr.params.third
+                val value = if (arg1 == arg2) 1 else 0
+                storeValueAtPosition(dest.value, value)
+                Signal.None
             }
             Instruction.Halt -> Signal.Halt
         }

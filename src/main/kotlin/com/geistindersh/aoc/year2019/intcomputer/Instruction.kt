@@ -17,5 +17,21 @@ sealed class Instruction {
         val param: Parameter,
     ) : Instruction()
 
+    data class JumpIfTrue(
+        val params: Pair<Parameter, Parameter>,
+    ) : Instruction()
+
+    data class JumpIfFalse(
+        val params: Pair<Parameter, Parameter>,
+    ) : Instruction()
+
+    data class LessThan(
+        val params: Triple<Parameter, Parameter, Parameter>,
+    ) : Instruction()
+
+    data class Equals(
+        val params: Triple<Parameter, Parameter, Parameter>,
+    ) : Instruction()
+
     object Halt : Instruction()
 }
