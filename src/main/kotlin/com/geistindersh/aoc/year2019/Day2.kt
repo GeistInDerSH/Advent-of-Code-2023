@@ -4,37 +4,12 @@ import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToString
 import com.geistindersh.aoc.helper.report
+import com.geistindersh.aoc.year2019.intcomputer.IntComputer
 
 class Day2(
     dataFile: DataFile,
 ) : AoC<Int, Int> {
     private val numbers = fileToString(2019, 2, dataFile).split(",").map(String::toInt)
-
-    private fun List<Int>.run(): List<Int> {
-        val nums = this.toMutableList()
-        var pos = 0
-        while (pos < this.size) {
-            when (nums[pos]) {
-                1 -> {
-                    val l = nums[pos + 1]
-                    val r = nums[pos + 2]
-                    val dest = nums[pos + 3]
-                    nums[dest] = nums[l] + nums[r]
-                    pos += 4
-                }
-                2 -> {
-                    val l = nums[pos + 1]
-                    val r = nums[pos + 2]
-                    val dest = nums[pos + 3]
-                    nums[dest] = nums[l] * nums[r]
-                    pos += 4
-                }
-                99 -> break
-                else -> throw Exception("Unrecognized input: ${this[pos]}")
-            }
-        }
-        return nums
-    }
 
     fun part1(
         noun: Int,
@@ -44,7 +19,9 @@ class Day2(
         .apply {
             this[1] = noun
             this[2] = verb
-        }.run()
+        }.let { IntComputer(it) }
+        .run()
+        .getMemory()
         .first()
 
     // Overload match so that we can test without swapping values

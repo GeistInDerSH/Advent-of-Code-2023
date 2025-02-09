@@ -13,6 +13,8 @@ class IntComputer(
         return out
     }
 
+    fun getMemory(): List<Int> = memory.toList()
+
     constructor(memory: List<Int>) : this(memory, emptyList())
     constructor(memory: List<Int>, input: List<Int>) : this(memory.toMutableList(), ArrayDeque<Int>(input))
 
@@ -141,12 +143,16 @@ class IntComputer(
         }
     }
 
-    fun runUntilSignal(signal: Signal) {
+    fun runUntilSignal(signal: Signal): IntComputer {
         var sig = step()
         while (sig != signal) {
             sig = step()
         }
+        return this
     }
 
-    fun run() = runUntilSignal(Signal.Halt)
+    fun run(): IntComputer {
+        runUntilSignal(Signal.Halt)
+        return this
+    }
 }
