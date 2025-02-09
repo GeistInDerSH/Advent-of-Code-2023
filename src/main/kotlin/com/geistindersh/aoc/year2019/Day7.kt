@@ -11,28 +11,34 @@ class Day7(
 ) : AoC<Int, Int> {
     private val input = fileToString(2019, 7, dataFile).split(',').map(String::toInt)
 
-    fun Pair<Set<Int>, Int>.foo(): List<Pair<Set<Int>, Int>> {
-        val (tried, value) = this
-        val toTry = FULL_SET - tried
-        return toTry.map {
-            val v = IntComputer(input, listOf(it, value)).run().getOutput()!!
-            (tried + it) to v
-        }
+    private data class ThrusterSequence(
+        val instructions: List<Int>,
+        val allThrusters: Set<Int>,
+        val tried: Set<Int> = emptySet(),
+        val value: Int = 0,
+    ) {
+        fun isFinished() = allThrusters == tried
+
+        fun nextPossibleOptions() =
+            (allThrusters - tried)
+                .map {
+                    val newValue = IntComputer(instructions, listOf(it, value)).run().getOutput()!!
+                    this.copy(value = newValue, tried = tried + it)
+                }
     }
 
     override fun part1(): Int {
-        val queue = ArrayDeque(listOf(emptySet<Int>() to 0))
-        val finished = mutableListOf<Pair<Set<Int>, Int>>()
+        val queue = ArrayDeque(listOf(ThrusterSequence(input, FULL_SET)))
+        val finished = mutableListOf<ThrusterSequence>()
         while (queue.isNotEmpty()) {
             val head = queue.removeFirst()
-            if (head.first == FULL_SET) {
+            if (head.isFinished()) {
                 finished.add(head)
                 continue
             }
-            val toAdd = head.foo()
-            queue.addAll(toAdd)
+            queue.addAll(head.nextPossibleOptions())
         }
-        return finished.maxOf { it.second }
+        return finished.maxOf { it.value }
     }
 
     override fun part2() = 0
