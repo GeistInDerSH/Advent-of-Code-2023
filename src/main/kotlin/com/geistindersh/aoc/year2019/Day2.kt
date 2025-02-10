@@ -8,12 +8,12 @@ import com.geistindersh.aoc.year2019.intcomputer.IntComputer
 
 class Day2(
     dataFile: DataFile,
-) : AoC<Int, Int> {
-    private val numbers = fileToString(2019, 2, dataFile).split(",").map(String::toInt)
+) : AoC<Long, Long> {
+    private val numbers = fileToString(2019, 2, dataFile).split(",").map(String::toLong)
 
     fun part1(
-        noun: Int,
-        verb: Int,
+        noun: Long,
+        verb: Long,
     ) = numbers
         .toMutableList()
         .apply {
@@ -26,13 +26,13 @@ class Day2(
 
     // Overload match so that we can test without swapping values
     @Suppress("UNUSED_PARAMETER")
-    fun part1(override: Map<Int, Int>) = part1(numbers[1], numbers[2])
+    fun part1(override: Map<Int, Int>) = part1(numbers[1].toLong(), numbers[2].toLong())
 
     override fun part1() = part1(12, 2)
 
-    fun part2(target: Int): Pair<Int, Int> =
+    fun part2(target: Long): Pair<Long, Long> =
         (0..100)
-            .flatMap { noun -> (0..100).map { verb -> noun to verb } }
+            .flatMap { noun -> (0..100).map { verb -> noun.toLong() to verb.toLong() } }
             .first { (noun, verb) -> part1(noun, verb) == target }
 
     override fun part2() = part2(19690720).let { 100 * it.first + it.second }

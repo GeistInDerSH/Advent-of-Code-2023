@@ -10,18 +10,18 @@ import com.geistindersh.aoc.year2019.intcomputer.Signal
 
 class Day7(
     dataFile: DataFile,
-) : AoC<Int, Int> {
-    private val input = fileToString(2019, 7, dataFile).split(',').map(String::toInt)
+) : AoC<Long, Long> {
+    private val input = fileToString(2019, 7, dataFile).split(',').map(String::toLong)
 
-    fun List<Int>.chainedThrusterSignal(): Int =
+    fun List<Long>.chainedThrusterSignal(): Long =
         this.fold(0) { value, thruster -> IntComputer(input, listOf(thruster, value)).run().getOutput()!! }
 
-    fun List<Int>.chainedThrusterSignalWithFeedback(): Int {
+    fun List<Long>.chainedThrusterSignalWithFeedback(): Long {
         val thrusters = this.map { IntComputer(input, listOf(it)) }
         thrusters[0].sendInput(0)
 
         var i = 0
-        var output: Int? = null
+        var output: Long? = null
         while (true) {
             if (output != null) {
                 thrusters[i].sendInput(output)
@@ -43,8 +43,8 @@ class Day7(
     override fun part2() = FULL_UPPER_SET.permutations().maxOf { it.chainedThrusterSignalWithFeedback() }
 
     companion object {
-        private val FULL_LOWER_SET = (0..4).toSet()
-        private val FULL_UPPER_SET = (5..9).toSet()
+        private val FULL_LOWER_SET = (0L..4).toSet()
+        private val FULL_UPPER_SET = (5L..9).toSet()
     }
 }
 

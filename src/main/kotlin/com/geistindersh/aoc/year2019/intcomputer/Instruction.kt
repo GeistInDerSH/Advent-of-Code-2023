@@ -33,5 +33,9 @@ sealed class Instruction {
         val params: Triple<Parameter, Parameter, Parameter>,
     ) : Instruction()
 
+    data class AdjustRelativeBase(
+        val param: Parameter,
+    ) : Instruction()
+
     object Halt : Instruction()
 }

@@ -8,16 +8,16 @@ import com.geistindersh.aoc.year2019.intcomputer.IntComputer
 
 class Day5(
     dataFile: DataFile,
-) : AoC<Int, Int> {
-    private val numbers = fileToString(2019, 5, dataFile).split(",").map(String::toInt)
+) : AoC<Long, Long> {
+    private val numbers = fileToString(2019, 5, dataFile).split(",").map(String::toLong)
 
-    override fun part1(): Int {
+    override fun part1(): Long {
         val computer = IntComputer(numbers, listOf(1))
         computer.run()
         return computer.getOutput() ?: -1
     }
 
-    override fun part2(): Int {
+    override fun part2(): Long {
         val computer = IntComputer(numbers, listOf(5))
         computer.run()
         return computer.getOutput() ?: -1

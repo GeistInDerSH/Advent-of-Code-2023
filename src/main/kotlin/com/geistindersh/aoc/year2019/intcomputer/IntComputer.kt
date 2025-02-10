@@ -1,32 +1,35 @@
 package com.geistindersh.aoc.year2019.intcomputer
 
 class IntComputer(
-    private val memory: MutableList<Int>,
-    private val input: ArrayDeque<Int>,
+    private val memory: MutableList<Long>,
+    private val input: ArrayDeque<Long>,
 ) {
     private var instructionPointer = 0
-    private var output: Int? = null
+    private var output: Long? = null
+    private var relativeBase = 0L
 
-    fun getOutput(): Int? {
+    fun getOutput(): Long? {
         val out = output
         output = null
         return out
     }
 
-    fun sendInput(value: Int) {
+    fun sendInput(value: Long) {
         input.add(value)
     }
 
-    fun getMemory(): List<Int> = memory.toList()
+    fun getMemory(): List<Long> = memory.toList()
 
-    constructor(memory: List<Int>) : this(memory, emptyList())
-    constructor(memory: List<Int>, input: List<Int>) : this(memory.toMutableList(), ArrayDeque<Int>(input))
+    constructor(memory: List<Long>) : this(memory, emptyList())
+    constructor(memory: List<Long>, input: List<Long>) : this(memory.toMutableList(), ArrayDeque<Long>(input))
 
-    private fun getValueAtPosition(pos: Int): Int = if (pos >= memory.size) 0 else memory[pos]
+    private fun getValueAtPosition(pos: Int): Long = if (pos >= memory.size) 0 else memory[pos]
+
+    private fun getValueAtPosition(pos: Long) = getValueAtPosition(pos.toInt())
 
     private fun storeValueAtPosition(
         pos: Int,
-        value: Int,
+        value: Long,
     ) {
         if (pos >= memory.size) {
             val count = memory.size - pos
@@ -35,26 +38,32 @@ class IntComputer(
         memory[pos] = value
     }
 
-    private fun getWord(): Int = getValueAtPosition(instructionPointer).also { instructionPointer++ }
+    private fun storeValueAtPosition(
+        pos: Long,
+        value: Long,
+    ) = storeValueAtPosition(pos.toInt(), value)
 
-    private fun fetchParameter(mode: Int): Parameter {
+    private fun getWord(): Long = getValueAtPosition(instructionPointer).also { instructionPointer++ }
+
+    private fun fetchParameter(mode: Long): Parameter {
         val word = getWord()
         return when (mode) {
-            0 -> Parameter.Position(word)
-            1 -> Parameter.Immediate(word)
+            0L -> Parameter.Position(word)
+            1L -> Parameter.Immediate(word)
             else -> throw IllegalArgumentException("Unknown mode: $mode")
         }
     }
 
-    private fun decodeParameter(param: Parameter) =
+    private fun decodeParameter(param: Parameter): Long =
         when (param) {
             is Parameter.Immediate -> param.value
             is Parameter.Position -> getValueAtPosition(param.value)
+            is Parameter.Relative -> getValueAtPosition(relativeBase + param.value)
         }
 
-    private fun getSingleParameter(opcode: Int): Parameter = fetchParameter(opcode % 10)
+    private fun getSingleParameter(opcode: Long): Parameter = fetchParameter(opcode % 10)
 
-    private fun getDoubleParameter(opcode: Int): Pair<Parameter, Parameter> {
+    private fun getDoubleParameter(opcode: Long): Pair<Parameter, Parameter> {
         var opcode = opcode
         val p1 = getSingleParameter(opcode)
         opcode /= 10
@@ -62,7 +71,7 @@ class IntComputer(
         return p1 to p2
     }
 
-    private fun getTripleParameter(opcode: Int): Triple<Parameter, Parameter, Parameter> {
+    private fun getTripleParameter(opcode: Long): Triple<Parameter, Parameter, Parameter> {
         val (p1, p2) = getDoubleParameter(opcode)
         var opcode = opcode / 100
         val p3 = getSingleParameter(opcode % 10)
@@ -74,15 +83,16 @@ class IntComputer(
         val instr = word % 100
         val opcode = word / 100
         return when (instr) {
-            1 -> Instruction.Add(getTripleParameter(opcode))
-            2 -> Instruction.Mul(getTripleParameter(opcode))
-            3 -> Instruction.Load(getSingleParameter(opcode))
-            4 -> Instruction.Store(getSingleParameter(opcode))
-            5 -> Instruction.JumpIfTrue(getDoubleParameter(opcode))
-            6 -> Instruction.JumpIfFalse(getDoubleParameter(opcode))
-            7 -> Instruction.LessThan(getTripleParameter(opcode))
-            8 -> Instruction.Equals(getTripleParameter(opcode))
-            99 -> Instruction.Halt
+            1L -> Instruction.Add(getTripleParameter(opcode))
+            2L -> Instruction.Mul(getTripleParameter(opcode))
+            3L -> Instruction.Load(getSingleParameter(opcode))
+            4L -> Instruction.Store(getSingleParameter(opcode))
+            5L -> Instruction.JumpIfTrue(getDoubleParameter(opcode))
+            6L -> Instruction.JumpIfFalse(getDoubleParameter(opcode))
+            7L -> Instruction.LessThan(getTripleParameter(opcode))
+            8L -> Instruction.Equals(getTripleParameter(opcode))
+            9L -> Instruction.AdjustRelativeBase(getSingleParameter(opcode))
+            99L -> Instruction.Halt
             else -> throw IllegalArgumentException("Invalid op $instr")
         }
     }
@@ -94,7 +104,7 @@ class IntComputer(
                 val arg1 = decodeParameter(instr.params.first)
                 val arg2 = decodeParameter(instr.params.second)
                 val dest = instr.params.third
-                storeValueAtPosition(dest.value, arg1 + arg2)
+                storeValueAtPosition(dest.value.toInt(), arg1 + arg2)
                 Signal.None
             }
             is Instruction.Mul -> {
@@ -120,15 +130,15 @@ class IntComputer(
             }
             is Instruction.JumpIfTrue -> {
                 val arg1 = decodeParameter(instr.params.first)
-                if (arg1 != 0) {
-                    instructionPointer = decodeParameter(instr.params.second)
+                if (arg1 != 0L) {
+                    instructionPointer = decodeParameter(instr.params.second).toInt()
                 }
                 Signal.None
             }
             is Instruction.JumpIfFalse -> {
                 val arg1 = decodeParameter(instr.params.first)
-                if (arg1 == 0) {
-                    instructionPointer = decodeParameter(instr.params.second)
+                if (arg1 == 0L) {
+                    instructionPointer = decodeParameter(instr.params.second).toInt()
                 }
                 Signal.None
             }
@@ -136,7 +146,7 @@ class IntComputer(
                 val arg1 = decodeParameter(instr.params.first)
                 val arg2 = decodeParameter(instr.params.second)
                 val dest = instr.params.third
-                val value = if (arg1 < arg2) 1 else 0
+                val value = if (arg1 < arg2) 1L else 0L
                 storeValueAtPosition(dest.value, value)
                 Signal.None
             }
@@ -144,8 +154,12 @@ class IntComputer(
                 val arg1 = decodeParameter(instr.params.first)
                 val arg2 = decodeParameter(instr.params.second)
                 val dest = instr.params.third
-                val value = if (arg1 == arg2) 1 else 0
+                val value = if (arg1 == arg2) 1L else 0L
                 storeValueAtPosition(dest.value, value)
+                Signal.None
+            }
+            is Instruction.AdjustRelativeBase -> {
+                relativeBase += instr.param.value
                 Signal.None
             }
             Instruction.Halt -> Signal.Halt
