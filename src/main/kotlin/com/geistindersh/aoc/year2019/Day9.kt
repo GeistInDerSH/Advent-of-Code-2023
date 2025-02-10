@@ -8,14 +8,14 @@ import com.geistindersh.aoc.year2019.intcomputer.IntComputer
 
 class Day9(
     dataFile: DataFile,
-) : AoC<Long, Int> {
+) : AoC<Long, Long> {
     private val data = fileToString(2019, 9, dataFile).split(',').map(String::toLong)
 
     private fun solution(input: Long) = IntComputer(data, listOf(input)).run().getOutput()!!
 
     override fun part1() = solution(1L)
 
-    override fun part2() = 0
+    override fun part2() = solution(2L)
 }
 
 fun day9() {
