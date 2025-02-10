@@ -29,3 +29,13 @@ fun lcm(
  * @return The least common multiple
  */
 fun Collection<Long>.lcm(): Long = this.fold(1L) { acc, i -> lcm(acc, i) }
+
+tailrec fun gcd(
+    a: Long,
+    b: Long,
+): Long = if (a == 0L) b else gcd(b % a, a)
+
+tailrec fun gcd(
+    a: Int,
+    b: Int,
+): Int = if (a == 0) b else gcd(b % a, a)
