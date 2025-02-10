@@ -8,12 +8,10 @@ class Day8Test {
     @Test
     fun part1() {
         assertEquals(1, Day8(DataFile.Example, 3, 2).part1())
-        assertEquals(-1, Day8(DataFile.Part1).part1())
     }
 
     @Test
     fun part2() {
-        assertEquals(-1, Day8(DataFile.Example2).part2())
-        assertEquals(-1, Day8(DataFile.Part1).part2())
+        assertEquals(" #\n# \n", Day8(DataFile.Example2, 2, 2).part2())
     }
 }
