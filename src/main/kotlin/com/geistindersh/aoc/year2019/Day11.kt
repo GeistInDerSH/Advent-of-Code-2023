@@ -11,10 +11,10 @@ import com.geistindersh.aoc.year2019.intcomputer.Signal
 
 class Day11(
     dataFile: DataFile,
-) : AoC<Int, Int> {
+) : AoC<Int, String> {
     private val instructions = fileToString(2019, 11, dataFile).split(",").map(String::toLong)
 
-    private fun List<Long>.simulate() =
+    private fun List<Long>.simulate(initialState: Long) =
         buildMap {
             val computer = IntComputer(this@simulate)
             var direction = Direction.North
@@ -22,7 +22,8 @@ class Day11(
 
             var signal = Signal.None
             while (signal != Signal.Halt) {
-                computer.sendInput(this.getOrDefault(position, 0L))
+                val inputColor = if (this.isEmpty()) initialState else this.getOrDefault(position, 0L)
+                computer.sendInput(inputColor)
                 // Write the Paint Color
                 computer.runWhileSignal(Signal.None)
                 val o1 = computer.getOutput()
@@ -43,15 +44,19 @@ class Day11(
             }
         }
 
-    override fun part1() =
-        instructions
-            .simulate()
-            .let {
-                println(it)
-                it
-            }.count()
+    override fun part1() = instructions.simulate(0).count()
 
-    override fun part2() = 0
+    override fun part2() =
+        instructions.simulate(1).let {
+            val maxRow = it.keys.maxOf { it.row }
+            val maxCol = it.keys.maxOf { it.col }
+            val outputBuffer = Array(maxRow + 1) { CharArray(maxCol + 1) { ' ' } }
+            for ((point, color) in it) {
+                val (row, col) = point
+                outputBuffer[row][col] = if (color == 0L) ' ' else '#'
+            }
+            outputBuffer.joinToString("\n") { it.joinToString("") }
+        }
 }
 
 fun day11() {
