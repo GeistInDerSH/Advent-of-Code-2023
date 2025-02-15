@@ -4,6 +4,7 @@ import com.geistindersh.aoc.helper.AoC
 import com.geistindersh.aoc.helper.enums.Point3D
 import com.geistindersh.aoc.helper.files.DataFile
 import com.geistindersh.aoc.helper.files.fileToStream
+import com.geistindersh.aoc.helper.math.lcm
 import com.geistindersh.aoc.helper.report
 import com.geistindersh.aoc.helper.strings.extractIntegers
 import kotlin.math.absoluteValue
@@ -11,7 +12,7 @@ import kotlin.math.absoluteValue
 class Day12(
     dataFile: DataFile,
     private val steps: Int = 1000,
-) : AoC<Int, Int> {
+) : AoC<Int, Long> {
     private val moons =
         fileToStream(2019, 12, dataFile)
             .map { it.extractIntegers() }
@@ -36,17 +37,35 @@ class Day12(
             else -> 0
         }
 
-        fun next(moons: List<Moon>): Moon {
-            val velocity =
-                moons
-                    .filter { it != this }
-                    .fold(this.velocity) { acc, point ->
-                        val x = diff(this.position.x, point.position.x)
-                        val y = diff(this.position.y, point.position.y)
-                        val z = diff(this.position.z, point.position.z)
-                        Point3D(x + acc.x, y + acc.y, z + acc.z)
-                    }
-            return this.copy(position + velocity, velocity = velocity)
+        private fun diff(
+            current: Point3D,
+            other: Point3D,
+        ): Point3D {
+            val x = diff(current.x, other.x)
+            val y = diff(current.y, other.y)
+            val z = diff(current.z, other.z)
+            return Point3D(x, y, z)
+        }
+
+        fun next(moons: List<Moon>): Moon =
+            moons
+                .fold(this.velocity) { acc, point ->
+                    val updated = diff(this.position, point.position)
+                    acc + updated
+                }.let { this.copy(position + it, it) }
+    }
+
+    private fun List<Moon>.getPeriod(fn: (Point3D) -> Int): Long {
+        val expectedVals = moons.map { fn(it.position) }
+
+        var step = 0L
+        var localMoons = this
+        while (true) {
+            localMoons = localMoons.map { it.next(localMoons) }
+            if (localMoons.zip(expectedVals).all { (l, r) -> fn(l.position) == r }) {
+                return step + 2
+            }
+            step += 1
         }
     }
 
@@ -57,7 +76,13 @@ class Day12(
             .flatten()
             .sumOf { it.energy() }
 
-    override fun part2() = 0
+    override fun part2(): Long {
+        val p1 = moons.getPeriod { it.x }
+        val p2 = moons.getPeriod { it.y }
+        val p3 = moons.getPeriod { it.z }
+        val ans = lcm(p1, p2)
+        return lcm(ans, p3)
+    }
 }
 
 fun day12() {

@@ -12,7 +12,7 @@ class Day12Test {
 
     @Test
     fun part2() {
-        assertEquals(-1, Day12(DataFile.Example).part2())
-        assertEquals(-1, Day12(DataFile.Part1).part2())
+        assertEquals(2772, Day12(DataFile.Example).part2())
+        assertEquals(4686774924, Day12(DataFile.Example2).part2())
     }
 }
